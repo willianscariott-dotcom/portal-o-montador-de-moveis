@@ -1,0 +1,113 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+---
+
+<Layout title="Cadastrar - O Montador de Móveis">
+	<Header />
+
+	<main class="max-w-7xl mx-auto px-4">
+		<section class="pt-24 pb-12 relative overflow-hidden">
+			<div class="absolute top-0 right-0 w-64 h-64 bg-[#ffb800]/20 rounded-full blur-[80px] -z-10 translate-x-1/2 -translate-y-1/4"></div>
+			<div class="max-w-xl mx-auto">
+				<div class="text-center mb-10">
+					<span class="inline-flex items-center justify-center w-16 h-16 bg-[#ffb800] rounded-full mb-6">
+						<span class="material-symbols-outlined text-3xl text-[#6b4c00]">handshake</span>
+					</span>
+					<h1 class="font-headline text-3xl font-bold text-[#0a1a3c] mb-3">
+						Faça Parte da Nossa Rede
+					</h1>
+					<p class="text-[#514532] text-lg">
+						Cadastre-se agora e conquiste novos clientes na sua região
+					</p>
+				</div>
+
+				<form class="space-y-6 bg-white rounded-xl p-8 ambient-shadow">
+					<div>
+						<label for="nome" class="block text-sm font-medium text-[#0a1a3c] mb-2">
+							Nome Completo
+						</label>
+						<div class="relative">
+							<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#514532]/60">person</span>
+							<input
+								type="text"
+								id="nome"
+								name="nome"
+								placeholder="Seu nome completo"
+								required
+								class="w-full h-14 pl-12 pr-4 bg-[#f2f3ff] text-[#0a1a3c] font-body text-base border-none rounded-md appearance-none focus:ring-2 focus:ring-[#ffb800] focus:ring-offset-2 focus:ring-offset-white transition-all placeholder:text-[#514532]/50"
+							/>
+						</div>
+					</div>
+
+					<div>
+						<label for="whatsapp" class="block text-sm font-medium text-[#0a1a3c] mb-2">
+							WhatsApp
+						</label>
+						<div class="relative">
+							<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#514532]/60">chat</span>
+							<input
+								type="tel"
+								id="whatsapp"
+								name="whatsapp"
+								placeholder("(11) 99999-9999"
+								required
+								class="w-full h-14 pl-12 pr-4 bg-[#f2f3ff] text-[#0a1a3c] font-body text-base border-none rounded-md appearance-none focus:ring-2 focus:ring-[#ffb800] focus:ring-offset-2 focus:ring-offset-white transition-all placeholder:text-[#514532]/50"
+							/>
+						</div>
+					</div>
+
+					<div>
+						<label for="cidade" class="block text-sm font-medium text-[#0a1a3c] mb-2">
+							Cidade
+						</label>
+						<div class="relative">
+							<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#514532]/60">location_city</span>
+							<select
+								id="cidade"
+								name="cidade"
+								required
+								class="w-full h-14 pl-12 pr-4 bg-[#f2f3ff] text-[#0a1a3c] font-body text-base border-none rounded-md appearance-none focus:ring-2 focus:ring-[#ffb800] focus:ring-offset-2 focus:ring-offset-white transition-all"
+							>
+								<option disabled selected value="">Selecione sua cidade</option>
+								<option value="sp-capital">São Paulo</option>
+								<option value="campinas">Campinas</option>
+								<option value="guarulhos">Guarulhos</option>
+								<option value="rio-de-janeiro">Rio de Janeiro</option>
+								<option value="belo-horizonte">Belo Horizonte</option>
+							</select>
+							<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#514532] pointer-events-none">expand_more</span>
+						</div>
+					</div>
+
+					<div>
+						<label for="google-empresas" class="block text-sm font-medium text-[#0a1a3c] mb-2">
+							Link do seu Perfil no Google Empresas
+						</label>
+						<div class="relative">
+							<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#514532]/60">link</span>
+							<input
+								type="url"
+								id="google-empresas"
+								name="googleEmpresas"
+								placeholder="https://business.google.com/..."
+								required
+								class="w-full h-14 pl-12 pr-4 bg-[#f2f3ff] text-[#0a1a3c] font-body text-base border-none rounded-md appearance-none focus:ring-2 focus:ring-[#ffb800] focus:ring-offset-2 focus:ring-offset-white transition-all placeholder:text-[#514532]/50"
+							/>
+						</div>
+						<p class="mt-2 text-sm text-[#514532]/70">
+							Isso ajuda clientes a encontrar sua empresa e ver suas avaliações
+						</p>
+					</div>
+
+					<div class="pt-4">
+						<button type="submit" class="w-full h-14 bg-gradient-to-b from-[#ffb800] to-[#f0ad00] text-[#6b4c00] font-headline font-bold text-lg rounded-md flex items-center justify-center gap-2 hover:-translate-y-0.5 transition-transform active:scale-[0.98] shadow-sm">
+							<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 600;">send</span>
+							Cadastrar
+						</button>
+					</div>
+				</form>
+			</div>
+		</section>
+	</main>
+</Layout>

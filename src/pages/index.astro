@@ -53,10 +53,10 @@ const cidades = [
 <Layout title="O Montador de Móveis">
 	<Header />
 
-	<main>
-		<section class="px-6 pt-16 pb-12 relative overflow-hidden">
+	<main class="max-w-7xl mx-auto px-4">
+		<section class="pt-16 pb-12 relative overflow-hidden">
 			<div class="absolute top-0 right-0 w-64 h-64 bg-[#ffb800]/20 rounded-full blur-[80px] -z-10 translate-x-1/2 -translate-y-1/4"></div>
-			<div class="max-w-md mx-auto">
+			<div class="max-w-lg">
 				<h1 class="font-headline text-[2.5rem] leading-[1.1] font-bold text-[#0a1a3c] mb-8 tracking-[-0.02em]">
 					Encontre os melhores montadores na sua cidade
 				</h1>
@@ -93,13 +93,13 @@ const cidades = [
 			</div>
 		</section>
 
-		<section class="px-6 py-12 bg-[#f2f3ff]/50 relative">
-			<div class="max-w-md mx-auto">
+		<section class="py-12 bg-[#f2f3ff]/50 relative">
+			<div>
 				<div class="flex items-center justify-between mb-8">
 					<h2 class="font-headline text-2xl font-bold text-[#0a1a3c] tracking-tight">Profissionais em Destaque</h2>
 					<span class="material-symbols-outlined text-[#ffb800]" style="font-variation-settings: 'FILL' 1;">stars</span>
 				</div>
-				<div class="grid grid-cols-1 gap-5">
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 					{montadores.map((montador) => (
 						<MontadorCard {...montador} />
 					))}

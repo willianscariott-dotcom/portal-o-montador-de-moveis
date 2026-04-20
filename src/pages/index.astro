@@ -99,62 +99,29 @@ const montadores = [
 </Layout>
 
 <script>
-	import { supabase } from '../lib/supabase';
-
 	const estadoSelect = document.getElementById('estado') as HTMLSelectElement;
 	const cidadeSelect = document.getElementById('cidade') as HTMLSelectElement;
 
 	const estadosBrasileiros: Record<string, string> = {
-		'AC': 'Acre', 'AL': 'Alagoas', 'AP': 'Amapá', 'AM': 'Amazonas',
-		'BA': 'Bahia', 'CE': 'Ceará', 'DF': 'Distrito Federal', 'ES': 'Espírito Santo',
-		'GO': 'Goiás', 'MA': 'Maranhão', 'MT': 'Mato Grosso', 'MS': 'Mato Grosso do Sul',
-		'MG': 'Minas Gerais', 'PA': 'Pará', 'PB': 'Paraíba', 'PR': 'Paraná',
-		'PE': 'Pernambuco', 'PI': 'Piauí', 'RJ': 'Rio de Janeiro', 'RN': 'Rio Grande do Norte',
-		'RS': 'Rio Grande do Sul', 'RO': 'Rondônia', 'RR': 'Roraima', 'SC': 'Santa Catarina',
-		'SP': 'São Paulo', 'SE': 'Sergipe', 'TO': 'Tocantins'
+		'AL': 'Alagoas', 'AM': 'Amazonas', 'BA': 'Bahia', 'CE': 'Ceará',
+		'DF': 'Distrito Federal', 'GO': 'Goiás', 'MA': 'Maranhão', 'MG': 'Minas Gerais',
+		'MS': 'Mato Grosso do Sul', 'MT': 'Mato Grosso', 'PA': 'Pará', 'PB': 'Paraíba',
+		'PE': 'Pernambuco', 'PI': 'Piauí', 'PR': 'Paraná', 'RJ': 'Rio de Janeiro',
+		'RN': 'Rio Grande do Norte', 'RS': 'Rio Grande do Sul', 'SE': 'Sergipe', 'SP': 'São Paulo'
 	};
 
-	let cidadesPorEstado: Record<string, string[]> = {};
+	const locaisDeAtendimento: Record<string, string[]> = {
+		"AL": ["Maceió"], "AM": ["Manaus"], "BA": ["Salvador"], "CE": ["Fortaleza"],
+		"DF": ["Brasília"], "GO": ["Goiânia"], "MA": ["São Luís"], "MG": ["Belo Horizonte", "Uberlândia"],
+		"MS": ["Campo Grande"], "MT": ["Cuiabá"], "PA": ["Belém"], "PB": ["João Pessoa"],
+		"PE": ["Jaboatão dos Guararapes", "Recife"], "PI": ["Teresina"], "PR": ["Curitiba"],
+		"RJ": ["Duque de Caxias", "Rio de Janeiro", "São Gonçalo"], "RN": ["Natal"],
+		"RS": ["Porto Alegre"], "SE": ["Aracaju"],
+		"SP": ["Campinas", "Guarulhos", "Osasco", "Ribeirão Preto", "Santo André", "São Bernardo do Campo", "São José dos Campos", "São Paulo", "Sorocaba"]
+	};
 
-	async function carregarDados() {
-		const { data, error } = await supabase
-			.from('montadores_pendentes')
-			.select('cidade_estado');
-
-		if (error) {
-			console.error('Erro ao carregar dados:', error);
-			estadoSelect.innerHTML = '<option disabled selected value="">Erro ao carregar</option>';
-			return;
-		}
-
-		const cidadesSet = new Set<string>();
-		const estadoSet = new Set<string>();
-
-		data.forEach((item: { cidade_estado: string }) => {
-			if (item.cidade_estado) {
-				cidadesSet.add(item.cidade_estado);
-				const partes = item.cidade_estado.split(' - ');
-				if (partes.length >= 2) {
-					estadoSet.add(partes[partes.length - 1].trim());
-				}
-			}
-		});
-
-		cidadesSet.forEach((cidadeEstado) => {
-			const partes = cidadeEstado.split(' - ');
-			if (partes.length >= 2) {
-				const uf = partes[partes.length - 1].trim();
-				const cidade = partes.slice(0, -1).join(' - ').trim();
-				if (!cidadesPorEstado[uf]) {
-					cidadesPorEstado[uf] = [];
-				}
-				if (!cidadesPorEstado[uf].includes(cidade)) {
-					cidadesPorEstado[uf].push(cidade);
-				}
-			}
-		});
-
-		const estadosOrdenados = Array.from(estadoSet).sort();
+	function carregarEstados() {
+		const estadosOrdenados = Object.keys(locaisDeAtendimento).sort();
 		estadoSelect.innerHTML = '<option disabled selected value="">Selecione o Estado</option>';
 		estadosOrdenados.forEach((uf) => {
 			const nome = estadosBrasileiros[uf] || uf;
@@ -169,8 +136,8 @@ const montadores = [
 		const ufSelecionado = estadoSelect.value;
 		cidadeSelect.innerHTML = '<option disabled selected value="">Selecione a Cidade</option>';
 		
-		if (cidadesPorEstado[ufSelecionado]) {
-			cidadesPorEstado[ufSelecionado].sort().forEach((cidade) => {
+		if (locaisDeAtendimento[ufSelecionado]) {
+			locaisDeAtendimento[ufSelecionado].sort().forEach((cidade) => {
 				const option = document.createElement('option');
 				option.value = cidade.toLowerCase().replace(/\s+/g, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 				option.textContent = cidade;
@@ -182,5 +149,5 @@ const montadores = [
 		}
 	});
 
-	carregarDados();
+	carregarEstados();
 </script>

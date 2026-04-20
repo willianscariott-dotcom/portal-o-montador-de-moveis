@@ -1,0 +1,777 @@
+[
+  {
+    "id": "d3241a4c-f0b6-4a74-bf94-5ca20a202cc9",
+    "nome": "Envelopamento de Moveis Campinas",
+    "cidade_estado": "Campinas - SP"
+  },
+  {
+    "id": "fb873654-2dc0-434e-bb5e-894aced8df49",
+    "nome": "Móveis Planejados Maceió",
+    "cidade_estado": "Maceió - AL"
+  },
+  {
+    "id": "f56e8572-5824-4d43-b869-e3917e11fa28",
+    "nome": "JM Lar Modulado Móveis planejados",
+    "cidade_estado": "Aracaju - SE"
+  },
+  {
+    "id": "b7b4fc98-08d3-4c26-ad5a-71e275d146b2",
+    "nome": "XK móveis",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "c033723b-8140-4cc9-8b3a-05884f997812",
+    "nome": "K8 Center Lar- Portas Aberturas Moveis",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "e8c63bfd-00bc-4e2d-8380-d2c01557251f",
+    "nome": "Envelopamento de Moveis Campinas",
+    "cidade_estado": "Campinas - SP"
+  },
+  {
+    "id": "0c9ddd06-c80d-4de6-9a34-55a1530b8eb0",
+    "nome": "Moviere Móveis",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "cf6d95f2-4dd9-47e2-ba65-e87276eff7a1",
+    "nome": "Móveis Fortaleza",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "237546cb-1475-47b9-aab3-36f397157289",
+    "nome": "Completa Móveis",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "d2340bde-c6dd-4106-a339-fe4f1e4755da",
+    "nome": "JC Móveis",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "71d9f1c1-b48f-4661-bf5e-d0f39e739446",
+    "nome": "Móveis Walem",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "1582866f-3528-4ed4-9f1d-635289fb0c6c",
+    "nome": "taQi: Material de Construção, Ferramentas, Eletros e Móveis em Parobé, RS",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "dd2f109d-e6d4-4992-b49a-df8dc882dd44",
+    "nome": "Taeky móveis",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "3b13d99a-dc45-4bd9-b167-2a3bfdfa36e6",
+    "nome": "Loja du cearense",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "a03ffdc9-0341-4aaa-afef-7fe70a7d14b0",
+    "nome": "Móveis Soares",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "bd7b34d5-e239-4e43-967b-5d1f79b40d17",
+    "nome": "JP Moveis direto de fabrica",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "b1fc8a06-282f-45cf-9da6-cc9f0e40c0a6",
+    "nome": "Tesa Móveis",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "a9ee2589-9736-4d7c-80a5-9113abc13c5f",
+    "nome": "Móveis Tucano",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "694d189b-2b91-4d09-a98a-4cea0d95a5dd",
+    "nome": "XK Móveis",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "63144287-81b3-4c49-b943-2852e8cd5484",
+    "nome": "ReD Brick De Moveis",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "7e5ec842-9855-4129-b746-d96fc4238333",
+    "nome": "Móveis Rústicos Descovi",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "b89f336a-ab4a-41f3-9903-fc118e189dec",
+    "nome": "HC MOVEIS PLANEJADOS",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "0bd03332-ea4c-49da-adfd-56808e469567",
+    "nome": "Lojas Becker",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "a7ea3235-ab70-4356-b0d6-a05d3467b59f",
+    "nome": "Móveis Rústicos Casa Jardim Decoração",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "ef1c10da-fa65-498f-ac9a-b05cc03c50e5",
+    "nome": "GHL Móveis",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "6394bad4-4ffc-408b-becf-ae3e0897d5f3",
+    "nome": "Arte no Pallet/Móveis Artesanais",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "6b950862-d108-434f-8788-b5cdfe83e46b",
+    "nome": "Dani Marina Móveis e Design",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "a14c7028-d31f-4585-ba1a-1912c2e83841",
+    "nome": "Tiago Rocha Brick de Móveis",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "4a66f390-d313-4ff5-9528-8f253b8ec4c6",
+    "nome": "Bello Móveis Sob Medida",
+    "cidade_estado": "Taquara - RS"
+  },
+  {
+    "id": "08c79641-ecfe-406d-ad5d-ba2c0874490c",
+    "nome": "SM Estofaria",
+    "cidade_estado": "Parobé - RS"
+  },
+  {
+    "id": "785290ee-cbc0-4c63-9fe8-275e0d93f3ef",
+    "nome": "Preço Bom Móveis",
+    "cidade_estado": "Cachoeirinha - RS"
+  },
+  {
+    "id": "7981fbb0-60a8-4ca3-be4d-8c26c4be1a8d",
+    "nome": "ATACADÃO FORT MOVEIS CACHOEIRINHA",
+    "cidade_estado": "Cachoeirinha - RS"
+  },
+  {
+    "id": "8edbb9cb-528f-42f9-9a1b-0c34712f4372",
+    "nome": "Atacadão dos Móveis",
+    "cidade_estado": "Cachoeirinha - RS"
+  },
+  {
+    "id": "1cb6be0e-cb64-452d-a0e7-4f2310a8f065",
+    "nome": "Atacadão Viana Móveis",
+    "cidade_estado": "Cachoeirinha - RS"
+  },
+  {
+    "id": "6173c8eb-6ee3-46b9-be78-7a1b146788a1",
+    "nome": "Atacadão Casa dos Móveis Cachoeirinha",
+    "cidade_estado": "Cachoeirinha - RS"
+  },
+  {
+    "id": "fde97c78-9f1d-47d3-b2a3-7e04225fbbc3",
+    "nome": "Parollar Móveis",
+    "cidade_estado": "Cachoeirinha - RS"
+  },
+  {
+    "id": "4d9b07a5-873c-4350-a433-d79438d2b006",
+    "nome": "Atacadão Miranda Móveis",
+    "cidade_estado": "Viamão - RS"
+  },
+  {
+    "id": "f6fd4e4f-9702-4315-aa92-56cad6683fdf",
+    "nome": "Atacadão dos Móveis",
+    "cidade_estado": "Viamão - RS"
+  },
+  {
+    "id": "e8ea9662-0d69-4ac3-9e23-510a62a0b4b7",
+    "nome": "LEJU Móveis Sob Medida e Mamoraria",
+    "cidade_estado": "Viamão - RS"
+  },
+  {
+    "id": "5dae3024-47ba-4bec-a2bb-ced2f72db2c2",
+    "nome": "Moveis Impacto Sob Medida",
+    "cidade_estado": "Dois Irmãos - RS"
+  },
+  {
+    "id": "42560928-0373-46dc-8526-0d4414f501f6",
+    "nome": "Ivoti Móveis Artesanais",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "d1ee1d4f-951a-4837-9001-f8695c624944",
+    "nome": "Redlar Ivoti - Móveis Planejados e Sob medida",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "f3ddeabb-8c8e-4efd-8c61-e1acbf2cebfd",
+    "nome": "Casa da Madeira Moveis Sob Medida",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "270672b7-1949-4dbc-bf1f-f67d2510427d",
+    "nome": "taQi: Material de Construção, Ferramentas, Eletros e Móveis em Ivoti, RS",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "35bf4f19-0650-4181-b536-81be87af0b88",
+    "nome": "Estofaria",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "6b8c45ff-8d98-4f23-b092-3c6284c79a66",
+    "nome": "Ambientalize Planejados Móveis Sob Medida",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "037d5c99-6653-4818-b7b6-d4e99a9ab30d",
+    "nome": "D'casa móveis sob medida",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "23b184be-80f9-4953-9e0d-84d39a9c602e",
+    "nome": "C. W. Neis Indústria e Comércio Ltda",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "67443a4d-6805-45fb-8cc0-fabe84d08e6c",
+    "nome": "Lojas Becker",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "a5b63c38-7d9b-43bf-998d-28a016808323",
+    "nome": "Lojas Solar - Ivoti",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "d2294c73-f266-4b02-9473-4e7739226c02",
+    "nome": "LOJAS KLEIN - BAZAR - FERRAGENS - PET - AGROPECUÁRIA",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "3d25d031-23b1-460c-884a-f340d9416251",
+    "nome": "Lojas Quero-Quero: Materiais de Construção em Ivoti RS",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "c73fc93d-f5d8-436a-8483-b333c1260e3c",
+    "nome": "Lojas Benoit",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "c71163f3-a681-4580-b398-6af1337fc92c",
+    "nome": "Munique Imoveis",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "4cb580eb-cbcb-4e17-bf27-544117439619",
+    "nome": "Bom Jardim Varejo de Calçados Ltda",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "1bccafb5-e695-472f-8fbf-1f734f6af69c",
+    "nome": "Imobiliária Beto Imóveis",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "42b309fd-f73e-4817-b820-49e525587f20",
+    "nome": "Ivoti Imóveis Ltda.",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "efeda396-4a10-4896-a8f4-93b55fc4f59f",
+    "nome": "Lojas Lebes",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "d244432a-231e-41eb-8fc7-6ad5a50e3697",
+    "nome": "Vale sul inox/ southfire lareiras ecológicas ,corrimão de inox e móveis",
+    "cidade_estado": "Lindolfo Collor - RS"
+  },
+  {
+    "id": "6ae5aa52-1b00-4a4f-a298-f846bb6e74b8",
+    "nome": "Oráculo Imóveis",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "3945fee0-d41d-44d5-b638-e9e61e02489c",
+    "nome": "CR Móveis Sapiranga",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "722e31c8-9b81-4fbf-8214-9a704494d2f8",
+    "nome": "JMB MÓVEIS SOB MEDIDA",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "652154c5-4f56-435d-8d1d-6947d5e2c25a",
+    "nome": "Império dos Móveis Sapiranga",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "b509be61-43a4-433e-960a-c2b72a1d0e1a",
+    "nome": "Projetar móveis sob medida",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "e5e7b4c3-d3c8-4438-ae20-785328436225",
+    "nome": "Polo Marcenaria, Móveis e Esquadrias Sob Medida e Corte a laser",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "8989dd4b-54c8-4f74-ad1d-389fa51ed7e1",
+    "nome": "Barbieri Móveis Sob Medida",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "13abe113-4106-486d-a5fe-8d711eabadd4",
+    "nome": "Atacadão dos Móveis",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "5ce95f99-ecb0-419a-8e63-db3d8cd12320",
+    "nome": "DKL MÓVEIS",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "bd380675-eaa1-4450-977f-b9e8ae1b020e",
+    "nome": "Lessul Filial Sapiranga | Móveis e Estofados",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "1daca92b-5e81-4e90-9969-e584793e3071",
+    "nome": "Linelar Móveis Planejados",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "add4f330-54ed-44e7-a1db-523a4eeb8f9a",
+    "nome": "NOVO Design Móveis Personalizados",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "6af7fb11-9099-457a-b227-d8d0055077bc",
+    "nome": "Redlar Sapiranga- Loja de móveis Modulados e Sob Medida",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "5c3e539c-2f14-484d-ac85-39e991dbb70a",
+    "nome": "Crippa Móveis Sob Medida",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "dbd4edba-4f51-450f-b3de-99b7ae0d4421",
+    "nome": "Criativa Móveis, Sob Medida e Planejados, Estofados, Sala de Jantar, Banquetas, Tapetes e Decorações.",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "53cc7cb5-af37-4c4e-9471-bb978b638fbf",
+    "nome": "DETAGLI Móveis Sob Medida",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "93eb936b-8205-4549-a699-60ba00f8cfe9",
+    "nome": "DMATTOS móveis sob medida",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "68cc97f4-d68c-4497-ab3d-3627d21c6a29",
+    "nome": "Rústic Design móveis em madeira",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "244c9f44-e52b-4a7d-bc58-cb7e2a683abe",
+    "nome": "Harff Móveis",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "3944960f-368a-4728-83c3-d4e31cf64142",
+    "nome": "D'Molz moveis sob medida",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "7f32e804-d3ca-460f-a80f-d69656ca11cb",
+    "nome": "Made 20 MULTILOJA",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "612df47c-ef41-493a-9680-1f9f9589e62e",
+    "nome": "Móveis D´Carlos",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "cf7fcee2-03c6-4de5-864c-40fa8072c512",
+    "nome": "RC MÓVEIS SOB MEDIDA",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "4a9290dc-8485-4ff8-b1c5-99a15f6d7b85",
+    "nome": "H1 Móveis Planejados",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "66225808-8396-48dc-a9eb-c0536e95047b",
+    "nome": "Modelar móveis sob medida",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "bc20fe32-566b-4711-882a-8f5199470fa4",
+    "nome": "FERCON acessórios para móveis",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "ddcf5642-c419-450c-841c-22bdbca22724",
+    "nome": "DAVITT MÓVEIS SOB MEDIDA",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "affa9021-949e-4428-88f0-e02fa07e3fe5",
+    "nome": "Sunset móveis sob medida",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "b13203d0-72f4-4a18-8371-54350d414662",
+    "nome": "Sstudio Móveis",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "8f78363a-67ca-4aa9-9254-07f2d0ef069e",
+    "nome": "Dias Móveis",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "cef50bdf-7e2f-4b70-901e-b53aab56ab17",
+    "nome": "D'jean Moveis Sob Medida",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "2c32d651-3a8b-41bf-bced-381e11314101",
+    "nome": "Loja Coisa Velha",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "e362cacd-b053-4a39-9747-3d7385b915d5",
+    "nome": "Becker Design Móveis Sob Medida",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "b2be53a6-cb41-4ff1-b97b-f331f7b456b6",
+    "nome": "Sr.rustico.moveis",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "4bbf1635-1c55-4278-8835-a3730c41a12b",
+    "nome": "Exclusive Móveis Planejados",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "d4382946-77f3-431c-aa1e-d006510adc30",
+    "nome": "Lojas Benoit",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "abe4ee33-37f0-445f-864e-bd701576f92b",
+    "nome": "Lojas Solar - Sapiranga",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "4de8388c-210c-4e8a-90fd-d9b53050700e",
+    "nome": "Estofaria Dri",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "111120f8-9577-49e5-b90c-25e016312391",
+    "nome": "Allparts Indústria de Plásticos Ltda.",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "13ca757e-4860-4ab5-9c6e-9b4652ed2985",
+    "nome": "Estofaria Hoffmann Sapiranga",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "9ea0b1ab-14a1-4c82-8407-1d157abb731f",
+    "nome": "Moveis Schonardie",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "b3ab6182-df49-4392-88b4-68512810fd03",
+    "nome": "Amplo Imóveis",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "d6327251-2c40-484a-852a-4284033f04d2",
+    "nome": "Lojas Pompéia",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "b956e75a-af0e-4fa0-a856-64e9bd8c29b7",
+    "nome": "Lojas Colombo",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "8ae11c61-f604-475e-b61c-7fe8a9e11cc2",
+    "nome": "Mallu Modas a loja Nota10",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "d8e4c8f4-808e-4845-be22-0cac293118ea",
+    "nome": "Faz bem móveis. Moveis planejados e decoração de ambientes",
+    "cidade_estado": "Ivoti - RS"
+  },
+  {
+    "id": "83182e35-ea63-46d7-ae6f-deee425ee42d",
+    "nome": "Loja Sonho Bom- Colchões Ortobom",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "97ca8edc-7719-4ed9-be5f-774b35e1029b",
+    "nome": "Loja Inverso - Roupas e Calçados Masculinos e Femininos",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "9df64f3d-4770-4918-ad01-a316aabb13ee",
+    "nome": "Under Shoes Indústria e Comércio de Calçados",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "c311aff0-b03c-4781-b7b7-12a0ae62e959",
+    "nome": "Kurzi Móveis",
+    "cidade_estado": "Sapiranga - RS"
+  },
+  {
+    "id": "b3cb5693-b60f-42bf-9dcc-9274d3a8c713",
+    "nome": "Móveis Bohrer - Móveis sob medida",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "1733a057-1929-4323-81e9-43f120b04cff",
+    "nome": "Braun Móveis",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "6609958a-93d6-4fa1-a8ca-02a0c083df8e",
+    "nome": "Atacadão dos Móveis",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "74e778fc-d738-435e-82a3-a6cd60a880ba",
+    "nome": "Decore Móveis Sob Medida",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "b3b87478-877a-4511-82d8-22d8bcee0dbf",
+    "nome": "Redlar Campo Bom- Loja de Móveis Modulados e Sob Medida",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "c8a84a3b-8e85-417f-af17-3547dbe38c55",
+    "nome": "Rigabona Indústria de Móveis - Matriz",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "f2472ff5-c175-4dea-a255-2b9db51114bf",
+    "nome": "Isabella Moveis Sob Medida",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "e683446d-a8e7-4ce5-b2f9-69647db7d5a0",
+    "nome": "Ortobom Loja de Fábrica",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "7f57cb9e-dd54-447a-9615-57b0d5e64b29",
+    "nome": "JCA Móveis",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "f1f97229-434d-49c5-a6e6-9f6fe2209828",
+    "nome": "Transformare Móveis Sob Medida",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "c27a6383-4180-4b72-a48e-513ac702f239",
+    "nome": "Móveis Flamboyant - Móveis Planejados Campo Bom",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "96f9c885-dff8-4679-b60f-448110b0cb6d",
+    "nome": "Móveis para Lojas - GDD Móveis Modernos",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "80ad5cdd-6dc5-4a73-88a1-ad6eec287a2d",
+    "nome": "Decor Móveis Sob Medida",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "8b691cbe-2016-4b69-8270-d9a84e5bcf12",
+    "nome": "Premier Móveis Sob Medida",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "cbe1ff3f-d1b3-49bf-ac0d-972be19e1d51",
+    "nome": "Clean Wood - Móveis",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "9a61b176-8419-412d-9f73-96f7cd92b7ff",
+    "nome": "Móveis Arara / WEGGA TINTAS",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "65bfba68-eee1-4a78-8e25-fa67c6e2fd62",
+    "nome": "R Design Móveis sob Medida",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "38bca343-2fb6-4cf4-8f5d-fe312fb1f129",
+    "nome": "MLA Móveis planejados",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "fcafac77-9195-489e-902d-d96c7b65e6e9",
+    "nome": "Móveis Riegel Móveis sob Medida",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "43d0b7b1-0dd4-4c80-8571-916e680b8a61",
+    "nome": "Nekel Planejados & Viguini Móveis",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "ab900179-8fdb-49c7-8cbd-50edc10d96a3",
+    "nome": "Agimóvel Associação Gaúcha da Indústria Moveleira",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "f2f03179-fb14-43b6-9590-2fafe0f15705",
+    "nome": "Itamar móveis sob medidas",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "0915e209-df19-4508-8fb5-d0cd90db6496",
+    "nome": "Rr Potrich Móveis",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "f8f8dbe5-8fa4-4711-aa0b-895391f4c521",
+    "nome": "In Haus Móveis Sob Medida",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "33d5789c-bf01-4134-a8d1-4801fc3f3c97",
+    "nome": "Lojas Quero-Quero: Materiais de Construção em Campo Bom RS",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "671c70e9-e933-4ced-a900-41417e88ada4",
+    "nome": "RIGABONA INDUSTRIA DE MÓVEIS LTDA",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "ca2ad5dd-43f0-4fe2-9cc7-54f655754835",
+    "nome": "Lojas taQi",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "6a186786-468f-49be-ab6f-a1da8d726909",
+    "nome": "RM Artes Móveis em MDF e Madeira",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "a5212cf9-781e-4a05-b2f5-28a35f1ff81b",
+    "nome": "RM Móveis Cavalheiro",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "86cf9a1b-5bbe-4544-a9e3-ecaefb7f53d2",
+    "nome": "Frezza Móveis Sob Medida",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "7a17d607-f1ce-423e-a397-fdfc6901be10",
+    "nome": "Lojas Solar - Campo Bom",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "52a400e8-fbc4-4b8d-854e-2edc875077b9",
+    "nome": "Marcenaria Ecodesign",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "44cd42e6-8a32-4ba1-9a55-0be136c4ba6e",
+    "nome": "Lojas Benoit",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "4b378010-4250-4a74-9a7e-fbadc4436695",
+    "nome": "Tok Art Artesanato e Marcenaria em MDF",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "52a96696-dd12-4f68-9082-4e77ef183b90",
+    "nome": "Weber Marcenaria",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "6409f2db-6b7c-439a-80ee-50ebfc4e5b9e",
+    "nome": "Imobiliária Imóveis.com",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "33cb1af2-7dd5-4951-81c7-9270c4c2bbd6",
+    "nome": "Dmoveiskids",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "b9d34bfd-a49c-4d4a-b803-d12e9bb98265",
+    "nome": "Estofaria Vitória - Estofados e Móveis Planejados.",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "0d547285-c941-4c5c-897a-31498bfb426a",
+    "nome": "Móveis Ludwig",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "1b9a6180-968b-4fc7-b3ae-edd2361e2350",
+    "nome": "Móveis Designer - Móveis Sob Medida",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "737dff3c-2de2-4be7-90d5-b5e1384346d0",
+    "nome": "Ideal Móveis sob Medida",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "ae0d50f0-5fa6-4929-959d-679831f5e9cd",
+    "nome": "Comercial Goedtel",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "4921c824-b840-45ec-8cd0-052305fb509a",
+    "nome": "Loja Dacasa Móveis",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "78c7d6f3-22be-424c-92fe-dd911a1b7884",
+    "nome": "TOP PLACAS - FÁBRICA DE PLACAS VEICULARES",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "b1091493-e475-4bda-bc89-c24fd0c25f6f",
+    "nome": "Lojas Lebes",
+    "cidade_estado": "Campo Bom - RS"
+  },
+  {
+    "id": "e0a806bb-4722-4ef0-8c01-b1ec4217661c",
+    "nome": "Lojas Pompéia",
+    "cidade_estado": "Campo Bom - RS"
+  }
+]

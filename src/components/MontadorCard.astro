@@ -8,9 +8,15 @@ interface Props {
 	estado: string;
 	especialidades: string[];
 	online?: boolean;
+	telefone?: string;
 }
 
-const { nome, imagem, avaliacao, totalAvaliacoes, cidade, estado, especialidades, online = false } = Astro.props;
+const { nome, imagem, avaliacao, totalAvaliacoes, cidade, estado, especialidades, online = false, telefone = '' } = Astro.props;
+
+const limparTelefone = (tel: string) => tel?.replace(/\D/g, '') || '';
+const telefoneWhatsApp = limparTelefone(telefone);
+
+const fotoAvatar = imagem || `https://ui-avatars.com/api/?name=${encodeURIComponent(nome)}&background=random&color=fff`;
 
 const renderStars = (rating: number) => {
 	const stars = [];
@@ -35,7 +41,7 @@ const stars = renderStars(avaliacao);
 <article class="bg-white rounded-xl p-5 ambient-shadow-sm hover:-translate-y-1 transition-transform duration-300">
 	<div class="flex items-start gap-4 mb-4">
 		<div class="w-16 h-16 rounded-full overflow-hidden bg-[#e2e7ff] flex-shrink-0 relative">
-			<img alt={nome} class="w-full h-full object-cover" src={imagem} />
+			<img alt={nome} class="w-full h-full object-cover" src={fotoAvatar} />
 			{online && <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>}
 		</div>
 		<div class="flex-1">
@@ -60,8 +66,20 @@ const stars = renderStars(avaliacao);
 	</div>
 	<div class="flex items-center justify-between pt-4 border-t border-[#e2e7ff]/30">
 		<span class="text-xs text-[#514532]">Orçamento por serviço</span>
-		<button class="text-[#6b4c00] bg-[#ffb800]/10 hover:bg-[#ffb800] hover:text-[#6b4c00] font-headline font-bold text-sm px-4 py-2 rounded-md transition-colors">
-			Solicitar
-		</button>
+		{telefoneWhatsApp ? (
+			<a 
+				href={`https://wa.me/55${telefoneWhatsApp}`}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="bg-green-500 hover:bg-green-600 text-white font-headline font-bold text-sm px-4 py-2 rounded-md transition-colors inline-flex items-center gap-2"
+			>
+				<span class="material-symbols-outlined text-lg">chat</span>
+				Chamar no WhatsApp
+			</a>
+		) : (
+			<button class="text-[#6b4c00] bg-[#ffb800]/10 hover:bg-[#ffb800] hover:text-[#6b4c00] font-headline font-bold text-sm px-4 py-2 rounded-md transition-colors">
+				Solicitar
+			</button>
+		)}
 	</div>
 </article>

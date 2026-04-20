@@ -101,7 +101,7 @@ const montadoresFiltrados = (montadoresBanco || []).filter((m: any) => {
 				{montadoresFiltrados.length === 0 ? (
 					<div class="text-center py-12">
 						<span class="material-symbols-outlined text-6xl text-[#514532]/30">search_off</span>
-						<p class="text-[#514532] mt-4">Nenhum montador encontrado nesta cidade ainda.</p>
+						<p class="text-[#514532] mt-4">Ainda não temos montadores cadastrados em {nomeCidade}.</p>
 						<a href="/cadastro" class="inline-block mt-4 text-[#ffb800] font-bold">Seja o primeiro a se cadastrar!</a>
 					</div>
 				) : (
@@ -109,13 +109,14 @@ const montadoresFiltrados = (montadoresBanco || []).filter((m: any) => {
 						{montadoresFiltrados.map((montador: any) => (
 							<MontadorCard 
 								nome={montador.nome_completo}
-								imagem={montador.foto_url}
+								imagem={montador.foto_url || ''}
 								avaliacao={montador.nota || 0}
 								totalAvaliacoes={montador.avaliacoes || 0}
 								cidade={nomeCidade}
 								estado={montador.cidade_estado?.split(' - ')[1] || ''}
 								especialidades={[]}
 								online={true}
+								telefone={montador.whatsapp || ''}
 							/>
 						))}
 					</div>

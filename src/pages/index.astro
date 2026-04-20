@@ -36,18 +36,6 @@ const montadores = [
 		online: true
 	}
 ];
-
-const estados = [
-	{ value: 'sp', label: 'São Paulo' },
-	{ value: 'rj', label: 'Rio de Janeiro' },
-	{ value: 'mg', label: 'Minas Gerais' }
-];
-
-const cidades = [
-	{ value: 'sp-capital', label: 'São Paulo', estado: 'sp' },
-	{ value: 'campinas', label: 'Campinas', estado: 'sp' },
-	{ value: 'guarulhos', label: 'Guarulhos', estado: 'sp' }
-];
 ---
 
 <Layout title="O Montador de Móveis">
@@ -67,21 +55,15 @@ const cidades = [
 								<label class="sr-only" for="estado">Estado</label>
 								<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#514532]/60">map</span>
 								<select class="w-full h-14 pl-12 pr-4 bg-[#f2f3ff] text-[#0a1a3c] font-body text-base border-none rounded-md appearance-none focus:ring-0 focus:border-b-2 focus:border-[#7c5800] transition-all" id="estado" name="estado" required>
-									<option disabled selected value="">Selecione o Estado</option>
-									{estados.map((estado) => (
-										<option value={estado.value}>{estado.label}</option>
-									))}
+									<option disabled selected value="">Carregando Estados...</option>
 								</select>
 								<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#514532] pointer-events-none">expand_more</span>
 							</div>
 							<div class="relative">
 								<label class="sr-only" for="cidade">Cidade</label>
 								<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#514532]/60">location_city</span>
-								<select class="w-full h-14 pl-12 pr-4 bg-[#f2f3ff] text-[#0a1a3c] font-body text-base border-none rounded-md appearance-none focus:ring-0 focus:border-b-2 focus:border-[#7c5800] transition-all" id="cidade" name="cidade" required>
-									<option disabled selected value="">Selecione a Cidade</option>
-									{cidades.map((cidade) => (
-										<option value={cidade.value} data-estado={cidade.estado}>{cidade.label}</option>
-									))}
+								<select class="w-full h-14 pl-12 pr-4 bg-[#f2f3ff] text-[#0a1a3c] font-body text-base border-none rounded-md appearance-none focus:ring-0 focus:border-b-2 focus:border-[#7c5800] transition-all" id="cidade" name="cidade" required disabled>
+									<option disabled selected value="">Selecione um Estado primeiro</option>
 								</select>
 								<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#514532] pointer-events-none">expand_more</span>
 							</div>
@@ -115,3 +97,90 @@ const cidades = [
 
 	<BottomNavBar />
 </Layout>
+
+<script>
+	import { supabase } from '../lib/supabase';
+
+	const estadoSelect = document.getElementById('estado') as HTMLSelectElement;
+	const cidadeSelect = document.getElementById('cidade') as HTMLSelectElement;
+
+	const estadosBrasileiros: Record<string, string> = {
+		'AC': 'Acre', 'AL': 'Alagoas', 'AP': 'Amapá', 'AM': 'Amazonas',
+		'BA': 'Bahia', 'CE': 'Ceará', 'DF': 'Distrito Federal', 'ES': 'Espírito Santo',
+		'GO': 'Goiás', 'MA': 'Maranhão', 'MT': 'Mato Grosso', 'MS': 'Mato Grosso do Sul',
+		'MG': 'Minas Gerais', 'PA': 'Pará', 'PB': 'Paraíba', 'PR': 'Paraná',
+		'PE': 'Pernambuco', 'PI': 'Piauí', 'RJ': 'Rio de Janeiro', 'RN': 'Rio Grande do Norte',
+		'RS': 'Rio Grande do Sul', 'RO': 'Rondônia', 'RR': 'Roraima', 'SC': 'Santa Catarina',
+		'SP': 'São Paulo', 'SE': 'Sergipe', 'TO': 'Tocantins'
+	};
+
+	let cidadesPorEstado: Record<string, string[]> = {};
+
+	async function carregarDados() {
+		const { data, error } = await supabase
+			.from('montadores_pendentes')
+			.select('cidade_estado');
+
+		if (error) {
+			console.error('Erro ao carregar dados:', error);
+			estadoSelect.innerHTML = '<option disabled selected value="">Erro ao carregar</option>';
+			return;
+		}
+
+		const cidadesSet = new Set<string>();
+		const estadoSet = new Set<string>();
+
+		data.forEach((item: { cidade_estado: string }) => {
+			if (item.cidade_estado) {
+				cidadesSet.add(item.cidade_estado);
+				const partes = item.cidade_estado.split(' - ');
+				if (partes.length >= 2) {
+					estadoSet.add(partes[partes.length - 1].trim());
+				}
+			}
+		});
+
+		cidadesSet.forEach((cidadeEstado) => {
+			const partes = cidadeEstado.split(' - ');
+			if (partes.length >= 2) {
+				const uf = partes[partes.length - 1].trim();
+				const cidade = partes.slice(0, -1).join(' - ').trim();
+				if (!cidadesPorEstado[uf]) {
+					cidadesPorEstado[uf] = [];
+				}
+				if (!cidadesPorEstado[uf].includes(cidade)) {
+					cidadesPorEstado[uf].push(cidade);
+				}
+			}
+		});
+
+		const estadosOrdenados = Array.from(estadoSet).sort();
+		estadoSelect.innerHTML = '<option disabled selected value="">Selecione o Estado</option>';
+		estadosOrdenados.forEach((uf) => {
+			const nome = estadosBrasileiros[uf] || uf;
+			const option = document.createElement('option');
+			option.value = uf;
+			option.textContent = nome;
+			estadoSelect.appendChild(option);
+		});
+	}
+
+	estadoSelect.addEventListener('change', () => {
+		const ufSelecionado = estadoSelect.value;
+		cidadeSelect.innerHTML = '<option disabled selected value="">Selecione a Cidade</option>';
+		
+		if (cidadesPorEstado[ufSelecionado]) {
+			cidadesPorEstado[ufSelecionado].sort().forEach((cidade) => {
+				const option = document.createElement('option');
+				option.value = cidade.toLowerCase().replace(/\s+/g, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+				option.textContent = cidade;
+				cidadeSelect.appendChild(option);
+			});
+			cidadeSelect.disabled = false;
+		} else {
+			cidadeSelect.disabled = true;
+		}
+	});
+
+	carregarDados();
+</script>

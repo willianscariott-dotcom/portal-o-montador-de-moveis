@@ -1,0 +1,67 @@
+---
+interface Props {
+	nome: string;
+	imagem: string;
+	avaliacao: number;
+	totalAvaliacoes: number;
+	cidade: string;
+	estado: string;
+	especialidades: string[];
+	online?: boolean;
+}
+
+const { nome, imagem, avaliacao, totalAvaliacoes, cidade, estado, especialidades, online = false } = Astro.props;
+
+const renderStars = (rating: number) => {
+	const stars = [];
+	const fullStars = Math.floor(rating);
+	const hasHalfStar = rating % 1 >= 0.5;
+
+	for (let i = 0; i < 5; i++) {
+		if (i < fullStars) {
+			stars.push('star');
+		} else if (i === fullStars && hasHalfStar) {
+			stars.push('star_half');
+		} else {
+			stars.push('star');
+		}
+	}
+	return stars;
+};
+
+const stars = renderStars(avaliacao);
+---
+
+<article class="bg-white rounded-xl p-5 ambient-shadow-sm hover:-translate-y-1 transition-transform duration-300">
+	<div class="flex items-start gap-4 mb-4">
+		<div class="w-16 h-16 rounded-full overflow-hidden bg-[#e2e7ff] flex-shrink-0 relative">
+			<img alt={nome} class="w-full h-full object-cover" src={imagem} />
+			{online && <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>}
+		</div>
+		<div class="flex-1">
+			<h3 class="font-headline font-bold text-lg text-[#0a1a3c]">{nome}</h3>
+			<div class="flex items-center gap-1 mt-0.5 mb-1 text-[#ffb800]">
+				{stars.map((star) => (
+					<span class="material-symbols-outlined text-sm" style={star === 'star' && avaliacao >= 1 ? "font-variation-settings: 'FILL' 1;" : ''}>
+						{star}
+					</span>
+				))}
+				<span class="text-[#514532] text-sm ml-1 font-medium">{avaliacao.toFixed(1)} ({totalAvaliacoes})</span>
+			</div>
+			<p class="text-xs text-[#514532]/80 font-medium">{cidade}, {estado}</p>
+		</div>
+	</div>
+	<div class="mb-5 space-y-2">
+		<div class="flex flex-wrap gap-2">
+			{especialidades.map((esp) => (
+				<span class="px-3 py-1 bg-[#f2f3ff] text-[#0a1a3c] text-xs font-medium rounded-full">{esp}</span>
+			))}
+		</div>
+	</div>
+	<div class="flex items-center justify-between pt-4 border-t border-[#e2e7ff]/30">
+		<span class="text-xs text-[#514532]">Orçamento por serviço</span>
+		<button class="text-[#6b4c00] bg-[#ffb800]/10 hover:bg-[#ffb800] hover:text-[#6b4c00] font-headline font-bold text-sm px-4 py-2 rounded-md transition-colors">
+			Solicitar
+		</button>
+	</div>
+</article>

@@ -1,0 +1,74 @@
+---
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@400;700;800&display=swap" rel="stylesheet" />
+		<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+	</head>
+	<body class="font-body text-[#0a1a3c] antialiased pt-16 pb-24 selection:bg-[#ffb800] selection:text-[#6b4c00]">
+		<slot />
+	</body>
+</html>
+
+<style is:global>
+	@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@400;700;800&display=swap');
+	@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+	:root {
+		--color-surface-container-lowest: #ffffff;
+		--color-surface-container-low: #f2f3ff;
+		--color-surface-container: #eaedff;
+		--color-surface-container-high: #e2e7ff;
+		--color-surface-container-highest: #dae2ff;
+		--color-surface: #faf8ff;
+		--color-on-surface: #0a1a3c;
+		--color-on-surface-variant: #514532;
+		--color-primary: #7c5800;
+		--color-primary-container: #ffb800;
+		--color-on-primary-container: #6b4c00;
+		--color-secondary: #775a20;
+		--color-secondary-container: #fdd48e;
+		--color-on-secondary-container: #785a20;
+		--color-tertiary: #00687b;
+		--color-tertiary-container: #00d7fe;
+		--color-on-tertiary-container: #005a6b;
+	}
+
+	.font-headline {
+		font-family: 'Manrope', sans-serif;
+	}
+
+	.font-body {
+		font-family: 'Inter', sans-serif;
+	}
+
+	.material-symbols-outlined {
+		font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+	}
+
+	.ambient-shadow {
+		box-shadow: 0 40px 60px -10px rgba(10, 26, 60, 0.06);
+	}
+
+	.ambient-shadow-sm {
+		box-shadow: 0 20px 40px -10px rgba(10, 26, 60, 0.04);
+	}
+
+	.pb-safe {
+		padding-bottom: env(safe-area-inset-bottom);
+	}
+</style>

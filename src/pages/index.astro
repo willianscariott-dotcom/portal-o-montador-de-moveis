@@ -1,0 +1,112 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import BottomNavBar from '../components/BottomNavBar.astro';
+import MontadorCard from '../components/MontadorCard.astro';
+
+const montadores = [
+	{
+		nome: 'João Silva',
+		imagem: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBjcIa-me9WU0X60olQ3jkoTMT4gaKbQE1tf-SDpFdFbHqtsMXUjTDbaMkI23I4tEJnp0F8Wo5yZBZ1gm5j_kx5_H9BwzNTq9D2qdhqJlCrOKLqbDMmuSdT7_gZ2NxgWL3Z4MNkIwIZKqm7BQ9Nf0yY5WOgt4f1cCRH_BjkNP6Bi_HKhEyGeIX6MdSRQLby89JSiiBZZorFD2C0zIvhrWGoydCb6eCsvGsxRxoH9h1_Im3U6Wkl27-vWVUu-wt4uQobJ_QIbo1RT1s',
+		avaliacao: 5.0,
+		totalAvaliacoes: 42,
+		cidade: 'São Paulo',
+		estado: 'SP',
+		especialidades: ['Cozinhas', 'Quartos', 'Escritórios'],
+		online: true
+	},
+	{
+		nome: 'Marcos Oliveira',
+		imagem: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCLDRNHayuU_lb5ux9OmA-6fcxbm4rOUqKJeOPe7e20zdi4oUSDpxB7B1F2tD9aHMQ_03Zn0LBv6r-Pgwdbh9cy_9BZMRNlEdf9mRE_4rbxy5Lwt-ybk_LeBRKn_p8s3dMRwbn2jyONdJxwiMThe7_D9qOcEgYAhqzPRBtvDkCeO9AlV0oE2hQroYK9zuuMComYxINaPdW4iWjOt6WUMx_NBFT5S9zfesAquJ3YLV4HxpxSc4yIIRv-ViRXX7M98kFRa5V2Nqtom_Y',
+		avaliacao: 4.8,
+		totalAvaliacoes: 89,
+		cidade: 'Campinas',
+		estado: 'SP',
+		especialidades: ['Painéis de TV', 'Guarda-roupas'],
+		online: false
+	},
+	{
+		nome: 'Carlos Mendes',
+		imagem: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAV1uvFo8Cp8na5r5VJjrCzDHxRPRtcbUwzguGtnWGgADjKdNDKQDomT4stwt4mhndmmgnul2dGz9g_xyFOg0QPlhEsEZSoahhNPfGuHq_XcWkHem6uxNNkuEY6wmhhHb2-w60Wn1a4ACCF1qx_-AfEa1s-Om9lYyyKktLQl2hP9lfGGOcuhlwAkhl5NjeR5J-3N9endwgPliE-kjndu4292fmSm4QAx9v6zZcUTiwm_gdGQjXoxhzswaVMAjW5sIuHs5EqSVbuPjE',
+		avaliacao: 5.0,
+		totalAvaliacoes: 12,
+		cidade: 'Guarulhos',
+		estado: 'SP',
+		especialidades: ['Móveis Corporativos', 'Modulados'],
+		online: true
+	}
+];
+
+const estados = [
+	{ value: 'sp', label: 'São Paulo' },
+	{ value: 'rj', label: 'Rio de Janeiro' },
+	{ value: 'mg', label: 'Minas Gerais' }
+];
+
+const cidades = [
+	{ value: 'sp-capital', label: 'São Paulo', estado: 'sp' },
+	{ value: 'campinas', label: 'Campinas', estado: 'sp' },
+	{ value: 'guarulhos', label: 'Guarulhos', estado: 'sp' }
+];
+---
+
+<Layout title="O Montador de Móveis">
+	<Header />
+
+	<main>
+		<section class="px-6 pt-16 pb-12 relative overflow-hidden">
+			<div class="absolute top-0 right-0 w-64 h-64 bg-[#ffb800]/20 rounded-full blur-[80px] -z-10 translate-x-1/2 -translate-y-1/4"></div>
+			<div class="max-w-md mx-auto">
+				<h1 class="font-headline text-[2.5rem] leading-[1.1] font-bold text-[#0a1a3c] mb-8 tracking-[-0.02em]">
+					Encontre os melhores montadores na sua cidade
+				</h1>
+				<div class="bg-white rounded-xl p-6 ambient-shadow relative z-10">
+					<form action="/[cidade]" method="GET" class="space-y-4">
+						<div class="relative">
+							<label class="sr-only" for="estado">Estado</label>
+							<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#514532]/60">map</span>
+							<select class="w-full h-14 pl-12 pr-4 bg-[#f2f3ff] text-[#0a1a3c] font-body text-base border-none rounded-md appearance-none focus:ring-0 focus:border-b-2 focus:border-[#7c5800] transition-all" id="estado" name="estado" required>
+								<option disabled selected value="">Selecione o Estado</option>
+								{estados.map((estado) => (
+									<option value={estado.value}>{estado.label}</option>
+								))}
+							</select>
+							<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#514532] pointer-events-none">expand_more</span>
+						</div>
+						<div class="relative">
+							<label class="sr-only" for="cidade">Cidade</label>
+							<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#514532]/60">location_city</span>
+							<select class="w-full h-14 pl-12 pr-4 bg-[#f2f3ff] text-[#0a1a3c] font-body text-base border-none rounded-md appearance-none focus:ring-0 focus:border-b-2 focus:border-[#7c5800] transition-all" id="cidade" name="cidade" required>
+								<option disabled selected value="">Selecione a Cidade</option>
+								{cidades.map((cidade) => (
+									<option value={cidade.value} data-estado={cidade.estado}>{cidade.label}</option>
+								))}
+							</select>
+							<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#514532] pointer-events-none">expand_more</span>
+						</div>
+						<button type="submit" class="w-full h-14 mt-2 bg-gradient-to-b from-[#ffb800] to-[#f0ad00] text-[#6b4c00] font-headline font-bold text-lg rounded-md flex items-center justify-center gap-2 hover:-translate-y-0.5 transition-transform active:scale-[0.98] shadow-sm">
+							<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 600;">search</span>
+							Buscar
+						</button>
+					</form>
+				</div>
+			</div>
+		</section>
+
+		<section class="px-6 py-12 bg-[#f2f3ff]/50 relative">
+			<div class="max-w-md mx-auto">
+				<div class="flex items-center justify-between mb-8">
+					<h2 class="font-headline text-2xl font-bold text-[#0a1a3c] tracking-tight">Profissionais em Destaque</h2>
+					<span class="material-symbols-outlined text-[#ffb800]" style="font-variation-settings: 'FILL' 1;">stars</span>
+				</div>
+				<div class="grid grid-cols-1 gap-5">
+					{montadores.map((montador) => (
+						<MontadorCard {...montador} />
+					))}
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<BottomNavBar />
+</Layout>

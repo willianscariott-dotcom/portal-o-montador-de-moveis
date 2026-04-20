@@ -1,0 +1,90 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import BottomNavBar from '../components/BottomNavBar.astro';
+import MontadorCard from '../components/MontadorCard.astro';
+
+export function getStaticPaths() {
+	return [
+		{ params: { cidade: 'sp-capital' } },
+		{ params: { cidade: 'campinas' } },
+		{ params: { cidade: 'guarulhos' } }
+	];
+}
+
+const { cidade } = Astro.params;
+
+const cidadesNomes: Record<string, string> = {
+	'sp-capital': 'São Paulo',
+	'campinas': 'Campinas',
+	'guarulhos': 'Guarulhos'
+};
+
+const nomeCidade = cidadesNomes[cidade || ''] || cidade;
+
+const montadoresCidade = [
+	{
+		nome: 'João Silva',
+		imagem: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBjcIa-me9WU0X60olQ3jkoTMT4gaKbQE1tf-SDpFdFbHqtsMXUjTDbaMkI23I4tEJnp0F8Wo5yZBZ1gm5j_kx5_H9BwzNTq9D2qdhqJlCrOKLqbDMmuSdT7_gZ2NxgWL3Z4MNkIwIZKqm7BQ9Nf0yY5WOgt4f1cCRH_BjkNP6Bi_HKhEyGeIX6MdSRQLby89JSiiBZZorFD2C0zIvhrWGoydCb6eCsvGsxRxoH9h1_Im3U6Wkl27-vWVUu-wt4uQobJ_QIbo1RT1s',
+		avaliacao: 5.0,
+		totalAvaliacoes: 42,
+		cidade: 'São Paulo',
+		estado: 'SP',
+		especialidades: ['Cozinhas', 'Quartos', 'Escritórios'],
+		online: true
+	},
+	{
+		nome: 'Marcos Oliveira',
+		imagem: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCLDRNHayuU_lb5ux9OmA-6fcxbm4rOUqKJeOPe7e20zdi4oUSDpxB7B1F2tD9aHMQ_03Zn0LBv6r-Pgwdbh9cy_9BZMRNlEdf9mRE_4rbxy5Lwt-ybk_LeBRKn_p8s3dMRwbn2jyONdJxwiMThe7_D9qOcEgYAhqzPRBtvDkCeO9AlV0oE2hQroYK9zuuMComYxINaPdW4iWjOt6WUMx_NBFT5S9zfesAquJ3YLV4HxpxSc4yIIRv-ViRXX7M98kFRa5V2Nqtom_Y',
+		avaliacao: 4.8,
+		totalAvaliacoes: 89,
+		cidade: 'Campinas',
+		estado: 'SP',
+		especialidades: ['Painéis de TV', 'Guarda-roupas'],
+		online: false
+	},
+	{
+		nome: 'Carlos Mendes',
+		imagem: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAV1uvFo8Cp8na5r5VJjrCzDHxRPRtcbUwzguGtnWGgADjKdNDKQDomT4stwt4mhndmmgnul2dGz9g_xyFOg0QPlhEsEZSoahhNPfGuHq_XcWkHem6uxNNkuEY6wmhhHb2-w60Wn1a4ACCF1qx_-AfEa1s-Om9lYyyKktLQl2hP9lfGGOcuhlwAkhl5NjeR5J-3N9endwgPliE-kjndu4292fmSm4QAx9v6zZcUTiwm_gdGQjXoxhzswaVMAjW5sIuHs5EqSVbuPjE',
+		avaliacao: 5.0,
+		totalAvaliacoes: 12,
+		cidade: 'Guarulhos',
+		estado: 'SP',
+		especialidades: ['Móveis Corporativos', 'Modulados'],
+		online: true
+	}
+];
+
+const montadoresFiltrados = montadoresCidade.filter(m =>
+	m.cidade.toLowerCase() === nomeCidade?.toLowerCase() ||
+	(cidade === 'sp-capital' && m.cidade === 'São Paulo')
+);
+---
+
+<Layout title={`Montadores em ${nomeCidade} - O Montador de Móveis`}>
+	<Header />
+
+	<main>
+		<section class="px-6 pt-16 pb-12 relative overflow-hidden">
+			<div class="absolute top-0 right-0 w-64 h-64 bg-[#ffb800]/20 rounded-full blur-[80px] -z-10 translate-x-1/2 -translate-y-1/4"></div>
+			<div class="max-w-md mx-auto">
+				<a href="/" class="inline-flex items-center gap-1 text-[#514532] mb-6 text-sm">
+					<span class="material-symbols-outlined text-sm">arrow_back</span>
+					Voltar
+				</a>
+				<h1 class="font-headline text-[2rem] leading-[1.1] font-bold text-[#0a1a3c] mb-2 tracking-[-0.02em]">
+					Montadores em {nomeCidade}
+				</h1>
+				<p class="text-[#514532] mb-8">{montadoresFiltrados.length} profissional(is) encontrado(s)</p>
+
+				<div class="space-y-5">
+					{montadoresFiltrados.map((montador) => (
+						<MontadorCard {...montador} />
+					))}
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<BottomNavBar />
+</Layout>

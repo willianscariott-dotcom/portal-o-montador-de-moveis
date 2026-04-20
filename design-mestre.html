@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>O Montador de Móveis</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@400;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#f2f3ff",
+                      "inverse-surface": "#212f52",
+                      "primary-fixed": "#ffdea8",
+                      "surface-bright": "#faf8ff",
+                      "surface-dim": "#ced9ff",
+                      "surface-tint": "#7c5800",
+                      "on-tertiary": "#ffffff",
+                      "on-surface-variant": "#514532",
+                      "error": "#ba1a1a",
+                      "tertiary-container": "#00d7fe",
+                      "on-secondary-container": "#785a20",
+                      "on-primary-fixed": "#271900",
+                      "on-tertiary-fixed-variant": "#004e5d",
+                      "on-tertiary-container": "#005a6b",
+                      "on-background": "#0a1a3c",
+                      "on-secondary-fixed": "#271900",
+                      "outline": "#837560",
+                      "inverse-primary": "#ffba20",
+                      "primary": "#7c5800",
+                      "secondary-container": "#fdd48e",
+                      "surface": "#faf8ff",
+                      "tertiary": "#00687b",
+                      "primary-container": "#ffb800",
+                      "inverse-on-surface": "#eef0ff",
+                      "secondary-fixed": "#ffdea8",
+                      "on-secondary-fixed-variant": "#5d4208",
+                      "on-surface": "#0a1a3c",
+                      "secondary-fixed-dim": "#e8c17c",
+                      "outline-variant": "#d5c4ab",
+                      "on-primary": "#ffffff",
+                      "surface-variant": "#dae2ff",
+                      "on-secondary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "on-primary-container": "#6b4c00",
+                      "on-tertiary-fixed": "#001f27",
+                      "tertiary-fixed": "#b0ecff",
+                      "secondary": "#775a20",
+                      "on-primary-fixed-variant": "#5e4200",
+                      "background": "#faf8ff",
+                      "error-container": "#ffdad6",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-highest": "#dae2ff",
+                      "surface-container-high": "#e2e7ff",
+                      "surface-container": "#eaedff",
+                      "tertiary-fixed-dim": "#17d8ff",
+                      "primary-fixed-dim": "#ffba20",
+                      "on-error": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {},
+              "fontFamily": {
+                      "headline": [
+                              "Manrope"
+                      ],
+                      "body": [
+                              "Inter"
+                      ],
+                      "label": [
+                              "Inter"
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body { background-color: #faf8ff; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .ambient-shadow { box-shadow: 0 40px 60px -10px rgba(10, 26, 60, 0.06); }
+        .ambient-shadow-sm { box-shadow: 0 20px 40px -10px rgba(10, 26, 60, 0.04); }
+      </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body text-on-surface antialiased pt-16 pb-24 selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm dark:shadow-none flex justify-between items-center px-6 h-16">
+<div class="flex items-center gap-3">
+<button aria-label="Menu" class="flex items-center justify-center w-10 h-10 -ml-2 text-slate-500 hover:bg-amber-50 transition-colors rounded-full">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<span class="text-lg font-black text-slate-900 dark:text-white uppercase tracking-wider font-['Manrope']">O Montador</span>
+</div>
+<button class="font-['Manrope'] font-bold tracking-tight text-amber-500 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors px-3 py-2 rounded-md active:opacity-80 active:scale-95 transition-transform text-sm">
+            Sou Montador
+        </button>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="px-6 pt-16 pb-12 relative overflow-hidden">
+<!-- Decorative blurred element -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-container/20 rounded-full blur-[80px] -z-10 translate-x-1/2 -translate-y-1/4"></div>
+<div class="max-w-md mx-auto">
+<h1 class="font-headline text-[2.5rem] leading-[1.1] font-bold text-on-surface mb-8 tracking-[-0.02em]">
+                    Encontre os melhores montadores na sua cidade
+                </h1>
+<!-- Search Card -->
+<div class="bg-surface-container-lowest rounded-xl p-6 ambient-shadow relative z-10">
+<div class="space-y-4">
+<div class="relative">
+<label class="sr-only" for="estado">Estado</label>
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60">map</span>
+<select class="w-full h-14 pl-12 pr-4 bg-surface-container-low text-on-surface font-body text-base border-none rounded-md appearance-none focus:ring-0 focus:border-b-2 focus:border-primary transition-all" id="estado">
+<option disabled="" selected="" value="">Selecione o Estado</option>
+<option value="sp">São Paulo</option>
+<option value="rj">Rio de Janeiro</option>
+<option value="mg">Minas Gerais</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+<div class="relative">
+<label class="sr-only" for="cidade">Cidade</label>
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60">location_city</span>
+<select class="w-full h-14 pl-12 pr-4 bg-surface-container-low text-on-surface font-body text-base border-none rounded-md appearance-none focus:ring-0 focus:border-b-2 focus:border-primary transition-all" id="cidade">
+<option disabled="" selected="" value="">Selecione a Cidade</option>
+<option value="sp-capital">São Paulo</option>
+<option value="campinas">Campinas</option>
+<option value="guarulhos">Guarulhos</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+<button class="w-full h-14 mt-2 bg-gradient-to-b from-primary-container to-[#f0ad00] text-on-primary-container font-headline font-bold text-lg rounded-md flex items-center justify-center gap-2 hover:-translate-y-0.5 transition-transform active:scale-[0.98] shadow-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 600;">search</span>
+                            Buscar
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Featured Professionals Section -->
+<section class="px-6 py-12 bg-surface-container-low/50 relative">
+<div class="max-w-md mx-auto">
+<div class="flex items-center justify-between mb-8">
+<h2 class="font-headline text-2xl font-bold text-on-surface tracking-tight">Profissionais em Destaque</h2>
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">stars</span>
+</div>
+<div class="grid grid-cols-1 gap-5">
+<!-- Profile Card 1 -->
+<article class="bg-surface-container-lowest rounded-xl p-5 ambient-shadow-sm hover:-translate-y-1 transition-transform duration-300">
+<div class="flex items-start gap-4 mb-4">
+<div class="w-16 h-16 rounded-full overflow-hidden bg-surface-container-high flex-shrink-0 relative">
+<img alt="João Silva" class="w-full h-full object-cover" data-alt="portrait of a friendly smiling man in his 30s wearing a casual dark blue collared shirt, well-lit studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjcIa-me9WU0X60olQ3jkoTMT4gaKbQE1tf-SDpFdFbHqtsMXUjTDbaMkI23I4tEJnp0F8Wo5yZBZ1gm5j_kx5_H9BwzNTq9D2qdhqJlCrOKLqbDMmuSdT7_gZ2NxgWL3Z4MNkIwIZKqm7BQ9Nf0yY5WOgt4f1cCRH_BjkNP6Bi_HKhEyGeIX6MdSRQLby89JSiiBZZorFD2C0zIvhrWGoydCb6eCsvGsxRxoH9h1_Im3U6Wkl27-vWVUu-wt4uQobJ_QIbo1RT1s"/>
+<div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+</div>
+<div class="flex-1">
+<h3 class="font-headline font-bold text-lg text-on-surface">João Silva</h3>
+<div class="flex items-center gap-1 mt-0.5 mb-1 text-primary-container">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-on-surface-variant text-sm ml-1 font-medium">5.0 (42)</span>
+</div>
+<p class="text-xs text-on-surface-variant/80 font-medium">São Paulo, SP</p>
+</div>
+</div>
+<div class="mb-5 space-y-2">
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-surface-container-low text-on-surface text-xs font-medium rounded-full">Cozinhas</span>
+<span class="px-3 py-1 bg-surface-container-low text-on-surface text-xs font-medium rounded-full">Quartos</span>
+<span class="px-3 py-1 bg-surface-container-low text-on-surface text-xs font-medium rounded-full">Escritórios</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-surface-container-high/30">
+<span class="text-xs text-on-surface-variant">Orçamento por serviço</span>
+<button class="text-on-primary-container bg-primary-container/10 hover:bg-primary-container hover:text-on-primary-container font-headline font-bold text-sm px-4 py-2 rounded-md transition-colors">
+                                Solicitar
+                            </button>
+</div>
+</article>
+<!-- Profile Card 2 -->
+<article class="bg-surface-container-lowest rounded-xl p-5 ambient-shadow-sm hover:-translate-y-1 transition-transform duration-300">
+<div class="flex items-start gap-4 mb-4">
+<div class="w-16 h-16 rounded-full overflow-hidden bg-surface-container-high flex-shrink-0 relative">
+<img alt="Marcos Oliveira" class="w-full h-full object-cover" data-alt="portrait of an experienced mature man with short graying hair wearing a casual gray t-shirt, soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLDRNHayuU_lb5ux9OmA-6fcxbm4rOUqKJeOPe7e20zdi4oUSDpxB7B1F2tD9aHMQ_03Zn0LBv6r-Pgwdbh9cy_9BZMRNlEdf9mRE_4rbxy5Lwt-ybk_LeBRKn_p8s3dMRwbn2jyONdJxwiMThe7_D9qOcEgYAhqzPRBtvDkCeO9AlV0oE2hQroYK9zuuMComYxINaPdW4iWjOt6WUMx_NBFT5S9zfesAquJ3YLV4HxpxSc4yIIRv-ViRXX7M98kFRa5V2Nqtom_Y"/>
+</div>
+<div class="flex-1">
+<h3 class="font-headline font-bold text-lg text-on-surface">Marcos Oliveira</h3>
+<div class="flex items-center gap-1 mt-0.5 mb-1 text-primary-container">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm">star_half</span>
+<span class="text-on-surface-variant text-sm ml-1 font-medium">4.8 (89)</span>
+</div>
+<p class="text-xs text-on-surface-variant/80 font-medium">Campinas, SP</p>
+</div>
+</div>
+<div class="mb-5 space-y-2">
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-surface-container-low text-on-surface text-xs font-medium rounded-full">Painéis de TV</span>
+<span class="px-3 py-1 bg-surface-container-low text-on-surface text-xs font-medium rounded-full">Guarda-roupas</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-surface-container-high/30">
+<span class="text-xs text-on-surface-variant">Orçamento por serviço</span>
+<button class="text-on-primary-container bg-primary-container/10 hover:bg-primary-container hover:text-on-primary-container font-headline font-bold text-sm px-4 py-2 rounded-md transition-colors">
+                                Solicitar
+                            </button>
+</div>
+</article>
+<!-- Profile Card 3 -->
+<article class="bg-surface-container-lowest rounded-xl p-5 ambient-shadow-sm hover:-translate-y-1 transition-transform duration-300">
+<div class="flex items-start gap-4 mb-4">
+<div class="w-16 h-16 rounded-full overflow-hidden bg-surface-container-high flex-shrink-0 relative">
+<img alt="Carlos Mendes" class="w-full h-full object-cover" data-alt="portrait of a focused young man wearing glasses and a dark polo shirt, modern office background blur" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAV1uvFo8Cp8na5r5VJjrCzDHxRPRtcbUwzguGtnWGgADjKdNDKQDomT4stwt4mhndmmgnul2dGz9g_xyFOg0QPlhEsEZSoahhNPfGuHq_XcWkHem6uxNNkuEY6wmhhHb2-w60Wn1a4ACCF1qx_-AfEa1s-Om9lYyyKktLQl2hP9lfGGOcuhlwAkhl5NjeR5J-3N9endwgPliE-kjndu4292fmSm4QAx9v6zZcUTiwm_gdGQjXoxhzswaVMAjW5sIuHs5EqSVbuPjE"/>
+<div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+</div>
+<div class="flex-1">
+<h3 class="font-headline font-bold text-lg text-on-surface">Carlos Mendes</h3>
+<div class="flex items-center gap-1 mt-0.5 mb-1 text-primary-container">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-on-surface-variant text-sm ml-1 font-medium">5.0 (12)</span>
+</div>
+<p class="text-xs text-on-surface-variant/80 font-medium">Guarulhos, SP</p>
+</div>
+</div>
+<div class="mb-5 space-y-2">
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-surface-container-low text-on-surface text-xs font-medium rounded-full">Móveis Corporativos</span>
+<span class="px-3 py-1 bg-surface-container-low text-on-surface text-xs font-medium rounded-full">Modulados</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-surface-container-high/30">
+<span class="text-xs text-on-surface-variant">Orçamento por serviço</span>
+<button class="text-on-primary-container bg-primary-container/10 hover:bg-primary-container hover:text-on-primary-container font-headline font-bold text-sm px-4 py-2 rounded-md transition-colors">
+                                Solicitar
+                            </button>
+</div>
+</article>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full h-20 flex justify-around items-center px-4 pb-safe bg-white dark:bg-slate-950 fixed bottom-0 w-full z-50 rounded-t-2xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] md:hidden">
+<!-- Active Item: Início -->
+<button class="flex flex-col items-center justify-center bg-amber-400 text-slate-900 rounded-xl px-4 py-1.5 active:scale-90 duration-150">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-tighter mt-1">Início</span>
+</button>
+<!-- Inactive Item: Buscar -->
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-amber-500 dark:hover:text-amber-300 transition-all w-16">
+<span class="material-symbols-outlined text-[24px]">location_on</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-tighter mt-1">Buscar</span>
+</button>
+<!-- Inactive Item: Dúvidas -->
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-amber-500 dark:hover:text-amber-300 transition-all w-16">
+<span class="material-symbols-outlined text-[24px]">help</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-tighter mt-1">Dúvidas</span>
+</button>
+<!-- Inactive Item: Cadastrar -->
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-amber-500 dark:hover:text-amber-300 transition-all w-16">
+<span class="material-symbols-outlined text-[24px]">person_add</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-tighter mt-1">Cadastrar</span>
+</button>
+</nav>
+</body></html>

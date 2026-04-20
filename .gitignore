@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Astro
+.astro/
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Optional
+portal-montador/

@@ -163,4 +163,16 @@ const montadores = [
 	});
 
 	carregarEstados();
+
+	const form = document.querySelector('form') as HTMLFormElement;
+	form.addEventListener('submit', (e) => {
+		e.preventDefault();
+		const estado = estadoSelect.value;
+		const cidade = cidadeSelect.value;
+		if (!estado || !cidade) {
+			alert('Por favor, selecione o Estado e a Cidade.');
+			return;
+		}
+		window.location.href = `/${cidade}`;
+	});
 </script>

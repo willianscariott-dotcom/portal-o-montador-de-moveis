@@ -1,3 +1,0 @@
-{
-  "source": "ALTER TABLE montadores_pendentes ENABLE ROW LEVEL SECURITY;"
-}

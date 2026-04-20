@@ -56,39 +56,44 @@ const cidades = [
 	<main>
 		<section class="px-6 pt-16 pb-12 relative overflow-hidden">
 			<div class="absolute top-0 right-0 w-64 h-64 bg-[#ffb800]/20 rounded-full blur-[80px] -z-10 translate-x-1/2 -translate-y-1/4"></div>
-			<div class="max-w-md mx-auto">
-				<h1 class="font-headline text-[2.5rem] leading-[1.1] font-bold text-[#0a1a3c] mb-8 tracking-[-0.02em]">
-					Encontre os melhores montadores na sua cidade
-				</h1>
-				<div class="bg-white rounded-xl p-6 ambient-shadow relative z-10">
-					<form action="/[cidade]" method="GET" class="space-y-4">
-						<div class="relative">
-							<label class="sr-only" for="estado">Estado</label>
-							<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#514532]/60">map</span>
-							<select class="w-full h-14 pl-12 pr-4 bg-[#f2f3ff] text-[#0a1a3c] font-body text-base border-none rounded-md appearance-none focus:ring-0 focus:border-b-2 focus:border-[#7c5800] transition-all" id="estado" name="estado" required>
-								<option disabled selected value="">Selecione o Estado</option>
-								{estados.map((estado) => (
-									<option value={estado.value}>{estado.label}</option>
-								))}
-							</select>
-							<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#514532] pointer-events-none">expand_more</span>
-						</div>
-						<div class="relative">
-							<label class="sr-only" for="cidade">Cidade</label>
-							<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#514532]/60">location_city</span>
-							<select class="w-full h-14 pl-12 pr-4 bg-[#f2f3ff] text-[#0a1a3c] font-body text-base border-none rounded-md appearance-none focus:ring-0 focus:border-b-2 focus:border-[#7c5800] transition-all" id="cidade" name="cidade" required>
-								<option disabled selected value="">Selecione a Cidade</option>
-								{cidades.map((cidade) => (
-									<option value={cidade.value} data-estado={cidade.estado}>{cidade.label}</option>
-								))}
-							</select>
-							<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#514532] pointer-events-none">expand_more</span>
-						</div>
-						<button type="submit" class="w-full h-14 mt-2 bg-gradient-to-b from-[#ffb800] to-[#f0ad00] text-[#6b4c00] font-headline font-bold text-lg rounded-md flex items-center justify-center gap-2 hover:-translate-y-0.5 transition-transform active:scale-[0.98] shadow-sm">
-							<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 600;">search</span>
-							Buscar
-						</button>
-					</form>
+			<div class="max-w-6xl mx-auto grid md:grid-cols-2 items-center gap-8">
+				<div>
+					<h1 class="font-headline text-[2.5rem] leading-[1.1] font-bold text-[#0a1a3c] mb-8 tracking-[-0.02em]">
+						Encontre os melhores montadores na sua cidade
+					</h1>
+					<div class="bg-white rounded-xl p-6 ambient-shadow relative z-10">
+						<form action="/[cidade]" method="GET" class="space-y-4">
+							<div class="relative">
+								<label class="sr-only" for="estado">Estado</label>
+								<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#514532]/60">map</span>
+								<select class="w-full h-14 pl-12 pr-4 bg-[#f2f3ff] text-[#0a1a3c] font-body text-base border-none rounded-md appearance-none focus:ring-0 focus:border-b-2 focus:border-[#7c5800] transition-all" id="estado" name="estado" required>
+									<option disabled selected value="">Selecione o Estado</option>
+									{estados.map((estado) => (
+										<option value={estado.value}>{estado.label}</option>
+									))}
+								</select>
+								<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#514532] pointer-events-none">expand_more</span>
+							</div>
+							<div class="relative">
+								<label class="sr-only" for="cidade">Cidade</label>
+								<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#514532]/60">location_city</span>
+								<select class="w-full h-14 pl-12 pr-4 bg-[#f2f3ff] text-[#0a1a3c] font-body text-base border-none rounded-md appearance-none focus:ring-0 focus:border-b-2 focus:border-[#7c5800] transition-all" id="cidade" name="cidade" required>
+									<option disabled selected value="">Selecione a Cidade</option>
+									{cidades.map((cidade) => (
+										<option value={cidade.value} data-estado={cidade.estado}>{cidade.label}</option>
+									))}
+								</select>
+								<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#514532] pointer-events-none">expand_more</span>
+							</div>
+							<button type="submit" class="w-full h-14 mt-2 bg-gradient-to-b from-[#ffb800] to-[#f0ad00] text-[#6b4c00] font-headline font-bold text-lg rounded-md flex items-center justify-center gap-2 hover:-translate-y-0.5 transition-transform active:scale-[0.98] shadow-sm">
+								<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 600;">search</span>
+								Buscar
+							</button>
+						</form>
+					</div>
+				</div>
+				<div class="hidden md:block">
+					<img src="/hero-image.webp" alt="Montador de Móveis com Serviço Excelente" class="w-full max-w-lg mx-auto drop-shadow-2xl object-contain" />
 				</div>
 			</div>
 		</section>

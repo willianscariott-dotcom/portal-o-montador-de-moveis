@@ -96,11 +96,11 @@ const citiesData = [
 						</div>
 						
 						<h1 id="hero-heading" class="font-headline text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6">
-							Encontre Aqui os Melhores
+							Encontre o Melhor Montador de Móveis
+							<br />
 							<span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600">
-								Montadores de Móveis
+								na sua Cidade
 							</span>
-							do Brasil
 						</h1>
 						
 						<p class="text-lg text-slate-300 mb-8 max-w-xl">
@@ -205,13 +205,14 @@ const citiesData = [
 				<h2 id="cidades-heading" class="font-headline text-2xl font-bold text-slate-800 text-center mb-10">
 					Principais Cidades Atendidas
 				</h2>
-				<div class="flex flex-wrap justify-center gap-3">
+				<nav aria-label="Diretório de cidades" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
 					{citiesData.map((cidade) => (
-						<a href={`/${cidade.id}`} class="bg-white hover:bg-amber-50 border border-slate-200 hover:border-amber-300 text-slate-700 hover:text-amber-700 font-medium py-2 px-4 rounded-full transition-all hover:shadow-md">
-							{cidade.nome}
+						<a href={`/${cidade.id}`} class="flex items-center gap-2 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-300 text-slate-700 hover:text-amber-700 font-medium py-3 px-4 rounded-lg transition-all hover:shadow-md group">
+							<span class="material-symbols-outlined text-amber-500 group-hover:text-amber-600">location_on</span>
+							<span>Montador de Móveis em {cidade.nome}</span>
 						</a>
 					))}
-				</div>
+				</nav>
 			</div>
 		</section>
 	</main>
@@ -222,8 +223,9 @@ const citiesData = [
 				<h2 class="font-headline text-lg font-semibold text-white mb-4">Encontre montadores em:</h2>
 				<div class="grid grid-cols-2 md:grid-cols-5 gap-3">
 					{topCities.map((cidade) => (
-						<a href={`/${cidade.id}`} class="text-slate-400 hover:text-amber-400 text-sm py-2 transition-colors">
-							{cidade.nome}
+						<a href={`/${cidade.id}`} class="flex items-center gap-2 text-slate-400 hover:text-amber-400 text-sm py-2 transition-colors">
+							<span class="material-symbols-outlined text-lg">location_on</span>
+							<span>Montador de Móveis em {cidade.nome}</span>
 						</a>
 					))}
 				</div>

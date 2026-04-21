@@ -4,27 +4,18 @@ import Header from '../components/Header.astro';
 import BottomNavBar from '../components/BottomNavBar.astro';
 import MontadorCard from '../components/MontadorCard.astro';
 import { supabase } from '../lib/supabase';
-
-const citiesList = [
-	["maceio", "Maceió", "AL"], ["manaus", "Manaus", "AM"], ["salvador", "Salvador", "BA"], 
-	["fortaleza", "Fortaleza", "CE"], ["brasilia", "Brasília", "DF"], ["goiania", "Goiânia", "GO"],
-	["sao-luis", "São Luís", "MA"], ["belo-horizonte", "Belo Horizonte", "MG"], ["uberlandia", "Uberlândia", "MG"],
-	["campo-grande", "Campo Grande", "MS"], ["belem", "Belém", "PA"], ["joao-pessoa", "João Pessoa", "PB"],
-	["recife", "Recife", "PE"], ["teresina", "Teresina", "PI"], ["curitiba", "Curitiba", "PR"],
-	["duque-de-caxias", "Duque de Caxias", "RJ"], ["rio-de-janeiro", "Rio de Janeiro", "RJ"], ["sao-goncalo", "São Gonçalo", "RJ"],
-	["natal", "Natal", "RN"], ["porto-alegre", "Porto Alegre", "RS"], ["aracaju", "Aracaju", "SE"],
-	["sao-paulo", "São Paulo", "SP"]
-];
-
-const states = { AL: "Alagoas", AM: "Amazonas", BA: "Bahia", CE: "Ceará", DF: "Distrito Federal", GO: "Goiás", MA: "Maranhão", MG: "Minas Gerais", MS: "Mato Grosso do Sul", MT: "Mato Grosso", PA: "Pará", PB: "Paraíba", PE: "Pernambuco", PI: "Piauí", PR: "Paraná", RJ: "Rio de Janeiro", RN: "Rio Grande do Norte", RS: "Rio Grande do Sul", SE: "Sergipe", SP: "São Paulo" };
+import { citiesData } from '../data/cities.js';
 
 export function getStaticPaths() {
-	return citiesList.map(c => ({ params: { cidade: c[0] }, props: { nomeCidade: c[1], estado: states[c[2]] } }));
+	return citiesData.map(c => ({
+		params: { cidade: c.id },
+		props: { nomeCidade: c.nome, estado: c.estado }
+	}));
 }
 
 const { nomeCidade, estado } = Astro.props;
 
-const msgs = [
+const intros = [
 	`Precisa montar um móvel novo ou desmontar para mudança em ${nomeCidade}? Separamos os profissionais mais bem avaliados da região para te ajudar rápido.`,
 	`Comprou um móvel novo e precisa de alguém para montar em ${nomeCidade}? Temos os montadores mais recomendados da cidade esperando por você.`,
 	`Está procurando montador de móveis em ${nomeCidade}? Aqui você encontra os profissionais mais bem avaliados da região com entrega rápida.`,
@@ -33,66 +24,148 @@ const msgs = [
 	`Em ${nomeCidade} e precisa montar aquele guarda-roupa ou estante? Temos os montadores mais bem avaliados da região para te ajudar agora.`
 ];
 
-const introText = msgs[nomeCidade.length % msgs.length];
+const intro = intros[nomeCidade.length % intros.length];
 
-const { data: dbData } = await supabase.from('montadores_pendentes').select('*');
-const resultList = (dbData || []).filter(function(item) { return item.cidade_estado && item.cidade_estado.toLowerCase().indexOf(nomeCidade.toLowerCase()) !== -1; });
+const { data: montadores } = await supabase
+	.from('montadores_pendentes')
+	.select('*');
+
+const filtrados = (montadores || []).filter(m => 
+	m.cidade_estado && m.cidade_estado.toLowerCase().includes(nomeCidade.toLowerCase())
+);
 ---
 
 <Layout title={`Montadores de Móveis em ${nomeCidade} - ${estado} | O Montador de Móveis`}>
 	<Header />
 	<main class="max-w-7xl mx-auto px-4">
 		<section class="pt-16 pb-12">
-			<a href="/" class="inline-flex items-center gap-1 text-[#514532] mb-6 text-sm"><span class="material-symbols-outlined text-sm">arrow_back</span>Voltar</a>
-			<h1 class="font-headline text-2xl font-bold text-[#0a1a3c] mb-4">Montadores de Móveis em {nomeCidade} - {estado}</h1>
-			<p class="text-[#514532] text-lg mb-6 max-w-2xl">{introText}</p>
-			<p class="text-[#514532] mb-8">{resultList.length} profissional(is) encontrado(s)</p>
-			{resultList.length === 0 ? (
-				<div class="text-center py-12"><span class="material-symbols-outlined text-6xl text-[#514532]/30">search_off</span>
-				<p class="text-[#514532] mt-4">Ainda não temos montadores cadastrados em {nomeCidade}.</p>
-				<a href="/cadastro" class="inline-block mt-4 text-[#ffb800] font-bold">Seja o primeiro a se cadastrar!</a></div>
+			<a href="/" class="inline-flex items-center gap-1 text-[#514532] mb-6 text-sm">
+				<span class="material-symbols-outlined text-sm">arrow_back</span>
+				Voltar
+			</a>
+			<h1 class="font-headline text-2xl font-bold text-[#0a1a3c] mb-4">
+				Montadores de Móveis em {nomeCidade} - {estado}
+			</h1>
+			<p class="text-[#514532] text-lg mb-6 max-w-2xl">{intro}</p>
+			<p class="text-[#514532] mb-8">{filtrados.length} profissional(is) encontrado(s)</p>
+
+			{filtrados.length === 0 ? (
+				<div class="text-center py-12">
+					<span class="material-symbols-outlined text-6xl text-[#514532]/30">search_off</span>
+					<p class="text-[#514532] mt-4">Ainda não temos montadores cadastrados em {nomeCidade}.</p>
+					<a href="/cadastro" class="inline-block mt-4 text-[#ffb800] font-bold">Seja o primeiro a se cadastrar!</a>
+				</div>
 			) : (
-				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">{resultList.map(function(item) { return <MontadorCard nome={item.nome_completo} imagem={item.foto_url || ''} avaliacao={item.nota || 0} totalAvaliacoes={item.avaliacoes || 0} cidade={nomeCidade} estado={estado} especialidades={[]} online={true} telefone={item.whatsapp || ''} />; })}</div>
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+					{filtrados.map(m => (
+						<MontadorCard 
+							nome={m.nome_completo}
+							imagem={m.foto_url || ''}
+							avaliacao={m.nota || 0}
+							totalAvaliacoes={m.avaliacoes || 0}
+							cidade={nomeCidade}
+							estado={estado}
+							especialidades={[]}
+							online={true}
+							telefone={m.whatsapp || ''}
+						/>
+					))}
+				</div>
 			)}
 		</section>
-		<section class="py-12 border-t">
-			<h2 class="font-headline text-2xl font-bold text-[#0a1a3c] mb-8">Perguntas Frequentes sobre Montagem de Móveis em {nomeCidade}</h2>
+
+		<section class="py-12 border-t border-gray-100">
+			<h2 class="font-headline text-2xl font-bold text-[#0a1a3c] mb-8">
+				Perguntas Frequentes sobre Montagem de Móveis em {nomeCidade}
+			</h2>
 			<div class="space-y-4">
-				<details class="bg-gray-50 rounded-lg"><summary class="px-6 py-4 cursor-pointer font-medium text-[#0a1a3c] flex items-center justify-between">Quanto custa a montagem de móveis em {nomeCidade}?<span class="material-symbols-outlined text-gray-400">expand_more</span></summary><div class="px-6 pb-4 text-[#514532]">O preço varia conforme o tipo e quantidade de móveis. Em média, a montagem de um guarda-roupa ou rack de TV custa entre R$80 e R$150.</div></details>
-				<details class="bg-gray-50 rounded-lg"><summary class="px-6 py-4 cursor-pointer font-medium text-[#0a1a3c] flex items-center justify-between">Como escolher um bom montador em {estado}?<span class="material-symbols-outlined text-gray-400">expand_more</span></summary><div class="px-6 pb-4 text-[#514532]">Veja a nota e quantidade de avaliações do profissional. Prefira quem tem nota acima de 4.5 com várias avaliações.</div></details>
-				<details class="bg-gray-50 rounded-lg"><summary class="px-6 py-4 cursor-pointer font-medium text-[#0a1a3c] flex items-center justify-between">O montador vai até minha casa em {nomeCidade}?<span class="material-symbols-outlined text-gray-400">expand_more</span></summary><div class="px-6 pb-4 text-[#514532]">Sim! Todos os montadores listados fazem atendimento em {nomeCidade}.</div></details>
-				<details class="bg-gray-50 rounded-lg"><summary class="px-6 py-4 cursor-pointer font-medium text-[#0a1a3c] flex items-center justify-between">Qual o prazo para desmontar móveis em {nomeCidade}?<span class="material-symbols-outlined text-gray-400">expand_more</span></summary><div class="px-6 pb-4 text-[#514532]">A maioria dos montadores faz o serviço no mesmo dia. Para móveis grandes pode levar de 2 a 4 horas.</div></details>
+				<details class="bg-gray-50 rounded-lg">
+					<summary class="px-6 py-4 cursor-pointer font-medium text-[#0a1a3c] flex items-center justify-between">
+						Quanto custa a montagem de móveis em {nomeCidade}?
+						<span class="material-symbols-outlined text-gray-400">expand_more</span>
+					</summary>
+					<div class="px-6 pb-4 text-[#514532]">
+						O preço varia conforme o tipo e quantidade de móveis. Em média, a montagem de um guarda-roupa ou rack de TV custa entre R$80 e R$150.
+					</div>
+				</details>
+				<details class="bg-gray-50 rounded-lg">
+					<summary class="px-6 py-4 cursor-pointer font-medium text-[#0a1a3c] flex items-center justify-between">
+						Como escolher um bom montador em {estado}?
+						<span class="material-symbols-outlined text-gray-400">expand_more</span>
+					</summary>
+					<div class="px-6 pb-4 text-[#514532]">
+						Veja a nota e quantidade de avaliações do profissional. Prefira quem tem nota acima de 4.5 com várias avaliações.
+					</div>
+				</details>
+				<details class="bg-gray-50 rounded-lg">
+					<summary class="px-6 py-4 cursor-pointer font-medium text-[#0a1a3c] flex items-center justify-between">
+						O montador vai até minha casa em {nomeCidade}?
+						<span class="material-symbols-outlined text-gray-400">expand_more</span>
+					</summary>
+					<div class="px-6 pb-4 text-[#514532]">
+						Sim! Todos os montadores listados fazem atendimento em {nomeCidade}.
+					</div>
+				</details>
 			</div>
 		</section>
 	</main>
+
 	<div id="modal-overlay" class="fixed inset-0 bg-black/50 hidden z-50 items-center justify-center p-4">
 		<div class="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
 			<div class="p-6">
 				<div class="flex items-center justify-between mb-6">
-					<h3 id="modal-title" class="font-headline text-xl font-bold text-[#0a1a3c]">Falar com Profissional</h3>
-					<button id="modal-close" class="text-gray-400 hover:text-gray-600"><span class="material-symbols-outlined">close</span></button>
+					<h3 id="modal-title" class="font-headline text-xl font-bold text-[#0a1a3c]">
+						Falar com Profissional
+					</h3>
+					<button id="modal-close" class="text-gray-400 hover:text-gray-600">
+						<span class="material-symbols-outlined">close</span>
+					</button>
 				</div>
 				<form id="lead-form" class="space-y-4">
-					<div><label class="block text-sm font-medium text-[#0a1a3c] mb-1">Seu Nome</label><input type="text" id="lead-nome" required class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ffb800] focus:border-transparent outline-none" placeholder="Como você se chama?" /></div>
-					<div><label class="block text-sm font-medium text-[#0a1a3c] mb-1">Seu WhatsApp</label><input type="tel" id="lead-telefone" required class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ffb800] focus:border-transparent outline-none" placeholder="(11) 99999-9999" /></div>
-					<div><label class="block text-sm font-medium text-[#0a1a3c] mb-1">O que você precisa montar/desmontar?</label><input type="text" id="lead-servico" required class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ffb800] focus:border-transparent outline-none" placeholder="Ex: Guarda-roupa 6 portas, Mesa..." /></div>
+					<div>
+						<label class="block text-sm font-medium text-[#0a1a3c] mb-1">Seu Nome</label>
+						<input type="text" id="lead-nome" required class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ffb800] focus:border-transparent outline-none" placeholder="Como você se chama?" />
+					</div>
+					<div>
+						<label class="block text-sm font-medium text-[#0a1a3c] mb-1">Seu WhatsApp</label>
+						<input type="tel" id="lead-telefone" required class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ffb800] focus:border-transparent outline-none" placeholder="(11) 99999-9999" />
+					</div>
+					<div>
+						<label class="block text-sm font-medium text-[#0a1a3c] mb-1">O que você precisa montar/desmontar?</label>
+						<input type="text" id="lead-servico" required class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ffb800] focus:border-transparent outline-none" placeholder="Ex: Guarda-roupa 6 portas..." />
+					</div>
 					<input type="hidden" id="lead-montador" value="" />
 					<input type="hidden" id="lead-telefone-montador" value="" />
-					<button type="submit" class="track-lead-whatsapp w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-lg transition-colors flex items-center justify-center gap-2"><span class="material-symbols-outlined">chat</span>Enviar Mensagem</button>
+					<button type="submit" class="track-lead-whatsapp w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+						<span class="material-symbols-outlined">chat</span>
+						Enviar Mensagem
+					</button>
 				</form>
 			</div>
 		</div>
 	</div>
-	<script type="application/ld+json" set:html={JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{ "@type": "Question", "name": "Quanto custa a montagem de móveis em " + nomeCidade + "?", "acceptedAnswer": { "@type": "Answer", "text": "O preço varia conforme o tipo e quantidade de móveis." }}, { "@type": "Question", "name": "Como escolher um bom montador em " + estado + "?", "acceptedAnswer": { "@type": "Answer", "text": "Veja a nota e quantidade de avaliações." }}] })} />
+
+	<script type="application/ld+json" set:html={JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "FAQPage",
+		"mainEntity": [
+			{"@type": "Question", "name": `Quanto custa a montagem de móveis em ${nomeCidade}?`, "acceptedAnswer": {"@type": "Answer", "text": "O preço varia conforme o tipo e quantidade de móveis."}},
+			{"@type": "Question", "name": `Como escolher um bom montador em ${estado}?`, "acceptedAnswer": {"@type": "Answer", "text": "Veja a nota e quantidade de avaliações."}}
+		]
+	})} />
+
 	<BottomNavBar />
+
 	<script>
-		var nomeCidade = "{nomeCidade}";
+		const nomeCidade = "{nomeCidade}";
+		
 		var modalOverlay = document.getElementById("modal-overlay");
 		var modalTitle = document.getElementById("modal-title");
 		var leadForm = document.getElementById("lead-form");
 		var leadMontadorInput = document.getElementById("lead-montador");
 		var leadTelefoneInput = document.getElementById("lead-telefone-montador");
 		var modalClose = document.getElementById("modal-close");
+
 		document.querySelectorAll(".btn-whatsapp").forEach(function(btn) {
 			btn.addEventListener("click", function(e) {
 				var target = e.currentTarget;
@@ -105,16 +178,19 @@ const resultList = (dbData || []).filter(function(item) { return item.cidade_est
 				modalOverlay.classList.add("flex");
 			});
 		});
+
 		modalClose.addEventListener("click", function() {
 			modalOverlay.classList.add("hidden");
 			modalOverlay.classList.remove("flex");
 		});
+
 		modalOverlay.addEventListener("click", function(e) {
 			if (e.target === modalOverlay) {
 				modalOverlay.classList.add("hidden");
 				modalOverlay.classList.remove("flex");
 			}
 		});
+
 		leadForm.addEventListener("submit", function(e) {
 			e.preventDefault();
 			var nome = document.getElementById("lead-nome").value;
@@ -132,6 +208,7 @@ const resultList = (dbData || []).filter(function(item) { return item.cidade_est
 			leadForm.reset();
 		});
 	</script>
+
 	<style>
 		details > summary { list-style: none; }
 		details > summary::-webkit-details-marker { display: none; }

@@ -1,0 +1,342 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import BottomNavBar from '../../components/BottomNavBar.astro';
+import MontadorCard from '../../components/MontadorCard.astro';
+import { supabase } from '../../lib/supabase';
+import { citiesData } from '../../data/cities.js';
+
+export function getStaticPaths() {
+	return citiesData.map(c => ({
+		params: { estado: c.estadoSigla.toLowerCase(), cidade: c.id },
+		props: { 
+			nomeCidade: c.nome, 
+			estado: c.estado,
+			estadoSigla: c.estadoSigla
+		}
+	}));
+}
+
+const { nomeCidade, estado, estadoSigla } = Astro.props;
+
+const { data: montadores } = await supabase
+	.from('montadores_pendentes')
+	.select('*');
+
+const filtrados = (montadores || []).filter(m => 
+	m.cidade_estado && m.cidade_estado.toLowerCase().includes(nomeCidade.toLowerCase())
+);
+
+const notaMedia = filtrados.length > 0 
+	? filtrados.reduce((acc, m) => acc + (m.nota || 0), 0) / filtrados.length 
+	: 0;
+
+const totalAvaliacoes = filtrados.reduce((acc, m) => acc + (m.avaliacoes || 0), 0);
+
+const countText = filtrados.length === 1 
+	? '1 profissional encontrado' 
+	: `${filtrados.length} profissionais encontrados`;
+
+const pageTitle = `Montador de Móveis em ${nomeCidade} - ${estadoSigla} | Portal O Montador`;
+const metaDesc = `Precisa de montador de móveis em ${nomeCidade}? Conectamos você aos melhores profissionais avaliados da região. Solicite seu orçamento direto pelo WhatsApp!`;
+
+const schemaData = {
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "LocalBusiness",
+			"name": `Montador de Móveis em ${nomeCidade}`,
+			"address": {
+				"@type": "PostalAddress",
+				"addressLocality": nomeCidade,
+				"addressRegion": estadoSigla,
+				"addressCountry": "BR"
+			},
+			"areaServed": {
+				"@type": "City",
+				"name": nomeCidade
+			},
+			"priceRange": "$$"
+		},
+		{
+			"@type": "AggregateRating",
+			"ratingValue": notaMedia.toFixed(1),
+			"bestRating": "5",
+			"worstRating": "1",
+			"ratingCount": totalAvaliacoes,
+			"reviewCount": totalAvaliacoes
+		},
+		{
+			"@type": "FAQPage",
+			"mainEntity": [
+				{
+					"@type": "Question",
+					"name": `Como encontrar montador de móveis em ${nomeCidade}?`,
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": "Basta selecionar sua cidade no formulário acima. Conectamos você diretamente aos montadores mais bem avaliados de ${nomeCidade}."
+					}
+				},
+				{
+					"@type": "Question",
+					"name": `Quanto custa a montagem de móveis em ${nomeCidade}?`,
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": "O preço varia conforme o tipo e quantidade de móveis. Em média, a montagem de guarda-roupa ou rack de TV custa entre R$80 e R$150."
+					}
+				},
+				{
+					"@type": "Question",
+					"name": `O montador atende em ${nomeCidade}?`,
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": "Sim! Todos os montadores listados fazem atendimento na região de ${nomeCidade}."
+					}
+				}
+			]
+		}
+	]
+};
+---
+
+<Layout title={pageTitle}>
+	<Header />
+
+	<main class="max-w-7xl mx-auto px-4">
+		<article class="pt-16 pb-12">
+			<a href="/" class="hidden md:inline-flex items-center gap-1 text-slate-600 mb-6 text-sm">
+				<span class="material-symbols-outlined text-sm">arrow_back</span>
+				Voltar
+			</a>
+			
+			<h1 class="font-headline text-3xl md:text-4xl font-bold text-slate-800 mb-4">
+				Montadores de Móveis Avaliados em {nomeCidade} - {estadoSigla}
+			</h1>
+			
+			<p class="text-slate-600 text-lg mb-6 max-w-2xl">
+				Precisa de <strong>montagem profissional</strong> em {nomeCidade}? 
+				Conectamos você aos melhores profissionais da região com 
+				<strong>orçamentos transparentes</strong> e 
+				<strong>atendimento rápido</strong> via WhatsApp.
+			</p>
+			
+			<p class="text-slate-700 font-medium mb-8">
+				{countText} • Nota média: {notaMedia.toFixed(1)} ★
+			</p>
+
+			{filtrados.length === 0 ? (
+				<div class="text-center py-12 bg-slate-50 rounded-2xl">
+					<span class="material-symbols-outlined text-6xl text-slate-300">search_off</span>
+					<p class="text-slate-600 mt-4">Ainda não temos montadores cadastrados em {nomeCidade}.</p>
+					<a href="/cadastro" class="inline-block mt-4 text-amber-600 font-bold">Seja o primeiro a se cadastrar!</a>
+				</div>
+			) : (
+				<section aria-labelledby="profissionais-title">
+					<h2 id="profissionais-title" class="font-headline text-xl font-semibold text-slate-800 mb-6">
+						Profissionais em {nomeCidade}
+					</h2>
+					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+						{filtrados.map(m => (
+							<MontadorCard 
+								nome={m.nome_completo}
+								imagem={m.foto_url || ''}
+								avaliacao={m.nota || 0}
+								totalAvaliacoes={m.avaliacoes || 0}
+								cidade={nomeCidade}
+								estado={estado}
+								especialidades={[]}
+								online={true}
+								telefone={m.whatsapp || ''}
+							/>
+						))}
+					</div>
+				</section>
+			)}
+		</article>
+
+		<section class="py-12 border-t border-slate-100">
+			<h2 class="font-headline text-2xl font-bold text-slate-800 mb-8">
+				Perguntas Frequentes sobre Montagem de Móveis em {nomeCidade}
+			</h2>
+			<div class="space-y-4 max-w-2xl">
+				<details class="bg-slate-50 rounded-lg">
+					<summary class="px-6 py-4 cursor-pointer font-medium text-slate-800 flex items-center justify-between">
+						Quanto custa a montage de móveis em {nomeCidade}?
+						<span class="material-symbols-outlined text-slate-400">expand_more</span>
+					</summary>
+					<div class="px-6 pb-4 text-slate-600">
+						O preço varia conforme o tipo e quantidade de móveis. Em média, a montagem de um guarda-roupa ou rack de TV custa entre R$80 e R$150.
+					</div>
+				</details>
+				<details class="bg-slate-50 rounded-lg">
+					<summary class="px-6 py-4 cursor-pointer font-medium text-slate-800 flex items-center justify-between">
+						Como escolher um bom montador em {estado}?
+						<span class="material-symbols-outlined text-slate-400">expand_more</span>
+					</summary>
+					<div class="px-6 pb-4 text-slate-600">
+						Veja a nota e quantidade de avaliações do profissional. Prefira quem tem nota acima de 4.5 com várias avaliações.
+					</div>
+				</details>
+				<details class="bg-slate-50 rounded-lg">
+					<summary class="px-6 py-4 cursor-pointer font-medium text-slate-800 flex items-center justify-between">
+						O montador vai até minha casa em {nomeCidade}?
+						<span class="material-symbols-outlined text-slate-400">expand_more</span>
+					</summary>
+					<div class="px-6 pb-4 text-slate-600">
+						Sim! Todos os montadores listados fazem atendimento em {nomeCidade}.
+					</div>
+				</details>
+			</div>
+		</section>
+	</main>
+
+	<div id="modal-overlay" class="fixed inset-0 bg-black/50 hidden z-50 items-center justify-center p-4">
+		<div class="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+			<div class="p-6">
+				<div class="flex items-center justify-between mb-6">
+					<h3 id="modal-title" class="font-headline text-xl font-bold text-slate-800">
+						Falar com Profissional
+					</h3>
+					<button id="modal-close" class="text-slate-400 hover:text-slate-600">
+						<span class="material-symbols-outlined">close</span>
+					</button>
+				</div>
+				
+				<div id="step-1">
+					<div class="mb-4">
+						<label class="block text-sm font-medium text-slate-800 mb-2">Seu Nome</label>
+						<input type="text" id="lead-nome" class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none" placeholder="Como você se chama?" />
+					</div>
+					<button type="button" id="btn-next-1" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3 rounded-lg transition-colors">
+						Avançar
+					</button>
+				</div>
+				
+				<div id="step-2" class="hidden">
+					<div class="mb-4">
+						<label class="block text-sm font-medium text-slate-800 mb-2">Seu WhatsApp</label>
+						<input type="tel" id="lead-telefone" class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none" placeholder="(11) 99999-9999" />
+					</div>
+					<button type="button" id="btn-next-2" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3 rounded-lg transition-colors">
+						Avançar
+					</button>
+					<button type="button" id="btn-back-2" class="w-full mt-2 text-slate-500 hover:text-slate-700 py-2">
+						Voltar
+					</button>
+				</div>
+				
+				<div id="step-3" class="hidden">
+					<div class="mb-4">
+						<label class="block text-sm font-medium text-slate-800 mb-2">Cidade onde você precisa do serviço</label>
+						<input type="text" id="lead-cidade-input" class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none" placeholder="Ex: Porto Alegre" />
+					</div>
+					<div class="mb-4">
+						<label class="block text-sm font-medium text-slate-800 mb-2">O que você precisa montar/desmontar?</label>
+						<input type="text" id="lead-servico" class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none" placeholder="Ex: Guarda-roupa, Cozinha..." />
+					</div>
+					<input type="hidden" id="lead-montador" value="" />
+					<input type="hidden" id="lead-telefone-montador" value="" />
+					<input type="hidden" id="lead-cidade" value={nomeCidade} />
+					<button type="button" id="btn-enviar" class="track-lead-whatsapp w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
+						<span class="material-symbols-outlined">chat</span>
+						Enviar no WhatsApp
+					</button>
+					<button type="button" id="btn-back-3" class="w-full mt-2 text-slate-500 hover:text-slate-700 py-2">
+						Voltar
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+
+	<BottomNavBar />
+
+	<script>
+		const nomeCidade = "{nomeCidade}";
+		
+		var modalOverlay = document.getElementById("modal-overlay");
+		var modalTitle = document.getElementById("modal-title");
+		var leadMontadorInput = document.getElementById("lead-montador");
+		var leadTelefoneInput = document.getElementById("lead-telefone-montador");
+		var leadCidadeInput = document.getElementById("lead-cidade");
+		var modalClose = document.getElementById("modal-close");
+
+		document.querySelectorAll(".btn-whatsapp").forEach(function(btn) {
+			btn.addEventListener("click", function(e) {
+				var target = e.currentTarget;
+				var nome = target.getAttribute("data-nome") || "";
+				var telefone = target.getAttribute("data-telefone") || "";
+				if (modalTitle) modalTitle.textContent = "Falar com " + nome;
+				if (leadMontadorInput) leadMontadorInput.value = nome;
+				if (leadTelefoneInput) leadTelefoneInput.value = telefone;
+				if (leadCidadeInput) leadCidadeInput.value = nomeCidade;
+				modalOverlay.classList.remove("hidden");
+				modalOverlay.classList.add("flex");
+			});
+		});
+
+		modalClose.addEventListener("click", function() {
+			modalOverlay.classList.add("hidden");
+			modalOverlay.classList.remove("flex");
+		});
+
+		modalOverlay.addEventListener("click", function(e) {
+			if (e.target === modalOverlay) {
+				modalOverlay.classList.add("hidden");
+				modalOverlay.classList.remove("flex");
+			}
+		});
+
+		document.getElementById("btn-next-1").addEventListener("click", function() {
+			var nome = document.getElementById("lead-nome").value;
+			if (!nome) { alert("Preencha seu nome!"); return; }
+			document.getElementById("step-1").classList.add("hidden");
+			document.getElementById("step-2").classList.remove("hidden");
+		});
+		
+		document.getElementById("btn-next-2").addEventListener("click", function() {
+			var telefone = document.getElementById("lead-telefone").value;
+			if (!telefone) { alert("Preencha seu WhatsApp!"); return; }
+			document.getElementById("step-2").classList.add("hidden");
+			document.getElementById("step-3").classList.remove("hidden");
+		});
+		
+		document.getElementById("btn-back-2").addEventListener("click", function() {
+			document.getElementById("step-2").classList.add("hidden");
+			document.getElementById("step-1").classList.remove("hidden");
+		});
+		
+		document.getElementById("btn-back-3").addEventListener("click", function() {
+			document.getElementById("step-3").classList.add("hidden");
+			document.getElementById("step-2").classList.remove("hidden");
+		});
+		
+		document.getElementById("btn-enviar").addEventListener("click", function() {
+			var nome = document.getElementById("lead-nome").value;
+			var cidade = document.getElementById("lead-cidade-input").value;
+			var servico = document.getElementById("lead-servico").value;
+			var nomeMontador = leadMontadorInput.value;
+			var telefoneMontador = leadTelefoneInput.value;
+			if (!nome || !servico || !nomeMontador || !cidade) { alert("Preencha todos os campos!"); return; }
+			if (!telefoneMontador) { alert("Número do montador não encontrado!"); return; }
+			var telefoneLimpo = "55" + telefoneMontador.replace(/\D/g, "");
+			var mensagem = "Olá " + nomeMontador + ", me chamo " + nome + ". Te encontrei no Portal O Montador de Móveis e preciso de um montador para " + servico + " em " + cidade + ".";
+			var urlWhatsapp = "https://wa.me/" + telefoneLimpo + "?text=" + encodeURIComponent(mensagem);
+			window.open(urlWhatsapp, "_blank");
+			modalOverlay.classList.add("hidden");
+			modalOverlay.classList.remove("flex");
+			document.getElementById("lead-nome").value = "";
+			document.getElementById("lead-telefone").value = "";
+			document.getElementById("lead-servico").value = "";
+		});
+	</script>
+
+	<style>
+		details > summary { list-style: none; }
+		details > summary::-webkit-details-marker { display: none; }
+		details[open] summary .material-symbols-outlined { transform: rotate(180deg); }
+		.material-symbols-outlined { transition: transform 0.2s; }
+	</style>
+</Layout>

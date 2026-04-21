@@ -2,43 +2,15 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import BottomNavBar from '../components/BottomNavBar.astro';
-import MontadorCard from '../components/MontadorCard.astro';
 
-const montadores = [
-	{
-		nome: 'João Silva',
-		imagem: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBjcIa-me9WU0X60olQ3jkoTMT4gaKbQE1tf-SDpFdFbHqtsMXUjTDbaMkI23I4tEJnp0F8Wo5yZBZ1gm5j_kx5_H9BwzNTq9D2qdhqJlCrOKLqbDMmuSdT7_gZ2NxgWL3Z4MNkIwIZKqm7BQ9Nf0yY5WOgt4f1cCRH_BjkNP6Bi_HKhEyGeIX6MdSRQLby89JSiiBZZorFD2C0zIvhrWGoydCb6eCsvGsxRxoH9h1_Im3U6Wkl27-vWVUu-wt4uQobJ_QIbo1RT1s',
-		avaliacao: 5.0,
-		totalAvaliacoes: 42,
-		cidade: 'São Paulo',
-		estado: 'SP',
-		especialidades: ['Cozinhas', 'Quartos', 'Escritórios'],
-		online: true
-	},
-	{
-		nome: 'Marcos Oliveira',
-		imagem: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCLDRNHayuU_lb5ux9OmA-6fcxbm4rOUqKJeOPe7e20zdi4oUSDpxB7B1F2tD9aHMQ_03Zn0LBv6r-Pgwdbh9cy_9BZMRNlEdf9mRE_4rbxy5Lwt-ybk_LeBRKn_p8s3dMRwbn2jyONdJxwiMThe7_D9qOcEgYAhqzPRBtvDkCeO9AlV0oE2hQroYK9zuuMComYxINaPdW4iWjOt6WUMx_NBFT5S9zfesAquJ3YLV4HxpxSc4yIIRv-ViRXX7M98kFRa5V2Nqtom_Y',
-		avaliacao: 4.8,
-		totalAvaliacoes: 89,
-		cidade: 'Campinas',
-		estado: 'SP',
-		especialidades: ['Painéis de TV', 'Guarda-roupas'],
-		online: false
-	},
-	{
-		nome: 'Carlos Mendes',
-		imagem: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAV1uvFo8Cp8na5r5VJjrCzDHxRPRtcbUwzguGtnWGgADjKdNDKQDomT4stwt4mhndmmgnul2dGz9g_xyFOg0QPlhEsEZSoahhNPfGuHq_XcWkHem6uxNNkuEY6wmhhHb2-w60Wn1a4ACCF1qx_-AfEa1s-Om9lYyyKktLQl2hP9lfGGOcuhlwAkhl5NjeR5J-3N9endwgPliE-kjndu4292fmSm4QAx9v6zZcUTiwm_gdGQjXoxhzswaVMAjW5sIuHs5EqSVbuPjE',
-		avaliacao: 5.0,
-		totalAvaliacoes: 12,
-		cidade: 'Guarulhos',
-		estado: 'SP',
-		especialidades: ['Móveis Corporativos', 'Modulados'],
-		online: true
-	}
+const montadoresDestaque = [
+	{ nome: 'João Silva', imagem: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBjcIa-me9WU0X60olQ3jkoTMT4gaKbQE1tf-SDpFdFbHqtsMXUjTDbaMkI23I4tEJnp0F8Wo5yZBZ1gm5j_kx5_H9BwzNTq9D2qdhqJlCrOKLqbDMmuSdT7_gZ2NxgWL3Z4MNkIwIZKqm7BQ9Nf0yY5WOgt4f1cCRH_BjkNP6Bi_HKhEyGeIX6MdSRQLby89JSiiBZZorFD2C0zIvhrWGoydCb6eCsvGsxRxoH9h1_Im3U6Wkl27-vWVUu-wt4uQobJ_QIbo1RT1s', avaliacao: 5.0, totalAvaliacoes: 42, cidade: 'São Paulo', estado: 'SP', online: true },
+	{ nome: 'Marcos Oliveira', imagem: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCLDRNHayuU_lb5ux9OmA-6fcxbm4rOUqKJeOPe7e20zdi4oUSDpxB7B1F2tD9aHMQ_03Zn0LBv6r-Pgwdbh9cy_9BZMRNlEdf9mRE_4rbxy5Lwt-ybk_LeBRKn_p8s3dMRwbn2jyONdJxwiMThe7_D9qOcEgYAhqzPRBtvDkCeO9AlV0oE2hQroYK9zuuMComYxINaPdW4iWjOt6WUMx_NBFT5S9zfesAquJ3YLV4HxpxSc4yIIRv-ViRXX7M98kFRa5V2Nqtom_Y', avaliacao: 4.8, totalAvaliacoes: 89, cidade: 'Campinas', estado: 'SP', online: false },
+	{ nome: 'Carlos Mendes', imagem: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAV1uvFo8Cp8na5r5VJjrCzDHxRPRtcbUwzguGtnWGgADjKdNDKQDomT4stwt4mhndmmgnul2dGz9g_xyFOg0QPlhEsEZSoahhNPfGuHq_XcWkHem6uxNNkuEY6wmhhHb2-w60Wn1a4ACCF1qx_-AfEa1s-Om9lYyyKktLQl2hP9lfGGOcuhlwAkhl5NjeR5J-3N9endwgPliE-kjndu4292fmSm4QAx9v6zZcUTiwm_gdGQjXoxhzswaVMAjW5sIuHs5EqSVbuPjE', avaliacao: 5.0, totalAvaliacoes: 12, cidade: 'Guarulhos', estado: 'SP', online: true }
 ];
 ---
 
-<Layout title="O Montador de Móveis">
+<Layout title="Portal O Montador - Encontre Montadores de Móveis Próximos a Você">
 	<Header />
 
 	<main>
@@ -46,9 +18,12 @@ const montadores = [
 			<div class="absolute top-0 right-0 w-64 h-64 bg-[#ffb800]/20 rounded-full blur-[80px] -z-10 translate-x-1/2 -translate-y-1/4"></div>
 			<div class="max-w-6xl mx-auto grid md:grid-cols-2 items-center gap-8">
 				<div>
-					<h1 class="font-headline text-[2.5rem] leading-[1.1] font-bold text-[#0a1a3c] mb-8 tracking-[-0.02em]">
-						Encontre os melhores montadores na sua cidade
+					<h1 class="font-headline text-[2.5rem] leading-[1.1] font-bold text-[#0a1a3c] mb-4 tracking-[-0.02em]">
+						Encontre os Melhores Montadores de Móveis do Brasil
 					</h1>
+					<p class="text-lg text-[#514532] mb-8">
+						O maior e mais seguro portal de montagem. Presente em mais de 15 estados e 40 cidades. Conectamos você a profissionais rigorosamente avaliados.
+					</p>
 					<div class="bg-white rounded-xl p-6 ambient-shadow relative z-10">
 						<form action="/[cidade]" method="GET" class="space-y-4">
 							<div class="relative">
@@ -75,7 +50,7 @@ const montadores = [
 					</div>
 				</div>
 				<div class="hidden md:block">
-					<img src="/hero-image.webp" alt="Montador de Móveis com Serviço Excelente" class="w-full max-w-lg mx-auto drop-shadow-2xl object-contain" />
+					<img src="/hero-image.webp" alt="Montador de Móveis profissional" class="w-full max-w-lg mx-auto drop-shadow-2xl object-contain" />
 				</div>
 			</div>
 		</section>
@@ -86,10 +61,32 @@ const montadores = [
 					<h2 class="font-headline text-2xl font-bold text-[#0a1a3c] tracking-tight">Profissionais em Destaque</h2>
 					<span class="material-symbols-outlined text-[#ffb800]" style="font-variation-settings: 'FILL' 1;">stars</span>
 				</div>
-				<div class="grid grid-cols-1 gap-5">
-					{montadores.map((montador) => (
-						<MontadorCard {...montador} />
-					))}
+				<div class="grid grid-cols-1 gap-5" id="destaque-grid">
+					{montadoresDestaque.length > 0 ? montadoresDestaque.map((montador) => (
+						<article class="bg-white rounded-xl p-5 ambient-shadow-sm">
+							<div class="flex items-start gap-4 mb-4">
+								<div class="w-16 h-16 rounded-full overflow-hidden bg-[#e2e7ff] flex-shrink-0">
+									<img alt={montador.nome} class="w-full h-full object-cover" src={montador.imagem || `https://ui-avatars.com/api/?name=${encodeURIComponent(montador.nome)}&background=random&color=fff`} />
+								</div>
+								<div class="flex-1">
+									<h3 class="font-headline font-bold text-lg text-[#0a1a3c]">{montador.nome}</h3>
+									<div class="flex items-center gap-1 mt-0.5 mb-1 text-[#ffb800]">
+										<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+										<span class="text-[#514532] text-sm ml-1 font-medium">{montador.avaliacao.toFixed(1)} ({montador.totalAvaliacoes})</span>
+									</div>
+									<p class="text-xs text-[#514532]/80 font-medium">{montador.cidade}, {montador.estado}</p>
+								</div>
+							</div>
+							<div class="flex items-center justify-between pt-4 border-t border-[#e2e7ff]/30">
+								<span class="text-xs text-[#514532]">Orçamento por serviço</span>
+								<a href={`/${montador.cidade.toLowerCase().replace(/\s+/g, '-')}`} class="text-[#6b4c00] bg-[#ffb800]/10 hover:bg-[#ffb800] hover:text-[#6b4c00] font-headline font-bold text-sm px-4 py-2 rounded-md transition-colors">
+									Ver Perfil
+								</a>
+							</div>
+						</article>
+					)) : (
+						<p class="text-center text-[#514532] py-8">Em breve profissionais em destaque.</p>
+					)}
 				</div>
 			</div>
 		</section>
@@ -99,10 +96,10 @@ const montadores = [
 </Layout>
 
 <script>
-	const estadoSelect = document.getElementById('estado') as HTMLSelectElement;
-	const cidadeSelect = document.getElementById('cidade') as HTMLSelectElement;
+	const estadoSelect = document.getElementById('estado');
+	const cidadeSelect = document.getElementById('cidade');
 
-	const estadosBrasileiros: Record<string, string> = {
+	const estadosBrasileiros = {
 		'AL': 'Alagoas', 'AM': 'Amazonas', 'BA': 'Bahia', 'CE': 'Ceará',
 		'DF': 'Distrito Federal', 'GO': 'Goiás', 'MA': 'Maranhão', 'MG': 'Minas Gerais',
 		'MS': 'Mato Grosso do Sul', 'MT': 'Mato Grosso', 'PA': 'Pará', 'PB': 'Paraíba',
@@ -110,33 +107,20 @@ const montadores = [
 		'RN': 'Rio Grande do Norte', 'RS': 'Rio Grande do Sul', 'SE': 'Sergipe', 'SP': 'São Paulo'
 	};
 
-	const locaisDeAtendimento: Record<string, string[]> = {
-		"AL": ["Maceió"],
-		"AM": ["Manaus"],
-		"BA": ["Salvador"],
-		"CE": ["Fortaleza"],
-		"DF": ["Brasília"],
-		"GO": ["Goiânia"],
-		"MA": ["São Luís"],
-		"MG": ["Belo Horizonte", "Uberlândia"],
-		"MS": ["Campo Grande"],
-		"MT": ["Cuiabá"],
-		"PA": ["Belém"],
-		"PB": ["João Pessoa"],
-		"PE": ["Jaboatão dos Guararapes", "Recife"],
-		"PI": ["Teresina"],
-		"PR": ["Curitiba"],
-		"RJ": ["Duque de Caxias", "Rio de Janeiro", "São Gonçalo"],
-		"RN": ["Natal"],
+	const locaisDeAtendimento = {
+		"AL": ["Maceió"], "AM": ["Manaus"], "BA": ["Salvador"], "CE": ["Fortaleza"],
+		"DF": ["Brasília"], "GO": ["Goiânia"], "MA": ["São Luís"], "MG": ["Belo Horizonte", "Uberlândia"],
+		"MS": ["Campo Grande"], "MT": ["Cuiabá"], "PA": ["Belém"], "PB": ["João Pessoa"],
+		"PE": ["Jaboatão dos Guararapes", "Recife"], "PI": ["Teresina"], "PR": ["Curitiba"],
+		"RJ": ["Duque de Caxias", "Rio de Janeiro", "São Gonçalo"], "RN": ["Natal"],
 		"RS": ["Alvorada", "Bento Gonçalves", "Cachoeirinha", "Campo Bom", "Canoas", "Dois Irmãos", "Estância Velha", "Esteio", "Gravataí", "Igrejinha", "Ivoti", "Morro Reuter", "Nova Santa Rita", "Novo Hamburgo", "Parobé", "Pelotas", "Portão", "Porto Alegre", "Sapiranga", "Sapucaia do Sul", "São Leopoldo", "Taquara", "Viamão"],
-		"SE": ["Aracaju"],
-		"SP": ["Campinas", "Guarulhos", "Osasco", "Ribeirão Preto", "Santo André", "São Bernardo do Campo", "São José dos Campos", "São Paulo", "Sorocaba"]
+		"SE": ["Aracaju"], "SP": ["Campinas", "Guarulhos", "Osasco", "Ribeirão Preto", "Santo André", "São Bernardo do Campo", "São José dos Campos", "São Paulo", "Sorocaba"]
 	};
 
 	function carregarEstados() {
 		const estadosOrdenados = Object.keys(locaisDeAtendimento).sort();
 		estadoSelect.innerHTML = '<option disabled selected value="">Selecione o Estado</option>';
-		estadosOrdenados.forEach((uf) => {
+		estadosOrdenados.forEach(function(uf) {
 			const nome = estadosBrasileiros[uf] || uf;
 			const option = document.createElement('option');
 			option.value = uf;
@@ -145,12 +129,12 @@ const montadores = [
 		});
 	}
 
-	estadoSelect.addEventListener('change', () => {
+	estadoSelect.addEventListener('change', function() {
 		const ufSelecionado = estadoSelect.value;
 		cidadeSelect.innerHTML = '<option disabled selected value="">Selecione a Cidade</option>';
 		
 		if (locaisDeAtendimento[ufSelecionado]) {
-			locaisDeAtendimento[ufSelecionado].sort().forEach((cidade) => {
+			locaisDeAtendimento[ufSelecionado].sort().forEach(function(cidade) {
 				const option = document.createElement('option');
 				option.value = cidade.toLowerCase().replace(/\s+/g, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 				option.textContent = cidade;
@@ -164,8 +148,8 @@ const montadores = [
 
 	carregarEstados();
 
-	const form = document.querySelector('form') as HTMLFormElement;
-	form.addEventListener('submit', (e) => {
+	const form = document.querySelector('form');
+	form.addEventListener('submit', function(e) {
 		e.preventDefault();
 		const estado = estadoSelect.value;
 		const cidade = cidadeSelect.value;
@@ -173,6 +157,6 @@ const montadores = [
 			alert('Por favor, selecione o Estado e a Cidade.');
 			return;
 		}
-		window.location.href = `/${cidade}`;
+		window.location.href = '/' + cidade;
 	});
 </script>

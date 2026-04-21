@@ -142,8 +142,12 @@ const citiesData = [
 		
 		if (locaisDeAtendimento[ufSelecionado]) {
 			locaisDeAtendimento[ufSelecionado].sort().forEach(function(cidade) {
+				const slug = cidade.toLowerCase()
+					.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+					.replace(/ã/g, 'a').replace(/õ/g, 'o')
+					.replace(/\s+/g, '-');
 				const option = document.createElement('option');
-				option.value = cidade.toLowerCase().replace(/\s+/g, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+				option.value = slug;
 				option.textContent = cidade;
 				cidadeSelect.appendChild(option);
 			});

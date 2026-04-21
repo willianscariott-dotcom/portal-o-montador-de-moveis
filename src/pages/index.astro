@@ -20,6 +20,7 @@ const citiesData = [
 	{ id: "recife", nome: "Recife" },
 	{ id: "teresina", nome: "Teresina" },
 	{ id: "curitiba", nome: "Curitiba" },
+	{ id: "campo-largo", nome: "Campo Largo" },
 	{ id: "rio-de-janeiro", nome: "Rio de Janeiro" },
 	{ id: "natal", nome: "Natal" },
 	{ id: "porto-alegre", nome: "Porto Alegre" },
@@ -29,16 +30,14 @@ const citiesData = [
 	{ id: "viamao", nome: "Viamão" },
 	{ id: "sao-leopoldo", nome: "São Leopoldo" },
 	{ id: "novo-hamburgo", nome: "Novo Hamburgo" },
-	{ id: "alvorada", nome: "Alvorada" },
 	{ id: "dois-irmaos", nome: "Dois Irmãos" },
 	{ id: "campo-bom", nome: "Campo Bom" },
-	{ id: "estancia-velha", nome: "Estância Velha" },
-	{ id: "igrejinha", nome: "Igrejinha" },
 	{ id: "parobe", nome: "Parobé" },
 	{ id: "portao", nome: "Portão" },
 	{ id: "sapiranga", nome: "Sapiranga" },
 	{ id: "sapucaia-do-sul", nome: "Sapucaia do Sul" },
 	{ id: "aracaju", nome: "Aracaju" },
+	{ id: "vila-velha", nome: "Vila Velha" },
 	{ id: "sao-paulo", nome: "São Paulo" },
 	{ id: "campinas", nome: "Campinas" },
 	{ id: "guarulhos", nome: "Guarulhos" },
@@ -181,17 +180,18 @@ const citiesData = [
 		'DF': 'Distrito Federal', 'GO': 'Goiás', 'MA': 'Maranhão', 'MG': 'Minas Gerais',
 		'MS': 'Mato Grosso do Sul', 'MT': 'Mato Grosso', 'PA': 'Pará', 'PB': 'Paraíba',
 		'PE': 'Pernambuco', 'PI': 'Piauí', 'PR': 'Paraná', 'RJ': 'Rio de Janeiro',
-		'RN': 'Rio Grande do Norte', 'RS': 'Rio Grande do Sul', 'SE': 'Sergipe', 'SP': 'São Paulo'
+		'RN': 'Rio Grande do Norte', 'RS': 'Rio Grande do Sul', 'SE': 'Sergipe', 'SP': 'São Paulo',
+		'ES': 'Espírito Santo'
 	};
 
 	const locaisDeAtendimento = {
 		"AL": ["Maceió"], "AM": ["Manaus"], "BA": ["Salvador"], "CE": ["Fortaleza"],
 		"DF": ["Brasília"], "GO": ["Goiânia"], "MA": ["São Luís"], "MG": ["Belo Horizonte", "Uberândia"],
 		"MS": ["Campo Grande"], "MT": ["Cuiabá"], "PA": ["Belém"], "PB": ["João Pessoa"],
-		"PE": ["Jaboatão dos Guararapes", "Recife"], "PI": ["Teresina"], "PR": ["Curitiba"],
+		"PE": ["Jaboatão dos Guararapes", "Recife"], "PI": ["Teresina"], "PR": ["Campo Largo", "Curitiba"],
 		"RJ": ["Duque de Caxias", "Rio de Janeiro", "São Gonçalo"], "RN": ["Natal"],
-		"RS": ["Alvorada", "Cachoeirinha", "Campo Bom", "Canoas", "Dois Irmãos", "Estância Velha", "Gravataí", "Igrejinha", "Novo Hamburgo", "Parobé", "Portão", "Porto Alegre", "Sapiranga", "Sapucaia do Sul", "São Leopoldo", "Viamão"],
-		"SE": ["Aracaju"], "SP": ["Campinas", "Guarulhos", "Osasco", "Ribeirão Preto", "Santo André", "São Bernardo do Campo", "São José dos Campos", "São Paulo", "Sorocaba"]
+		"RS": ["Cachoeirinha", "Campo Bom", "Canoas", "Dois Irmãos", "Gravataí", "Novo Hamburgo", "Parobé", "Portão", "Porto Alegre", "Sapiranga", "Sapucaia do Sul", "São Leopoldo", "Viamão"],
+		"SE": ["Aracaju"], "ES": ["Vila Velha"], "SP": ["Campinas", "Guarulhos", "Osasco", "Ribeirão Preto", "Santo André", "São Bernardo do Campo", "São José dos Campos", "São Paulo", "Sorocaba"]
 	};
 
 	function carregarEstados() {

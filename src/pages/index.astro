@@ -4,39 +4,53 @@ import Header from '../components/Header.astro';
 import BottomNavBar from '../components/BottomNavBar.astro';
 
 const citiesData = [
-	{ id: "maceio", nome: "Maceió", estado: "Alagoas", estadoSigla: "AL" },
-	{ id: "manaus", nome: "Manaus", estado: "Amazonas", estadoSigla: "AM" },
-	{ id: "salvador", nome: "Salvador", estado: "Bahia", estadoSigla: "BA" },
-	{ id: "fortaleza", nome: "Fortaleza", estado: "Ceará", estadoSigla: "CE" },
-	{ id: "brasilia", nome: "Brasília", estado: "Distrito Federal", estadoSigla: "DF" },
-	{ id: "goiania", nome: "Goiânia", estado: "Goiás", estadoSigla: "GO" },
-	{ id: "sao-luis", nome: "São Luís", estado: "Maranhão", estadoSigla: "MA" },
-	{ id: "belo-horizonte", nome: "Belo Horizonte", estado: "Minas Gerais", estadoSigla: "MG" },
-	{ id: "uberlandia", nome: "Uberlândia", estado: "Minas Gerais", estadoSigla: "MG" },
-	{ id: "campo-grande", nome: "Campo Grande", estado: "Mato Grosso do Sul", estadoSigla: "MS" },
-	{ id: "cuiaba", nome: "Cuiabá", estado: "Mato Grosso", estadoSigla: "MT" },
-	{ id: "belem", nome: "Belém", estado: "Pará", estadoSigla: "PA" },
-	{ id: "joao-pessoa", nome: "João Pessoa", estado: "Paraíba", estadoSigla: "PB" },
-	{ id: "recife", nome: "Recife", estado: "Pernambuco", estadoSigla: "PE" },
-	{ id: "teresina", nome: "Teresina", estado: "Piauí", estadoSigla: "PI" },
-	{ id: "curitiba", nome: "Curitiba", estado: "Paraná", estadoSigla: "PR" },
-	{ id: "rio-de-janeiro", nome: "Rio de Janeiro", estado: "Rio de Janeiro", estadoSigla: "RJ" },
-	{ id: "natal", nome: "Natal", estado: "Rio Grande do Norte", estadoSigla: "RN" },
-	{ id: "porto-alegre", nome: "Porto Alegre", estado: "Rio Grande do Sul", estadoSigla: "RS" },
-	{ id: "canoas", nome: "Canoas", estado: "Rio Grande do Sul", estadoSigla: "RS" },
-	{ id: "pelotas", nome: "Pelotas", estado: "Rio Grande do Sul", estadoSigla: "RS" },
-	{ id: "cachoerinha", nome: "Cachoeirinha", estado: "Rio Grande do Sul", estadoSigla: "RS" },
-	{ id: "gravatai", nome: "Gravataí", estado: "Rio Grande do Sul", estadoSigla: "RS" },
-	{ id: "viamão", nome: "Viamão", estado: "Rio Grande do Sul", estadoSigla: "RS" },
-	{ id: "sao-leopoldo", nome: "São Leopoldo", estado: "Rio Grande do Sul", estadoSigla: "RS" },
-	{ id: "novo-hamburgo", nome: "Novo Hamburgo", estado: "Rio Grande do Sul", estadoSigla: "RS" },
-	{ id: "aracaju", nome: "Aracaju", estado: "Sergipe", estadoSigla: "SE" },
-	{ id: "sao-paulo", nome: "São Paulo", estado: "São Paulo", estadoSigla: "SP" },
-	{ id: "campinas", nome: "Campinas", estado: "São Paulo", estadoSigla: "SP" },
-	{ id: "guarulhos", nome: "Guarulhos", estado: "São Paulo", estadoSigla: "SP" },
-	{ id: "sao-bernardo-do-campo", nome: "São Bernardo do Campo", estado: "São Paulo", estadoSigla: "SP" },
-	{ id: "osasco", nome: "Osasco", estado: "São Paulo", estadoSigla: "SP" },
-	{ id: "ribeirao-preto", nome: "Ribeirão Preto", estado: "São Paulo", estadoSigla: "SP" }
+	{ id: "maceio", nome: "Maceió" },
+	{ id: "manaus", nome: "Manaus" },
+	{ id: "salvador", nome: "Salvador" },
+	{ id: "fortaleza", nome: "Fortaleza" },
+	{ id: "brasilia", nome: "Brasília" },
+	{ id: "goiania", nome: "Goiânia" },
+	{ id: "sao-luis", nome: "São Luís" },
+	{ id: "belo-horizonte", nome: "Belo Horizonte" },
+	{ id: "uberlandia", nome: "Uberlândia" },
+	{ id: "campo-grande", nome: "Campo Grande" },
+	{ id: "cuiaba", nome: "Cuiabá" },
+	{ id: "belem", nome: "Belém" },
+	{ id: "joao-pessoa", nome: "João Pessoa" },
+	{ id: "recife", nome: "Recife" },
+	{ id: "teresina", nome: "Teresina" },
+	{ id: "curitiba", nome: "Curitiba" },
+	{ id: "rio-de-janeiro", nome: "Rio de Janeiro" },
+	{ id: "natal", nome: "Natal" },
+	{ id: "porto-alegre", nome: "Porto Alegre" },
+	{ id: "canoas", nome: "Canoas" },
+	{ id: "cachoeirinha", nome: "Cachoeirinha" },
+	{ id: "gravatai", nome: "Gravataí" },
+	{ id: "viamao", nome: "Viamão" },
+	{ id: "sao-leopoldo", nome: "São Leopoldo" },
+	{ id: "novo-hamburgo", nome: "Novo Hamburgo" },
+	{ id: "alvorada", nome: "Alvorada" },
+	{ id: "dois-irmaos", nome: "Dois Irmãos" },
+	{ id: "campo-bom", nome: "Campo Bom" },
+	{ id: "estancia-velha", nome: "Estância Velha" },
+	{ id: "igrejinha", nome: "Igrejinha" },
+	{ id: "parobe", nome: "Parobé" },
+	{ id: "portao", nome: "Portão" },
+	{ id: "sapiranga", nome: "Sapiranga" },
+	{ id: "sapucaia-do-sul", nome: "Sapucaia do Sul" },
+	{ id: "aracaju", nome: "Aracaju" },
+	{ id: "sao-paulo", nome: "São Paulo" },
+	{ id: "campinas", nome: "Campinas" },
+	{ id: "guarulhos", nome: "Guarulhos" },
+	{ id: "sao-bernardo-do-campo", nome: "São Bernardo do Campo" },
+	{ id: "osasco", nome: "Osasco" },
+	{ id: "ribeirao-preto", nome: "Ribeirão Preto" },
+	{ id: "santoandre", nome: "Santo André" },
+	{ id: "sao-jose-dos-campos", nome: "São José dos Campos" },
+	{ id: "sorocaba", nome: "Sorocaba" },
+	{ id: "duque-de-caxias", nome: "Duque de Caxias" },
+	{ id: "sao-goncalo", nome: "São Gonçalo" },
+	{ id: "jaboatao-dos-guararapes", nome: "Jaboatão dos Guararapes" }
 ];
 ---
 
@@ -44,53 +58,109 @@ const citiesData = [
 	<Header />
 
 	<main>
-		<section class="px-6 pt-16 pb-12 relative overflow-hidden">
-			<div class="absolute top-0 right-0 w-64 h-64 bg-[#ffb800]/20 rounded-full blur-[80px] -z-10 translate-x-1/2 -translate-y-1/4"></div>
-			<div class="max-w-6xl mx-auto grid md:grid-cols-2 items-center gap-8">
-				<div>
-					<h1 class="font-headline text-[2.5rem] leading-[1.1] font-bold text-[#0a1a3c] mb-4 tracking-[-0.02em]">
-						Encontre os Melhores Montadores de Móveis do Brasil
-					</h1>
-					<p class="text-lg text-[#514532] mb-8">
-						O maior e mais seguro portal de montagem. Presente em mais de 15 estados e 40 cidades. Conectamos você a profissionais rigorosamente avaliados.
-					</p>
-					<div class="bg-white rounded-xl p-6 ambient-shadow relative z-10">
-						<form class="space-y-4">
-							<div class="relative">
-								<label class="sr-only" for="estado">Estado</label>
-								<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#514532]/60">map</span>
-								<select class="w-full h-14 pl-12 pr-4 bg-[#f2f3ff] text-[#0a1a3c] font-body text-base border-none rounded-md appearance-none focus:ring-0 focus:border-b-2 focus:border-[#7c5800] transition-all" id="estado" name="estado" required>
-									<option disabled selected value="">Carregando Estados...</option>
-								</select>
-								<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#514532] pointer-events-none">expand_more</span>
+		<section class="relative min-h-[85vh] flex items-center overflow-hidden">
+			<div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"></div>
+			<div class="absolute top-20 left-10 w-72 h-72 bg-amber-500/20 rounded-full blur-[120px]"></div>
+			<div class="absolute bottom-20 right-10 w-96 h-96 bg-amber-400/10 rounded-full blur-[100px]"></div>
+			
+			<div class="absolute inset-0 opacity-30">
+				<svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+					<defs>
+						<pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+							<path d="M 60 0 L 0 0 0 60" fill="none" stroke="white" stroke-width="0.5" opacity="0.1"/>
+						</pattern>
+					</defs>
+					<rect width="100%" height="100%" fill="url(#grid)" />
+				</svg>
+			</div>
+
+			<div class="relative z-10 max-w-7xl mx-auto px-6 py-16 w-full">
+				<div class="grid lg:grid-cols-2 gap-12 items-center">
+					<div class="text-center lg:text-left">
+						<div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6">
+							<span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+							<span class="text-white/80 text-sm font-medium">+400 profissionais ativos</span>
+						</div>
+						
+						<h1 class="font-headline text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6">
+							Encontre os Melhores
+							<span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600">
+								Montadores de Móveis
+							</span>
+							do Brasil
+						</h1>
+						
+						<p class="text-lg text-slate-300 mb-8 max-w-xl mx-auto lg:mx-0">
+							O maior e mais seguro portal de montagem. Presente em mais de 15 estados e 40 cidades. 
+							Conectamos você a profissionais rigorosamente avaliados.
+						</p>
+
+						<div class="flex flex-wrap justify-center lg:justify-start gap-4 text-slate-400 text-sm">
+							<div class="flex items-center gap-2">
+								<span class="material-symbols-outlined text-amber-400">verified</span>
+								<span>Profissionais Verificados</span>
 							</div>
-							<div class="relative">
-								<label class="sr-only" for="cidade">Cidade</label>
-								<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#514532]/60">location_city</span>
-								<select class="w-full h-14 pl-12 pr-4 bg-[#f2f3ff] text-[#0a1a3c] font-body text-base border-none rounded-md appearance-none focus:ring-0 focus:border-b-2 focus:border-[#7c5800] transition-all" id="cidade" name="cidade" required disabled>
-									<option disabled selected value="">Selecione um Estado primeiro</option>
-								</select>
-								<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#514532] pointer-events-none">expand_more</span>
+							<div class="flex items-center gap-2">
+								<span class="material-symbols-outlined text-amber-400">star</span>
+								<span>Avaliados</span>
 							</div>
-							<button type="submit" class="w-full h-14 mt-2 bg-gradient-to-b from-[#ffb800] to-[#f0ad00] text-[#6b4c00] font-headline font-bold text-lg rounded-md flex items-center justify-center gap-2 hover:-translate-y-0.5 transition-transform active:scale-[0.98] shadow-sm">
-								<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 600;">search</span>
-								Buscar
-							</button>
-						</form>
+							<div class="flex items-center gap-2">
+								<span class="material-symbols-outlined text-amber-400">support_agent</span>
+								<span>Suporte</span>
+							</div>
+						</div>
 					</div>
-				</div>
-				<div class="hidden md:block">
-					<img src="/hero-image.webp" alt="Montador de Móveis profissional" class="w-full max-w-lg mx-auto drop-shadow-2xl object-contain" />
+
+					<div class="relative">
+						<div class="absolute -inset-4 bg-gradient-to-r from-amber-500/20 to-amber-600/20 rounded-3xl blur-2xl"></div>
+						
+						<div class="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl">
+							<h2 class="text-white font-headline text-xl font-semibold mb-6 text-center">
+								Encontre um montador agora
+							</h2>
+							
+							<form class="space-y-4">
+								<div class="relative">
+									<label class="sr-only" for="estado">Estado</label>
+									<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">map</span>
+									<select class="w-full h-14 pl-12 pr-12 bg-white/90 text-slate-800 font-medium rounded-xl appearance-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all cursor-pointer" id="estado" name="estado" required>
+										<option disabled selected value="">Selecione o Estado</option>
+									</select>
+									<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">expand_more</span>
+								</div>
+								
+								<div class="relative">
+									<label class="sr-only" for="cidade">Cidade</label>
+									<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">location_city</span>
+									<select class="w-full h-14 pl-12 pr-12 bg-white/90 text-slate-800 font-medium rounded-xl appearance-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all cursor-pointer" id="cidade" name="cidade" required disabled>
+										<option disabled selected value="">Selecione a Cidade</option>
+									</select>
+									<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">expand_more</span>
+								</div>
+								
+								<button type="submit" class="w-full h-14 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-900 font-headline font-bold text-lg rounded-xl flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:shadow-amber-500/25 active:scale-[0.98]">
+									<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 600;">search</span>
+									Buscar Montador
+								</button>
+							</form>
+							
+							<p class="text-slate-400 text-xs text-center mt-4">
+								Busca gratuita. Sem compromisso.
+							</p>
+						</div>
+					</div>
 				</div>
 			</div>
 		</section>
 
-		<section class="px-6 py-12 bg-[#0a1a3c]">
-			<div class="max-w-6xl mx-auto">
-				<h2 class="font-headline text-xl font-bold text-white mb-6">Principais Cidades Atendidas</h2>
-				<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+		<section class="py-16 bg-slate-50">
+			<div class="max-w-7xl mx-auto px-6">
+				<h2 class="font-headline text-2xl font-bold text-slate-800 text-center mb-10">
+					Principais Cidades Atendidas
+				</h2>
+				<div class="flex flex-wrap justify-center gap-3">
 					{citiesData.map((cidade) => (
-						<a href={`/${cidade.id}`} class="text-[#ffb800] hover:text-white font-medium text-sm py-2 px-3 rounded-md transition-colors hover:bg-white/10">
+						<a href={`/${cidade.id}`} class="bg-white hover:bg-amber-50 border border-slate-200 hover:border-amber-300 text-slate-700 hover:text-amber-700 font-medium py-2 px-4 rounded-full transition-all hover:shadow-md">
 							{cidade.nome}
 						</a>
 					))}
@@ -116,7 +186,7 @@ const citiesData = [
 
 	const locaisDeAtendimento = {
 		"AL": ["Maceió"], "AM": ["Manaus"], "BA": ["Salvador"], "CE": ["Fortaleza"],
-		"DF": ["Brasília"], "GO": ["Goiânia"], "MA": ["São Luís"], "MG": ["Belo Horizonte", "Uberlândia"],
+		"DF": ["Brasília"], "GO": ["Goiânia"], "MA": ["São Luís"], "MG": ["Belo Horizonte", "Uberândia"],
 		"MS": ["Campo Grande"], "MT": ["Cuiabá"], "PA": ["Belém"], "PB": ["João Pessoa"],
 		"PE": ["Jaboatão dos Guararapes", "Recife"], "PI": ["Teresina"], "PR": ["Curitiba"],
 		"RJ": ["Duque de Caxias", "Rio de Janeiro", "São Gonçalo"], "RN": ["Natal"],
@@ -126,7 +196,6 @@ const citiesData = [
 
 	function carregarEstados() {
 		const estadosOrdenados = Object.keys(locaisDeAtendimento).sort();
-		estadoSelect.innerHTML = '<option disabled selected value="">Selecione o Estado</option>';
 		estadosOrdenados.forEach(function(uf) {
 			const nome = estadosBrasileiros[uf] || uf;
 			const option = document.createElement('option');

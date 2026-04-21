@@ -43,7 +43,7 @@ const countText = filtrados.length === 1
 	<Header />
 	<main class="max-w-7xl mx-auto px-4">
 		<section class="pt-16 pb-12">
-			<a href="/" class="inline-flex items-center gap-1 text-[#514532] mb-6 text-sm">
+			<a href="/" class="hidden md:inline-flex items-center gap-1 text-[#514532] mb-6 text-sm">
 				<span class="material-symbols-outlined text-sm">arrow_back</span>
 				Voltar
 			</a>
@@ -177,10 +177,11 @@ const countText = filtrados.length === 1
 				var target = e.currentTarget;
 				var nome = target.getAttribute("data-nome") || "";
 				var telefone = target.getAttribute("data-telefone") || "";
-				var cidadeFromProps = leadCidadeInput.value;
+				var cidadeDoMontador = target.getAttribute("data-cidade") || nomeCidade;
 				if (modalTitle) modalTitle.textContent = "Falar com " + nome;
 				if (leadMontadorInput) leadMontadorInput.value = nome;
 				if (leadTelefoneInput) leadTelefoneInput.value = telefone;
+				if (leadCidadeInput) leadCidadeInput.value = nomeCidade;
 				modalOverlay.classList.remove("hidden");
 				modalOverlay.classList.add("flex");
 			});
@@ -201,15 +202,13 @@ const countText = filtrados.length === 1
 		leadForm.addEventListener("submit", function(e) {
 			e.preventDefault();
 			var nome = document.getElementById("lead-nome").value;
-			var telefone = document.getElementById("lead-telefone").value;
 			var servico = document.getElementById("lead-servico").value;
 			var nomeMontador = leadMontadorInput.value;
-			var telefoneMontador = leadTelefoneInput.value;
 			var cidadeInput = document.getElementById("lead-cidade").value;
-			if (!nome || !telefone || !servico || !nomeMontador) { alert("Preencha todos os campos!"); return; }
-			var telefoneLimpo = telefone.replace(/\D/g, "");
-			var mensagem = "Olá " + nomeMontador + ", me chamo " + nome + ". Te encontrei no Portal O Montador de Móveis e preciso de um montador para " + servico + " em " + cidadeInput + ". Meu contato é " + telefone;
-			var urlWhatsapp = "https://wa.me/55" + telefoneLimpo + "?text=" + encodeURIComponent(mensagem);
+			if (!nome || !servico || !nomeMontador) { alert("Preencha todos os campos!"); return; }
+			var telefoneLimpo = "55" + telefoneMontador.replace(/\D/g, "");
+			var mensagem = "Olá " + nomeMontador + ", me chamo " + nome + ". Te encontrei no Portal O Montador de Móveis e preciso de um montador para " + servico + " em " + cidadeInput + ".";
+			var urlWhatsapp = "https://wa.me/" + telefoneLimpo + "?text=" + encodeURIComponent(mensagem);
 			window.open(urlWhatsapp, "_blank");
 			modalOverlay.classList.add("hidden");
 			modalOverlay.classList.remove("flex");

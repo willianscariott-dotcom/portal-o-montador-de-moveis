@@ -3,68 +3,58 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import BottomNavBar from '../components/BottomNavBar.astro';
 
-const topCities = [
-	{ id: "sao-paulo", nome: "São Paulo" },
-	{ id: "rio-de-janeiro", nome: "Rio de Janeiro" },
-	{ id: "brasilia", nome: "Brasília" },
-	{ id: "salvador", nome: "Salvador" },
-	{ id: "fortaleza", nome: "Fortaleza" },
-	{ id: "belo-horizonte", nome: "Belo Horizonte" },
-	{ id: "curitiba", nome: "Curitiba" },
-	{ id: "porto-alegre", nome: "Porto Alegre" },
-	{ id: "recife", nome: "Recife" },
-	{ id: "goiania", nome: "Goiânia" }
+const citiesByRegion = [
+	{ region: "Sudeste", cities: [
+		{ id: "sao-paulo", nome: "São Paulo" },
+		{ id: "rio-de-janeiro", nome: "Rio de Janeiro" },
+		{ id: "belo-horizonte", nome: "Belo Horizonte" },
+		{ id: "campinas", nome: "Campinas" },
+		{ id: "guarulhos", nome: "Guarulhos" },
+		{ id: "sao-bernardo-do-campo", nome: "São Bernardo do Campo" },
+		{ id: "osasco", nome: "Osasco" },
+		{ id: "sorocaba", nome: "Sorocaba" },
+		{ id: "ribeirao-preto", nome: "Ribeirão Preto" },
+		{ id: "duque-de-caxias", nome: "Duque de Caxias" },
+		{ id: "sao-goncalo", nome: "São Gonçalo" },
+		{ id: "santoandre", nome: "Santo André" },
+		{ id: "sao-jose-dos-campos", nome: "São José dos Campos" }
+	]},
+	{ region: "Sul", cities: [
+		{ id: "porto-alegre", nome: "Porto Alegre" },
+		{ id: "curitiba", nome: "Curitiba" },
+		{ id: "campo-largo", nome: "Campo Largo" },
+		{ id: "canoas", nome: "Canoas" },
+		{ id: "cachoeirinha", nome: "Cachoeirinha" },
+		{ id: "gravatai", nome: "Gravataí" },
+		{ id: "viamao", nome: "Viamão" },
+		{ id: "sao-leopoldo", nome: "São Leopoldo" },
+		{ id: "novo-hamburgo", nome: "Novo Hamburgo" },
+		{ id: "parobe", nome: "Parobé" },
+		{ id: "sapiranga", nome: "Sapiranga" },
+		{ id: "sapucaia-do-sul", nome: "Sapucaia do Sul" }
+	]},
+	{ region: "Nordeste", cities: [
+		{ id: "salvador", nome: "Salvador" },
+		{ id: "recife", nome: "Recife" },
+		{ id: "fortaleza", nome: "Fortaleza" },
+		{ id: "natal", nome: "Natal" },
+		{ id: "joao-pessoa", nome: "João Pessoa" },
+		{ id: "teresina", nome: "Teresina" },
+		{ id: "maceio", nome: "Maceió" }
+	]},
+	{ region: "Centro-Oeste", cities: [
+		{ id: "brasilia", nome: "Brasília" },
+		{ id: "goiania", nome: "Goiânia" },
+		{ id: "campo-grande", nome: "Campo Grande" },
+		{ id: "cuiaba", nome: "Cuiabá" }
+	]},
+	{ region: "Norte & Nordeste", cities: [
+		{ id: "manaus", nome: "Manaus" },
+		{ id: "belem", nome: "Belém" },
+		{ id: "sao-luis", nome: "São Luís" },
+		{ id: "uberlandia", nome: "Uberlândia" }
+	]}
 ];
-
-const citiesData = [
-	{ id: "maceio", nome: "Maceió" },
-	{ id: "manaus", nome: "Manaus" },
-	{ id: "salvador", nome: "Salvador" },
-	{ id: "fortaleza", nome: "Fortaleza" },
-	{ id: "brasilia", nome: "Brasília" },
-	{ id: "goiania", nome: "Goiânia" },
-	{ id: "sao-luis", nome: "São Luís" },
-	{ id: "belo-horizonte", nome: "Belo Horizonte" },
-	{ id: "uberlandia", nome: "Uberlândia" },
-	{ id: "campo-grande", nome: "Campo Grande" },
-	{ id: "cuiaba", nome: "Cuiabá" },
-	{ id: "belem", nome: "Belém" },
-	{ id: "joao-pessoa", nome: "João Pessoa" },
-	{ id: "recife", nome: "Recife" },
-	{ id: "teresina", nome: "Teresina" },
-	{ id: "curitiba", nome: "Curitiba" },
-	{ id: "campo-largo", nome: "Campo Largo" },
-	{ id: "rio-de-janeiro", nome: "Rio de Janeiro" },
-	{ id: "natal", nome: "Natal" },
-	{ id: "porto-alegre", nome: "Porto Alegre" },
-	{ id: "canoas", nome: "Canoas" },
-	{ id: "cachoeirinha", nome: "Cachoeirinha" },
-	{ id: "gravatai", nome: "Gravataí" },
-	{ id: "viamao", nome: "Viamão" },
-	{ id: "sao-leopoldo", nome: "São Leopoldo" },
-	{ id: "novo-hamburgo", nome: "Novo Hamburgo" },
-	{ id: "dois-irmaos", nome: "Dois Irmãos" },
-	{ id: "campo-bom", nome: "Campo Bom" },
-	{ id: "parobe", nome: "Parobé" },
-	{ id: "portao", nome: "Portão" },
-	{ id: "sapiranga", nome: "Sapiranga" },
-	{ id: "sapucaia-do-sul", nome: "Sapucaia do Sul" },
-	{ id: "aracaju", nome: "Aracaju" },
-	{ id: "vila-velha", nome: "Vila Velha" },
-	{ id: "sao-paulo", nome: "São Paulo" },
-	{ id: "campinas", nome: "Campinas" },
-	{ id: "guarulhos", nome: "Guarulhos" },
-	{ id: "sao-bernardo-do-campo", nome: "São Bernardo do Campo" },
-	{ id: "osasco", nome: "Osasco" },
-	{ id: "ribeirao-preto", nome: "Ribeirão Preto" },
-	{ id: "santoandre", nome: "Santo André" },
-	{ id: "sao-jose-dos-campos", nome: "São José dos Campos" },
-	{ id: "sorocaba", nome: "Sorocaba" },
-	{ id: "duque-de-caxias", nome: "Duque de Caxias" },
-	{ id: "sao-goncalo", nome: "São Gonçalo" },
-	{ id: "jaboatao-dos-guararapes", nome: "Jaboatão dos Guararapes" }
-];
-
 ---
 
 <Layout title="Portal O Montador - Encontre Montadores de Móveis Próximos a Você">
@@ -88,8 +78,8 @@ const citiesData = [
 			</div>
 
 			<article class="relative z-10 max-w-7xl mx-auto px-6 py-16 w-full">
-				<div class="grid lg:grid-cols-2 gap-12 items-center">
-					<aside aria-label="Formulário de busca">
+				<div class="grid lg:grid-cols-2 gap-16 items-center">
+					<div>
 						<div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6">
 							<span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
 							<span class="text-white/80 text-sm font-medium">+500 profissionais ativos</span>
@@ -103,13 +93,14 @@ const citiesData = [
 							</span>
 						</h1>
 						
-						<p class="text-lg text-slate-300 mb-8 max-w-xl">
-							O maior portal de <strong>móveis planejados</strong> e installation profissional. Conectamos você a 
-							montadores de <strong>marcenaria</strong> verificados para 
-							<strong>orçamentos</strong> seguros e instalação com <strong>segurança residencial</strong> garantida.
+						<p class="text-lg text-slate-300 mb-8 max-w-lg">
+							Conectamos você a profissionais especializados em <strong>instalação de móveis planejados</strong> com 
+							<strong>segurança residencial</strong> garantida. 
+							Contato direto via <strong>WhatsApp</strong> para 
+							<strong>orçamentos</strong> transparentes.
 						</p>
 
-						<div class="flex flex-wrap gap-4 text-slate-400 text-sm">
+						<div class="flex flex-wrap gap-6 text-slate-400 text-sm">
 							<div class="flex items-center gap-2">
 								<span class="material-symbols-outlined text-amber-400">verified</span>
 								<span>Profissionais Verificados</span>
@@ -123,110 +114,100 @@ const citiesData = [
 								<span>Suporte</span>
 							</div>
 						</div>
-					</aside>
+					</div>
 
-					<aside aria-label="Busca por localização">
-						<div class="relative">
-							<div class="absolute -inset-4 bg-gradient-to-r from-amber-500/20 to-amber-600/20 rounded-3xl blur-2xl"></div>
+					<div class="relative">
+						<div class="absolute -inset-4 bg-gradient-to-r from-amber-500/20 to-amber-600/20 rounded-3xl blur-2xl"></div>
+						
+						<div class="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl">
+							<h2 class="text-white font-headline text-xl font-semibold mb-6 text-center">
+								Encontre um montador agora
+							</h2>
 							
-							<div class="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl">
-								<h2 class="text-white font-headline text-xl font-semibold mb-6 text-center">
-									Encontre um montador agora
-								</h2>
+							<form class="space-y-4">
+								<div class="relative">
+									<label class="sr-only" for="estado">Estado</label>
+									<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">map</span>
+									<select class="w-full h-14 pl-12 pr-12 bg-white/90 text-slate-800 font-medium rounded-xl appearance-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all cursor-pointer" id="estado" name="estado" required>
+										<option disabled selected value="">Selecione o Estado</option>
+									</select>
+									<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">expand_more</span>
+								</div>
 								
-								<form class="space-y-4">
-									<div class="relative">
-										<label class="sr-only" for="estado">Estado</label>
-										<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">map</span>
-										<select class="w-full h-14 pl-12 pr-12 bg-white/90 text-slate-800 font-medium rounded-xl appearance-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all cursor-pointer" id="estado" name="estado" required>
-											<option disabled selected value="">Selecione o Estado</option>
-										</select>
-										<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">expand_more</span>
-									</div>
-									
-									<div class="relative">
-										<label class="sr-only" for="cidade">Cidade</label>
-										<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">location_city</span>
-										<select class="w-full h-14 pl-12 pr-12 bg-white/90 text-slate-800 font-medium rounded-xl appearance-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all cursor-pointer" id="cidade" name="cidade" required disabled>
-											<option disabled selected value="">Selecione a Cidade</option>
-										</select>
-										<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">expand_more</span>
-									</div>
-									
-									<button type="submit" class="w-full h-14 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-900 font-headline font-bold text-lg rounded-xl flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:shadow-amber-500/25 active:scale-[0.98]">
-										<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 600;">search</span>
-										Buscar Montador
-									</button>
-								</form>
+								<div class="relative">
+									<label class="sr-only" for="cidade">Cidade</label>
+									<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">location_city</span>
+									<select class="w-full h-14 pl-12 pr-12 bg-white/90 text-slate-800 font-medium rounded-xl appearance-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all cursor-pointer" id="cidade" name="cidade" required disabled>
+										<option disabled selected value="">Selecione a Cidade</option>
+									</select>
+									<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">expand_more</span>
+								</div>
 								
-								<p class="text-slate-400 text-xs text-center mt-4">
-									Busca gratuita. Sem compromisso.
-								</p>
-							</div>
+								<button type="submit" class="w-full h-14 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-900 font-headline font-bold text-lg rounded-xl flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:shadow-amber-500/25 active:scale-[0.98]">
+									<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 600;">search</span>
+									Buscar Montador
+								</button>
+							</form>
+							
+							<p class="text-slate-400 text-xs text-center mt-4">
+								Busca gratuita. Sem compromisso.
+							</p>
 						</div>
-					</aside>
+					</div>
 				</div>
 			</article>
 		</section>
 
-		<section aria-labelledby="como-funciona-heading" class="py-16 bg-slate-50">
+		<section aria-labelledby="como-funciona-heading" class="py-20 bg-slate-50">
 			<div class="max-w-4xl mx-auto px-6">
-				<h2 id="como-funciona-heading" class="font-headline text-2xl font-bold text-slate-800 text-center mb-10">
-					Como Funciona o Portal
+				<h2 id="como-funciona-heading" class="font-headline text-2xl font-bold text-slate-800 text-center mb-12">
+					Como Funciona o Portal O Montador de Móveis
 				</h2>
-				<ol class="space-y-6">
-					<li class="flex gap-4 items-start">
-						<span class="flex-shrink-0 w-10 h-10 bg-amber-500 text-slate-900 font-bold rounded-full flex items-center justify-center">1</span>
+				<ol class="space-y-8">
+					<li class="flex gap-6 items-start">
+						<span class="flex-shrink-0 w-12 h-12 bg-amber-500 text-slate-900 font-bold rounded-full flex items-center justify-center text-lg">1</span>
 						<div>
-							<h3 class="font-semibold text-slate-800">Escolha sua Cidade</h3>
-							<p class="text-slate-600 text-sm">Selecione seu estado e cidade para encontrar montadores próximos de você.</p>
+							<h3 class="font-semibold text-slate-800 text-lg mb-2">Busque por sua Cidade</h3>
+							<p class="text-slate-600">Selecione seu estado e cidade no formulário acima. O sistema conecta você aos melhores <strong>montadores de móveis planejados</strong> da região.</p>
 						</div>
 					</li>
-					<li class="flex gap-4 items-start">
-						<span class="flex-shrink-0 w-10 h-10 bg-amber-500 text-slate-900 font-bold rounded-full flex items-center justify-center">2</span>
+					<li class="flex gap-6 items-start">
+						<span class="flex-shrink-0 w-12 h-12 bg-amber-500 text-slate-900 font-bold rounded-full flex items-center justify-center text-lg">2</span>
 						<div>
-							<h3 class="font-semibold text-slate-800">Compare Profissionais</h3>
-							<p class="text-slate-600 text-sm">Acesse perfis de montadores especializados em móveis planejados e marcenaria.</p>
+							<h3 class="font-semibold text-slate-800 text-lg mb-2">Compare Profissionais Avaliados</h3>
+							<p class="text-slate-600">Acesse perfis de especialistas em <strong>marcenaria</strong> e <strong>instalação profissional</strong>. Veja notas e avaliações reais de clientes.</p>
 						</div>
 					</li>
-					<li class="flex gap-4 items-start">
-						<span class="flex-shrink-0 w-10 h-10 bg-amber-500 text-slate-900 font-bold rounded-full flex items-center justify-center">3</span>
+					<li class="flex gap-6 items-start">
+						<span class="flex-shrink-0 w-12 h-12 bg-amber-500 text-slate-900 font-bold rounded-full flex items-center justify-center text-lg">3</span>
 						<div>
-							<h3 class="font-semibold text-slate-800">Solicite Orçamento</h3>
-							<p class="text-slate-600 text-sm">Entre em contato diretamente pelo WhatsApp para negociar seu serviço com segurança.</p>
+							<h3 class="font-semibold text-slate-800 text-lg mb-2">Contato Direto via WhatsApp</h3>
+							<p class="text-slate-600">Converse diretamente com o montador. Receba <strong>orçamentos</strong> transparentes e aproveite a <strong>segurança residencial</strong> de um serviço profesionalescolhido.</p>
 						</div>
 					</li>
 				</ol>
 			</div>
 		</section>
-
-		<section aria-labelledby="cidades-heading" class="py-16 bg-white border-t border-slate-100">
-			<div class="max-w-7xl mx-auto px-6">
-				<h2 id="cidades-heading" class="font-headline text-2xl font-bold text-slate-800 text-center mb-10">
-					Principais Cidades Atendidas
-				</h2>
-				<nav aria-label="Diretório de cidades" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-					{citiesData.map((cidade) => (
-						<a href={`/${cidade.id}`} class="flex items-center gap-2 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-300 text-slate-700 hover:text-amber-700 font-medium py-3 px-4 rounded-lg transition-all hover:shadow-md group">
-							<span class="material-symbols-outlined text-amber-500 group-hover:text-amber-600">location_on</span>
-							<span>Montador de Móveis em {cidade.nome}</span>
-						</a>
-					))}
-				</nav>
-			</div>
-		</section>
 	</main>
 
-	<footer class="bg-slate-900 py-12">
+	<footer class="bg-slate-900 py-16">
 		<div class="max-w-7xl mx-auto px-6">
-			<nav aria-label="Principais Cidades Atendidas" class="mb-8">
-				<h2 class="font-headline text-lg font-semibold text-white mb-4">Encontre montadores em:</h2>
-				<div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-					{topCities.map((cidade) => (
-						<a href={`/${cidade.id}`} class="flex items-center gap-2 text-slate-400 hover:text-amber-400 text-sm py-2 transition-colors">
-							<span class="material-symbols-outlined text-lg">location_on</span>
-							<span>Montador de Móveis em {cidade.nome}</span>
-						</a>
+			<nav aria-label="Nossas Cidades" class="mb-12">
+				<h2 class="font-headline text-lg font-semibold text-white mb-6">Encontre montadores de móveis planejados em:</h2>
+				<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+					{citiesByRegion.map((region) => (
+						<div>
+							<h3 class="text-amber-500 font-medium text-sm mb-3">{region.region}</h3>
+							<ul class="space-y-2">
+								{region.cities.map((cidade) => (
+									<li>
+										<a href={`/${cidade.id}`} class="text-slate-500 hover:text-amber-400 text-xs transition-colors">
+											{cidade.nome}
+										</a>
+									</li>
+								))}
+							</ul>
+						</div>
 					))}
 				</div>
 			</nav>

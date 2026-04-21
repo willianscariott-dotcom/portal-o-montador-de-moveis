@@ -3,6 +3,19 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import BottomNavBar from '../components/BottomNavBar.astro';
 
+const topCities = [
+	{ id: "sao-paulo", nome: "São Paulo" },
+	{ id: "rio-de-janeiro", nome: "Rio de Janeiro" },
+	{ id: "brasilia", nome: "Brasília" },
+	{ id: "salvador", nome: "Salvador" },
+	{ id: "fortaleza", nome: "Fortaleza" },
+	{ id: "belo-horizonte", nome: "Belo Horizonte" },
+	{ id: "curitiba", nome: "Curitiba" },
+	{ id: "porto-alegre", nome: "Porto Alegre" },
+	{ id: "recife", nome: "Recife" },
+	{ id: "goiania", nome: "Goiânia" }
+];
+
 const citiesData = [
 	{ id: "maceio", nome: "Maceió" },
 	{ id: "manaus", nome: "Manaus" },
@@ -51,13 +64,14 @@ const citiesData = [
 	{ id: "sao-goncalo", nome: "São Gonçalo" },
 	{ id: "jaboatao-dos-guararapes", nome: "Jaboatão dos Guararapes" }
 ];
+
 ---
 
 <Layout title="Portal O Montador - Encontre Montadores de Móveis Próximos a Você">
 	<Header />
 
 	<main>
-		<section class="relative min-h-[85vh] flex items-center overflow-hidden">
+		<section aria-labelledby="hero-heading" class="relative min-h-[85vh] flex items-center overflow-hidden">
 			<div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"></div>
 			<div class="absolute top-20 left-10 w-72 h-72 bg-amber-500/20 rounded-full blur-[120px]"></div>
 			<div class="absolute bottom-20 right-10 w-96 h-96 bg-amber-400/10 rounded-full blur-[100px]"></div>
@@ -73,28 +87,29 @@ const citiesData = [
 				</svg>
 			</div>
 
-			<div class="relative z-10 max-w-7xl mx-auto px-6 py-16 w-full">
+			<article class="relative z-10 max-w-7xl mx-auto px-6 py-16 w-full">
 				<div class="grid lg:grid-cols-2 gap-12 items-center">
-					<div class="text-center lg:text-left">
+					<aside aria-label="Formulário de busca">
 						<div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6">
 							<span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-							<span class="text-white/80 text-sm font-medium">+400 profissionais ativos</span>
+							<span class="text-white/80 text-sm font-medium">+500 profissionais ativos</span>
 						</div>
 						
-						<h1 class="font-headline text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6">
-							Encontre os Melhores
+						<h1 id="hero-heading" class="font-headline text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6">
+							Encontre Aqui os Melhores
 							<span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600">
 								Montadores de Móveis
 							</span>
 							do Brasil
 						</h1>
 						
-						<p class="text-lg text-slate-300 mb-8 max-w-xl mx-auto lg:mx-0">
-							O maior e mais seguro portal de montagem. Presente em mais de 15 estados e 40 cidades. 
-							Conectamos você a profissionais rigorosamente avaliados.
+						<p class="text-lg text-slate-300 mb-8 max-w-xl">
+							O maior portal de <strong>móveis planejados</strong> e installation profissional. Conectamos você a 
+							montadores de <strong>marcenaria</strong> verificados para 
+							<strong>orçamentos</strong> seguros e instalação com <strong>segurança residencial</strong> garantida.
 						</p>
 
-						<div class="flex flex-wrap justify-center lg:justify-start gap-4 text-slate-400 text-sm">
+						<div class="flex flex-wrap gap-4 text-slate-400 text-sm">
 							<div class="flex items-center gap-2">
 								<span class="material-symbols-outlined text-amber-400">verified</span>
 								<span>Profissionais Verificados</span>
@@ -108,53 +123,86 @@ const citiesData = [
 								<span>Suporte</span>
 							</div>
 						</div>
-					</div>
+					</aside>
 
-					<div class="relative">
-						<div class="absolute -inset-4 bg-gradient-to-r from-amber-500/20 to-amber-600/20 rounded-3xl blur-2xl"></div>
-						
-						<div class="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl">
-							<h2 class="text-white font-headline text-xl font-semibold mb-6 text-center">
-								Encontre um montador agora
-							</h2>
+					<aside aria-label="Busca por localização">
+						<div class="relative">
+							<div class="absolute -inset-4 bg-gradient-to-r from-amber-500/20 to-amber-600/20 rounded-3xl blur-2xl"></div>
 							
-							<form class="space-y-4">
-								<div class="relative">
-									<label class="sr-only" for="estado">Estado</label>
-									<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">map</span>
-									<select class="w-full h-14 pl-12 pr-12 bg-white/90 text-slate-800 font-medium rounded-xl appearance-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all cursor-pointer" id="estado" name="estado" required>
-										<option disabled selected value="">Selecione o Estado</option>
-									</select>
-									<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">expand_more</span>
-								</div>
+							<div class="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl">
+								<h2 class="text-white font-headline text-xl font-semibold mb-6 text-center">
+									Encontre um montador agora
+								</h2>
 								
-								<div class="relative">
-									<label class="sr-only" for="cidade">Cidade</label>
-									<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">location_city</span>
-									<select class="w-full h-14 pl-12 pr-12 bg-white/90 text-slate-800 font-medium rounded-xl appearance-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all cursor-pointer" id="cidade" name="cidade" required disabled>
-										<option disabled selected value="">Selecione a Cidade</option>
-									</select>
-									<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">expand_more</span>
-								</div>
+								<form class="space-y-4">
+									<div class="relative">
+										<label class="sr-only" for="estado">Estado</label>
+										<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">map</span>
+										<select class="w-full h-14 pl-12 pr-12 bg-white/90 text-slate-800 font-medium rounded-xl appearance-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all cursor-pointer" id="estado" name="estado" required>
+											<option disabled selected value="">Selecione o Estado</option>
+										</select>
+										<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">expand_more</span>
+									</div>
+									
+									<div class="relative">
+										<label class="sr-only" for="cidade">Cidade</label>
+										<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">location_city</span>
+										<select class="w-full h-14 pl-12 pr-12 bg-white/90 text-slate-800 font-medium rounded-xl appearance-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all cursor-pointer" id="cidade" name="cidade" required disabled>
+											<option disabled selected value="">Selecione a Cidade</option>
+										</select>
+										<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">expand_more</span>
+									</div>
+									
+									<button type="submit" class="w-full h-14 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-900 font-headline font-bold text-lg rounded-xl flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:shadow-amber-500/25 active:scale-[0.98]">
+										<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 600;">search</span>
+										Buscar Montador
+									</button>
+								</form>
 								
-								<button type="submit" class="w-full h-14 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-900 font-headline font-bold text-lg rounded-xl flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:shadow-amber-500/25 active:scale-[0.98]">
-									<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 600;">search</span>
-									Buscar Montador
-								</button>
-							</form>
-							
-							<p class="text-slate-400 text-xs text-center mt-4">
-								Busca gratuita. Sem compromisso.
-							</p>
+								<p class="text-slate-400 text-xs text-center mt-4">
+									Busca gratuita. Sem compromisso.
+								</p>
+							</div>
 						</div>
-					</div>
+					</aside>
 				</div>
+			</article>
+		</section>
+
+		<section aria-labelledby="como-funciona-heading" class="py-16 bg-slate-50">
+			<div class="max-w-4xl mx-auto px-6">
+				<h2 id="como-funciona-heading" class="font-headline text-2xl font-bold text-slate-800 text-center mb-10">
+					Como Funciona o Portal
+				</h2>
+				<ol class="space-y-6">
+					<li class="flex gap-4 items-start">
+						<span class="flex-shrink-0 w-10 h-10 bg-amber-500 text-slate-900 font-bold rounded-full flex items-center justify-center">1</span>
+						<div>
+							<h3 class="font-semibold text-slate-800">Escolha sua Cidade</h3>
+							<p class="text-slate-600 text-sm">Selecione seu estado e cidade para encontrar montadores próximos de você.</p>
+						</div>
+					</li>
+					<li class="flex gap-4 items-start">
+						<span class="flex-shrink-0 w-10 h-10 bg-amber-500 text-slate-900 font-bold rounded-full flex items-center justify-center">2</span>
+						<div>
+							<h3 class="font-semibold text-slate-800">Compare Profissionais</h3>
+							<p class="text-slate-600 text-sm">Acesse perfis de montadores especializados em móveis planejados e marcenaria.</p>
+						</div>
+					</li>
+					<li class="flex gap-4 items-start">
+						<span class="flex-shrink-0 w-10 h-10 bg-amber-500 text-slate-900 font-bold rounded-full flex items-center justify-center">3</span>
+						<div>
+							<h3 class="font-semibold text-slate-800">Solicite Orçamento</h3>
+							<p class="text-slate-600 text-sm">Entre em contato diretamente pelo WhatsApp para negociar seu serviço com segurança.</p>
+						</div>
+					</li>
+				</ol>
 			</div>
 		</section>
 
-		<section class="py-16 bg-slate-50">
+		<section aria-labelledby="cidades-heading" class="py-16 bg-white border-t border-slate-100">
 			<div class="max-w-7xl mx-auto px-6">
-				<h2 class="font-headline text-2xl font-bold text-slate-800 text-center mb-10">
+				<h2 id="cidades-heading" class="font-headline text-2xl font-bold text-slate-800 text-center mb-10">
 					Principais Cidades Atendidas
 				</h2>
 				<div class="flex flex-wrap justify-center gap-3">
@@ -167,6 +215,24 @@ const citiesData = [
 			</div>
 		</section>
 	</main>
+
+	<footer class="bg-slate-900 py-12">
+		<div class="max-w-7xl mx-auto px-6">
+			<nav aria-label="Principais Cidades Atendidas" class="mb-8">
+				<h2 class="font-headline text-lg font-semibold text-white mb-4">Encontre montadores em:</h2>
+				<div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+					{topCities.map((cidade) => (
+						<a href={`/${cidade.id}`} class="text-slate-400 hover:text-amber-400 text-sm py-2 transition-colors">
+							{cidade.nome}
+						</a>
+					))}
+				</div>
+			</nav>
+			<div class="border-t border-slate-800 pt-8 text-center">
+				<p class="text-slate-500 text-sm">© 2026 Portal O Montador de Móveis. Todos os direitos reservados.</p>
+			</div>
+		</div>
+	</footer>
 
 	<BottomNavBar />
 </Layout>

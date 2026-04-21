@@ -204,8 +204,10 @@ const countText = filtrados.length === 1
 			var nome = document.getElementById("lead-nome").value;
 			var servico = document.getElementById("lead-servico").value;
 			var nomeMontador = leadMontadorInput.value;
+			var telefoneMontador = leadTelefoneInput.value;
 			var cidadeInput = document.getElementById("lead-cidade").value;
 			if (!nome || !servico || !nomeMontador) { alert("Preencha todos os campos!"); return; }
+			if (!telefoneMontador) { alert("Número do montador não encontrado!"); return; }
 			var telefoneLimpo = "55" + telefoneMontador.replace(/\D/g, "");
 			var mensagem = "Olá " + nomeMontador + ", me chamo " + nome + ". Te encontrei no Portal O Montador de Móveis e preciso de um montador para " + servico + " em " + cidadeInput + ".";
 			var urlWhatsapp = "https://wa.me/" + telefoneLimpo + "?text=" + encodeURIComponent(mensagem);

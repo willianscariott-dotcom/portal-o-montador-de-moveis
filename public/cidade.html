@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Montadores de Móveis em {cidade} - {estado} | O Montador de Móveis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@400;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+.font-headline { font-family: 'Manrope', sans-serif; }
+.font-body { font-family: 'Inter', sans-serif; }
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+.ambient-shadow { box-shadow: 0 20px 40px -10px rgba(10,26,60,0.04); }
+</style>
+</head>
+<body class="font-body text-[#0a1a3c] antialiased pb-20">
+<header class="fixed top-0 w-full bg-white border-b border-gray-100 z-40">
+<div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+<a href="/" class="font-headline font-bold text-xl text-[#ffb800]">OMontador</a>
+</div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 pt-20">
+<section class="py-12">
+<a href="/" class="inline-flex items-center gap-1 text-[#514532] mb-6 text-sm"><span class="material-symbols-outlined text-sm">arrow_back</span>Voltar</a>
+<h1 class="font-headline text-2xl font-bold text-[#0a1a3c] mb-4">Montadores de Móveis em {cidade} - {estado}</h1>
+<p class="text-[#514532] text-lg mb-6 max-w-2xl">{intro}</p>
+<div id="loading" class="text-center py-12"><span class="material-symbols-outlined text-6xl animate-spin text-[#ffb800]">sync</span><p class="mt-4">Buscando montadores...</p></div>
+<div id="results" class="hidden">
+<p class="text-[#514532] mb-8" id="count"></p>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="grid"></div>
+</div>
+<div id="empty" class="hidden text-center py-12">
+<span class="material-symbols-outlined text-6xl text-gray-300">search_off</span>
+<p class="text-gray-500 mt-4">Nenhum montador encontrado em {cidade}.</p>
+<a href="/cadastro" class="inline-block mt-4 text-[#ffb800] font-bold">Seja o primeiro!</a>
+</div>
+</section>
+
+<section class="py-12 border-t">
+<h2 class="font-headline text-2xl font-bold text-[#0a1a3c] mb-8">Perguntas Frequentes</h2>
+<div class="space-y-4">
+<details class="bg-gray-50 rounded-lg"><summary class="px-6 py-4 cursor-pointer font-medium">Quanto custa a montagem de móveis?</summary><div class="px-6 pb-4 text-gray-500">R$80 a R$150 em média.</div></details>
+<details class="bg-gray-50 rounded-lg"><summary class="px-6 py-4 cursor-pointer font-medium">Como escolher um bom montador?</summary><div class="px-6 pb-4 text-gray-500">Veja nota e avaliações.</div></details>
+</div>
+</section>
+</main>
+
+<div id="modal" class="fixed inset-0 bg-black/50 hidden z-50 items-center justify-center p-4">
+<div class="bg-white rounded-2xl max-w-md w-full p-6">
+<h3 class="font-headline text-xl font-bold mb-4" id="modal-title">Falar com</h3>
+<form id="lead-form" class="space-y-4">
+<input type="text" id="nome" required class="w-full px-4 py-3 border rounded-lg" placeholder="Seu Nome">
+<input type="tel" id="telefone" required class="w-full px-4 py-3 border rounded-lg" placeholder="WhatsApp">
+<input type="text" id="servico" required class="w-full px-4 py-3 border rounded-lg" placeholder="O que precisa montar?">
+<button type="submit" class="w-full bg-green-500 text-white font-bold py-4 rounded-lg">Enviar Mensagem</button>
+</form>
+<button onclick="document.getElementById('modal').classList.add('hidden');document.getElementById('modal').classList.remove('flex')" class="absolute top-4 right-4 text-gray-400">✕</button>
+</div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://zbxclibijjngvorcynpw.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpieGNsaWJpampuZ3ZvcmN5bnB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NDE2OTIsImV4cCI6MjA5MjIxNzY5Mn0.yL21n_56GRd8xb1NPfKNYSyvGRTMHu5SC96u7BuzmfA';
+const CIDADE = '{cidade}';
+
+async function buscar() {
+try {
+const res = await fetch(SUPABASE_URL + '/rest/v1/montadores_pendentes?cidade_estado=ilike.*' + encodeURIComponent(CIDADE) + '.*&select=*', {
+headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+});
+const dados = await res.json();
+const total = dados.length;
+document.getElementById('loading').classList.add('hidden');
+if (total === 0) {
+document.getElementById('empty').classList.remove('hidden');
+} else {
+document.getElementById('count').textContent = total + ' profissional(is) encontrado(s)';
+document.getElementById('results').classList.remove('hidden');
+const grid = document.getElementById('grid');
+dados.forEach(m => {
+const nota = m.nota || 0;
+const av = m.avaliacoes || 0;
+const tel = m.whatsapp ? m.whatsapp.replace(/\D/g, '') : '';
+const card = document.createElement('div');
+card.className = 'bg-white rounded-xl p-5 ambient-shadow';
+card.innerHTML = `
+<div class="flex items-start gap-4 mb-4">
+<img src="${m.foto_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(m.nome_completo) + '&background=random&color=fff'}" class="w-16 h-16 rounded-full object-cover">
+<div class="flex-1"><h3 class="font-headline font-bold text-lg">${m.nome_completo}</h3>
+<div class="flex items-center text-yellow-500">★ ${nota.toFixed(1)} (${av})</div>
+<p class="text-xs text-gray-500">{cidade}</p></div></div>
+<button class="btn-wa w-full bg-green-500 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2" data-nome="${m.nome_completo}" data-tel="${tel}"><span class="material-symbols-outlined">chat</span>Chamar no WhatsApp</button>
+`;
+grid.appendChild(card);
+});
+document.querySelectorAll('.btn-wa').forEach(b => b.addEventListener('click', e => {
+const t = e.currentTarget;
+document.getElementById('modal-title').textContent = 'Falar com ' + t.dataset.nome;
+document.getElementById('modal').dataset.montador = t.dataset.nome;
+document.getElementById('modal').dataset.tel = t.dataset.tel;
+document.getElementById('modal').classList.remove('hidden');
+document.getElementById('modal').classList.add('flex');
+}));
+}
+} catch(e) { console.error(e); document.getElementById('loading').textContent = 'Erro ao buscar'; }
+}
+buscar();
+
+document.getElementById('lead-form').addEventListener('submit', e => {
+e.preventDefault();
+const nome = document.getElementById('nome').value;
+const tel = document.getElementById('telefone').value;
+const srv = document.getElementById('servico').value;
+const mt = document.getElementById('modal').dataset.montador;
+const mtel = document.getElementById('modal').dataset.tel;
+if (!nome || !tel || !srv || !mt) return alert('Preencha!');
+const msg = 'Olá ' + mt + ', me chamo ' + nome + '. Preciso de montador para ' + srv + ' em ' + CIDADE + '. Contato: ' + tel;
+window.open('https://wa.me/55' + mtel + '?text=' + encodeURIComponent(msg), '_blank');
+document.getElementById('modal').classList.add('hidden');
+e.target.reset();
+});
+</script>
+</body>
+</html>

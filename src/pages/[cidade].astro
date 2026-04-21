@@ -151,6 +151,10 @@ const countText = filtrados.length === 1
 				
 				<div id="step-3" class="hidden">
 					<div class="mb-4">
+						<label class="block text-sm font-medium text-[#0a1a3c] mb-2">Cidade onde você precisa do serviço</label>
+						<input type="text" id="lead-cidade-input" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ffb800] focus:border-transparent outline-none" placeholder="Ex: Porto Alegre" />
+					</div>
+					<div class="mb-4">
 						<label class="block text-sm font-medium text-[#0a1a3c] mb-2">O que você precisa montar/desmontar?</label>
 						<input type="text" id="lead-servico" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ffb800] focus:border-transparent outline-none" placeholder="Ex: Guarda-roupa, Cozinha..." />
 					</div>
@@ -244,14 +248,14 @@ const countText = filtrados.length === 1
 		
 		document.getElementById("btn-enviar").addEventListener("click", function() {
 			var nome = document.getElementById("lead-nome").value;
+			var cidade = document.getElementById("lead-cidade-input").value;
 			var servico = document.getElementById("lead-servico").value;
 			var nomeMontador = leadMontadorInput.value;
 			var telefoneMontador = leadTelefoneInput.value;
-			var cidadeInput = document.getElementById("lead-cidade").value;
-			if (!nome || !servico || !nomeMontador) { alert("Preencha todos os campos!"); return; }
+			if (!nome || !servico || !nomeMontador || !cidade) { alert("Preencha todos os campos!"); return; }
 			if (!telefoneMontador) { alert("Número do montador não encontrado!"); return; }
 			var telefoneLimpo = "55" + telefoneMontador.replace(/\D/g, "");
-			var mensagem = "Olá " + nomeMontador + ", me chamo " + nome + ". Te encontrei no Portal O Montador de Móveis e preciso de um montador para " + servico + " em " + cidadeInput + ".";
+			var mensagem = "Olá " + nomeMontador + ", me chamo " + nome + ". Te encontrei no Portal O Montador de Móveis e preciso de um montador para " + servico + " em " + cidade + ".";
 			var urlWhatsapp = "https://wa.me/" + telefoneLimpo + "?text=" + encodeURIComponent(mensagem);
 			window.open(urlWhatsapp, "_blank");
 			modalOverlay.classList.add("hidden");

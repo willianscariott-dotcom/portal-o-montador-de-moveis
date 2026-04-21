@@ -3,10 +3,40 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import BottomNavBar from '../components/BottomNavBar.astro';
 
-const montadoresDestaque = [
-	{ nome: 'João Silva', imagem: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBjcIa-me9WU0X60olQ3jkoTMT4gaKbQE1tf-SDpFdFbHqtsMXUjTDbaMkI23I4tEJnp0F8Wo5yZBZ1gm5j_kx5_H9BwzNTq9D2qdhqJlCrOKLqbDMmuSdT7_gZ2NxgWL3Z4MNkIwIZKqm7BQ9Nf0yY5WOgt4f1cCRH_BjkNP6Bi_HKhEyGeIX6MdSRQLby89JSiiBZZorFD2C0zIvhrWGoydCb6eCsvGsxRxoH9h1_Im3U6Wkl27-vWVUu-wt4uQobJ_QIbo1RT1s', avaliacao: 5.0, totalAvaliacoes: 42, cidade: 'São Paulo', estado: 'SP', online: true },
-	{ nome: 'Marcos Oliveira', imagem: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCLDRNHayuU_lb5ux9OmA-6fcxbm4rOUqKJeOPe7e20zdi4oUSDpxB7B1F2tD9aHMQ_03Zn0LBv6r-Pgwdbh9cy_9BZMRNlEdf9mRE_4rbxy5Lwt-ybk_LeBRKn_p8s3dMRwbn2jyONdJxwiMThe7_D9qOcEgYAhqzPRBtvDkCeO9AlV0oE2hQroYK9zuuMComYxINaPdW4iWjOt6WUMx_NBFT5S9zfesAquJ3YLV4HxpxSc4yIIRv-ViRXX7M98kFRa5V2Nqtom_Y', avaliacao: 4.8, totalAvaliacoes: 89, cidade: 'Campinas', estado: 'SP', online: false },
-	{ nome: 'Carlos Mendes', imagem: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAV1uvFo8Cp8na5r5VJjrCzDHxRPRtcbUwzguGtnWGgADjKdNDKQDomT4stwt4mhndmmgnul2dGz9g_xyFOg0QPlhEsEZSoahhNPfGuHq_XcWkHem6uxNNkuEY6wmhhHb2-w60Wn1a4ACCF1qx_-AfEa1s-Om9lYyyKktLQl2hP9lfGGOcuhlwAkhl5NjeR5J-3N9endwgPliE-kjndu4292fmSm4QAx9v6zZcUTiwm_gdGQjXoxhzswaVMAjW5sIuHs5EqSVbuPjE', avaliacao: 5.0, totalAvaliacoes: 12, cidade: 'Guarulhos', estado: 'SP', online: true }
+const citiesData = [
+	{ id: "maceio", nome: "Maceió", estado: "Alagoas", estadoSigla: "AL" },
+	{ id: "manaus", nome: "Manaus", estado: "Amazonas", estadoSigla: "AM" },
+	{ id: "salvador", nome: "Salvador", estado: "Bahia", estadoSigla: "BA" },
+	{ id: "fortaleza", nome: "Fortaleza", estado: "Ceará", estadoSigla: "CE" },
+	{ id: "brasilia", nome: "Brasília", estado: "Distrito Federal", estadoSigla: "DF" },
+	{ id: "goiania", nome: "Goiânia", estado: "Goiás", estadoSigla: "GO" },
+	{ id: "sao-luis", nome: "São Luís", estado: "Maranhão", estadoSigla: "MA" },
+	{ id: "belo-horizonte", nome: "Belo Horizonte", estado: "Minas Gerais", estadoSigla: "MG" },
+	{ id: "uberlandia", nome: "Uberlândia", estado: "Minas Gerais", estadoSigla: "MG" },
+	{ id: "campo-grande", nome: "Campo Grande", estado: "Mato Grosso do Sul", estadoSigla: "MS" },
+	{ id: "cuiaba", nome: "Cuiabá", estado: "Mato Grosso", estadoSigla: "MT" },
+	{ id: "belem", nome: "Belém", estado: "Pará", estadoSigla: "PA" },
+	{ id: "joao-pessoa", nome: "João Pessoa", estado: "Paraíba", estadoSigla: "PB" },
+	{ id: "recife", nome: "Recife", estado: "Pernambuco", estadoSigla: "PE" },
+	{ id: "teresina", nome: "Teresina", estado: "Piauí", estadoSigla: "PI" },
+	{ id: "curitiba", nome: "Curitiba", estado: "Paraná", estadoSigla: "PR" },
+	{ id: "rio-de-janeiro", nome: "Rio de Janeiro", estado: "Rio de Janeiro", estadoSigla: "RJ" },
+	{ id: "natal", nome: "Natal", estado: "Rio Grande do Norte", estadoSigla: "RN" },
+	{ id: "porto-alegre", nome: "Porto Alegre", estado: "Rio Grande do Sul", estadoSigla: "RS" },
+	{ id: "canoas", nome: "Canoas", estado: "Rio Grande do Sul", estadoSigla: "RS" },
+	{ id: "pelotas", nome: "Pelotas", estado: "Rio Grande do Sul", estadoSigla: "RS" },
+	{ id: "cachoerinha", nome: "Cachoeirinha", estado: "Rio Grande do Sul", estadoSigla: "RS" },
+	{ id: "gravatai", nome: "Gravataí", estado: "Rio Grande do Sul", estadoSigla: "RS" },
+	{ id: "viamão", nome: "Viamão", estado: "Rio Grande do Sul", estadoSigla: "RS" },
+	{ id: "sao-leopoldo", nome: "São Leopoldo", estado: "Rio Grande do Sul", estadoSigla: "RS" },
+	{ id: "novo-hamburgo", nome: "Novo Hamburgo", estado: "Rio Grande do Sul", estadoSigla: "RS" },
+	{ id: "aracaju", nome: "Aracaju", estado: "Sergipe", estadoSigla: "SE" },
+	{ id: "sao-paulo", nome: "São Paulo", estado: "São Paulo", estadoSigla: "SP" },
+	{ id: "campinas", nome: "Campinas", estado: "São Paulo", estadoSigla: "SP" },
+	{ id: "guarulhos", nome: "Guarulhos", estado: "São Paulo", estadoSigla: "SP" },
+	{ id: "sao-bernardo-do-campo", nome: "São Bernardo do Campo", estado: "São Paulo", estadoSigla: "SP" },
+	{ id: "osasco", nome: "Osasco", estado: "São Paulo", estadoSigla: "SP" },
+	{ id: "ribeirao-preto", nome: "Ribeirão Preto", estado: "São Paulo", estadoSigla: "SP" }
 ];
 ---
 
@@ -55,38 +85,15 @@ const montadoresDestaque = [
 			</div>
 		</section>
 
-		<section class="px-6 py-12 bg-[#f2f3ff]/50 relative">
-			<div class="max-w-md mx-auto">
-				<div class="flex items-center justify-between mb-8">
-					<h2 class="font-headline text-2xl font-bold text-[#0a1a3c] tracking-tight">Profissionais em Destaque</h2>
-					<span class="material-symbols-outlined text-[#ffb800]" style="font-variation-settings: 'FILL' 1;">stars</span>
-				</div>
-				<div class="grid grid-cols-1 gap-5" id="destaque-grid">
-					{montadoresDestaque.length > 0 ? montadoresDestaque.map((montador) => (
-						<article class="bg-white rounded-xl p-5 ambient-shadow-sm">
-							<div class="flex items-start gap-4 mb-4">
-								<div class="w-16 h-16 rounded-full overflow-hidden bg-[#e2e7ff] flex-shrink-0">
-									<img alt={montador.nome} class="w-full h-full object-cover" src={montador.imagem || `https://ui-avatars.com/api/?name=${encodeURIComponent(montador.nome)}&background=random&color=fff`} />
-								</div>
-								<div class="flex-1">
-									<h3 class="font-headline font-bold text-lg text-[#0a1a3c]">{montador.nome}</h3>
-									<div class="flex items-center gap-1 mt-0.5 mb-1 text-[#ffb800]">
-										<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
-										<span class="text-[#514532] text-sm ml-1 font-medium">{montador.avaliacao.toFixed(1)} ({montador.totalAvaliacoes})</span>
-									</div>
-									<p class="text-xs text-[#514532]/80 font-medium">{montador.cidade}, {montador.estado}</p>
-								</div>
-							</div>
-							<div class="flex items-center justify-between pt-4 border-t border-[#e2e7ff]/30">
-								<span class="text-xs text-[#514532]">Orçamento por serviço</span>
-								<a href={`/${montador.cidade.toLowerCase().replace(/\s+/g, '-')}`} class="text-[#6b4c00] bg-[#ffb800]/10 hover:bg-[#ffb800] hover:text-[#6b4c00] font-headline font-bold text-sm px-4 py-2 rounded-md transition-colors">
-									Ver Perfil
-								</a>
-							</div>
-						</article>
-					)) : (
-						<p class="text-center text-[#514532] py-8">Em breve profissionais em destaque.</p>
-					)}
+		<section class="px-6 py-12 bg-[#0a1a3c]">
+			<div class="max-w-6xl mx-auto">
+				<h2 class="font-headline text-xl font-bold text-white mb-6">Principais Cidades Atendidas</h2>
+				<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+					{citiesData.map((cidade) => (
+						<a href={`/${cidade.id}`} class="text-[#ffb800] hover:text-white font-medium text-sm py-2 px-3 rounded-md transition-colors hover:bg-white/10">
+							{cidade.nome}
+						</a>
+					))}
 				</div>
 			</div>
 		</section>

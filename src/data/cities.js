@@ -18,7 +18,18 @@ export const citiesData = [
 	{ id: "rio-de-janeiro", nome: "Rio de Janeiro", estado: "Rio de Janeiro", estadoSigla: "RJ" },
 	{ id: "natal", nome: "Natal", estado: "Rio Grande do Norte", estadoSigla: "RN" },
 	{ id: "porto-alegre", nome: "Porto Alegre", estado: "Rio Grande do Sul", estadoSigla: "RS" },
+	{ id: "canoas", nome: "Canoas", estado: "Rio Grande do Sul", estadoSigla: "RS" },
+	{ id: "pelotas", nome: "Pelotas", estado: "Rio Grande do Sul", estadoSigla: "RS" },
+	{ id: "cachoeirinha", nome: "Cachoeirinha", estado: "Rio Grande do Sul", estadoSigla: "RS" },
+	{ id: "gravatai", nome: "Gravataí", estado: "Rio Grande do Sul", estadoSigla: "RS" },
+	{ id: "viamao", nome: "Viamão", estado: "Rio Grande do Sul", estadoSigla: "RS" },
+	{ id: "sao-leopoldo", nome: "São Leopoldo", estado: "Rio Grande do Sul", estadoSigla: "RS" },
+	{ id: "novo-hamburgo", nome: "Novo Hamburgo", estado: "Rio Grande do Sul", estadoSigla: "RS" },
 	{ id: "aracaju", nome: "Aracaju", estado: "Sergipe", estadoSigla: "SE" },
 	{ id: "sao-paulo", nome: "São Paulo", estado: "São Paulo", estadoSigla: "SP" },
-	{ id: "campinas", nome: "Campinas", estado: "São Paulo", estadoSigla: "SP" }
+	{ id: "campinas", nome: "Campinas", estado: "São Paulo", estadoSigla: "SP" },
+	{ id: "guarulhos", nome: "Guarulhos", estado: "São Paulo", estadoSigla: "SP" },
+	{ id: "sao-bernardo-do-campo", nome: "São Bernardo do Campo", estado: "São Paulo", estadoSigla: "SP" },
+	{ id: "osasco", nome: "Osasco", estado: "São Paulo", estadoSigla: "SP" },
+	{ id: "ribeirao-preto", nome: "Ribeirão Preto", estado: "São Paulo", estadoSigla: "SP" }
 ];

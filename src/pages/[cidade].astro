@@ -125,27 +125,46 @@ const countText = filtrados.length === 1
 						<span class="material-symbols-outlined">close</span>
 					</button>
 				</div>
-				<form id="lead-form" class="space-y-4">
-					<div>
-						<label class="block text-sm font-medium text-[#0a1a3c] mb-1">Seu Nome</label>
-						<input type="text" id="lead-nome" required class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ffb800] focus:border-transparent outline-none" placeholder="Como você se chama?" />
+				
+				<div id="step-1">
+					<div class="mb-4">
+						<label class="block text-sm font-medium text-[#0a1a3c] mb-2">Seu Nome</label>
+						<input type="text" id="lead-nome" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ffb800] focus:border-transparent outline-none" placeholder="Como você se chama?" />
 					</div>
-					<div>
-						<label class="block text-sm font-medium text-[#0a1a3c] mb-1">Seu WhatsApp</label>
-						<input type="tel" id="lead-telefone" required class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ffb800] focus:border-transparent outline-none" placeholder="(11) 99999-9999" />
+					<button type="button" id="btn-next-1" class="w-full bg-[#ffb800] hover:bg-[#f0ad00] text-[#6b4c00] font-bold py-3 rounded-lg transition-colors">
+						Avançar
+					</button>
+				</div>
+				
+				<div id="step-2" class="hidden">
+					<div class="mb-4">
+						<label class="block text-sm font-medium text-[#0a1a3c] mb-2">Seu WhatsApp</label>
+						<input type="tel" id="lead-telefone" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ffb800] focus:border-transparent outline-none" placeholder="(11) 99999-9999" />
 					</div>
-					<div>
-						<label class="block text-sm font-medium text-[#0a1a3c] mb-1">O que você precisa montar/desmontar?</label>
-						<input type="text" id="lead-servico" required class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ffb800] focus:border-transparent outline-none" placeholder="Ex: Guarda-roupa 6 portas..." />
+					<button type="button" id="btn-next-2" class="w-full bg-[#ffb800] hover:bg-[#f0ad00] text-[#6b4c00] font-bold py-3 rounded-lg transition-colors">
+						Avançar
+					</button>
+					<button type="button" id="btn-back-2" class="w-full mt-2 text-gray-500 hover:text-gray-700 py-2">
+						Voltar
+					</button>
+				</div>
+				
+				<div id="step-3" class="hidden">
+					<div class="mb-4">
+						<label class="block text-sm font-medium text-[#0a1a3c] mb-2">O que você precisa montar/desmontar?</label>
+						<input type="text" id="lead-servico" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ffb800] focus:border-transparent outline-none" placeholder="Ex: Guarda-roupa, Cozinha..." />
 					</div>
 					<input type="hidden" id="lead-montador" value="" />
 					<input type="hidden" id="lead-telefone-montador" value="" />
-					<input type="hidden" id="lead-cidade" value="{nomeCidade}" />
-					<button type="submit" class="track-lead-whatsapp w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+					<input type="hidden" id="lead-cidade" value={nomeCidade} />
+					<button type="button" id="btn-enviar" class="track-lead-whatsapp w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
 						<span class="material-symbols-outlined">chat</span>
-						Enviar Mensagem
+						Enviar no WhatsApp
 					</button>
-				</form>
+					<button type="button" id="btn-back-3" class="w-full mt-2 text-gray-500 hover:text-gray-700 py-2">
+						Voltar
+					</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -199,8 +218,31 @@ const countText = filtrados.length === 1
 			}
 		});
 
-		leadForm.addEventListener("submit", function(e) {
-			e.preventDefault();
+		document.getElementById("btn-next-1").addEventListener("click", function() {
+			var nome = document.getElementById("lead-nome").value;
+			if (!nome) { alert("Preencha seu nome!"); return; }
+			document.getElementById("step-1").classList.add("hidden");
+			document.getElementById("step-2").classList.remove("hidden");
+		});
+		
+		document.getElementById("btn-next-2").addEventListener("click", function() {
+			var telefone = document.getElementById("lead-telefone").value;
+			if (!telefone) { alert("Preencha seu WhatsApp!"); return; }
+			document.getElementById("step-2").classList.add("hidden");
+			document.getElementById("step-3").classList.remove("hidden");
+		});
+		
+		document.getElementById("btn-back-2").addEventListener("click", function() {
+			document.getElementById("step-2").classList.add("hidden");
+			document.getElementById("step-1").classList.remove("hidden");
+		});
+		
+		document.getElementById("btn-back-3").addEventListener("click", function() {
+			document.getElementById("step-3").classList.add("hidden");
+			document.getElementById("step-2").classList.remove("hidden");
+		});
+		
+		document.getElementById("btn-enviar").addEventListener("click", function() {
 			var nome = document.getElementById("lead-nome").value;
 			var servico = document.getElementById("lead-servico").value;
 			var nomeMontador = leadMontadorInput.value;
@@ -214,7 +256,9 @@ const countText = filtrados.length === 1
 			window.open(urlWhatsapp, "_blank");
 			modalOverlay.classList.add("hidden");
 			modalOverlay.classList.remove("flex");
-			leadForm.reset();
+			document.getElementById("lead-nome").value = "";
+			document.getElementById("lead-telefone").value = "";
+			document.getElementById("lead-servico").value = "";
 		});
 	</script>
 

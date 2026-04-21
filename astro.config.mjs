@@ -5,5 +5,5 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   integrations: [tailwind(), sitemap()],
   base: '/',
-  site: 'https://omontador.com.br',
+  site: 'https://portal.omontadordemoveis.com',
 });

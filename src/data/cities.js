@@ -36,8 +36,7 @@ export const citiesData = [
 	{ id: "esteio", nome: "Esteio", estado: "Rio Grande do Sul", estadoSigla: "RS" },
 	{ id: "igrejinha", nome: "Igrejinha", estado: "Rio Grande do Sul", estadoSigla: "RS" },
 	{ id: "ivoti", nome: "Ivoti", estado: "Rio Grande do Sul", estadoSigla: "RS" },
-	{ id: "morro-reuter", nome: "Morro Reuter", estado: "Rio Grande do Sul", estadoSigla: "RS" },
-	{ id: "nova-santa-rita", nome: "Nova Santa Rita", estado: "Rio Grande do Sul", estadoSigla: "RS" },
+	
 	{ id: "parobe", nome: "Parobé", estado: "Rio Grande do Sul", estadoSigla: "RS" },
 	{ id: "portao", nome: "Portão", estado: "Rio Grande do Sul", estadoSigla: "RS" },
 	{ id: "sapiranga", nome: "Sapiranga", estado: "Rio Grande do Sul", estadoSigla: "RS" },

@@ -9,7 +9,7 @@ export const citiesData = [
 	{ id: "belo-horizonte", nome: "Belo Horizonte", estado: "Minas Gerais", estadoSigla: "MG" },
 	{ id: "uberlandia", nome: "Uberlândia", estado: "Minas Gerais", estadoSigla: "MG" },
 	{ id: "campo-grande", nome: "Campo Grande", estado: "Mato Grosso do Sul", estadoSigla: "MS" },
-	{ id: " Cuiabá", nome: "Cuiabá", estado: "Mato Grosso", estadoSigla: "MT" },
+	{ id: "cuiaba", nome: "Cuiabá", estado: "Mato Grosso", estadoSigla: "MT" },
 	{ id: "belem", nome: "Belém", estado: "Pará", estadoSigla: "PA" },
 	{ id: "joao-pessoa", nome: "João Pessoa", estado: "Paraíba", estadoSigla: "PB" },
 	{ id: "recife", nome: "Recife", estado: "Pernambuco", estadoSigla: "PE" },

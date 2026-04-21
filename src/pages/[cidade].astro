@@ -33,6 +33,10 @@ const { data: montadores } = await supabase
 const filtrados = (montadores || []).filter(m => 
 	m.cidade_estado && m.cidade_estado.toLowerCase().includes(nomeCidade.toLowerCase())
 );
+
+const countText = filtrados.length === 1 
+	? '1 profissional encontrado' 
+	: `${filtrados.length} profissionais encontrados`;
 ---
 
 <Layout title={`Montadores de Móveis em ${nomeCidade} - ${estado} | O Montador de Móveis`}>
@@ -47,7 +51,7 @@ const filtrados = (montadores || []).filter(m =>
 				Montadores de Móveis em {nomeCidade} - {estado}
 			</h1>
 			<p class="text-[#514532] text-lg mb-6 max-w-2xl">{intro}</p>
-			<p class="text-[#514532] mb-8">{filtrados.length} profissional(is) encontrado(s)</p>
+			<p class="text-[#514532] mb-8">{countText}</p>
 
 			{filtrados.length === 0 ? (
 				<div class="text-center py-12">
@@ -136,6 +140,7 @@ const filtrados = (montadores || []).filter(m =>
 					</div>
 					<input type="hidden" id="lead-montador" value="" />
 					<input type="hidden" id="lead-telefone-montador" value="" />
+					<input type="hidden" id="lead-cidade" value="{nomeCidade}" />
 					<button type="submit" class="track-lead-whatsapp w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-lg transition-colors flex items-center justify-center gap-2">
 						<span class="material-symbols-outlined">chat</span>
 						Enviar Mensagem
@@ -164,6 +169,7 @@ const filtrados = (montadores || []).filter(m =>
 		var leadForm = document.getElementById("lead-form");
 		var leadMontadorInput = document.getElementById("lead-montador");
 		var leadTelefoneInput = document.getElementById("lead-telefone-montador");
+		var leadCidadeInput = document.getElementById("lead-cidade");
 		var modalClose = document.getElementById("modal-close");
 
 		document.querySelectorAll(".btn-whatsapp").forEach(function(btn) {
@@ -171,6 +177,7 @@ const filtrados = (montadores || []).filter(m =>
 				var target = e.currentTarget;
 				var nome = target.getAttribute("data-nome") || "";
 				var telefone = target.getAttribute("data-telefone") || "";
+				var cidadeFromProps = leadCidadeInput.value;
 				if (modalTitle) modalTitle.textContent = "Falar com " + nome;
 				if (leadMontadorInput) leadMontadorInput.value = nome;
 				if (leadTelefoneInput) leadTelefoneInput.value = telefone;
@@ -198,9 +205,10 @@ const filtrados = (montadores || []).filter(m =>
 			var servico = document.getElementById("lead-servico").value;
 			var nomeMontador = leadMontadorInput.value;
 			var telefoneMontador = leadTelefoneInput.value;
+			var cidadeInput = document.getElementById("lead-cidade").value;
 			if (!nome || !telefone || !servico || !nomeMontador) { alert("Preencha todos os campos!"); return; }
 			var telefoneLimpo = telefone.replace(/\D/g, "");
-			var mensagem = "Olá " + nomeMontador + ", me chamo " + nome + ". Te encontrei no Portal O Montador de Móveis e preciso de um montador para " + servico + " em " + nomeCidade + ". Meu contato é " + telefone;
+			var mensagem = "Olá " + nomeMontador + ", me chamo " + nome + ". Te encontrei no Portal O Montador de Móveis e preciso de um montador para " + servico + " em " + cidadeInput + ". Meu contato é " + telefone;
 			var urlWhatsapp = "https://wa.me/55" + telefoneLimpo + "?text=" + encodeURIComponent(mensagem);
 			window.open(urlWhatsapp, "_blank");
 			modalOverlay.classList.add("hidden");

@@ -12,12 +12,13 @@ export function getStaticPaths() {
 		props: { 
 			nomeCidade: c.nome, 
 			estado: c.estado,
-			estadoSigla: c.estadoSigla
+			estadoSigla: c.estadoSigla,
+			bairros: c.bairros || []
 		}
 	}));
 }
 
-const { nomeCidade, estado, estadoSigla } = Astro.props;
+const { nomeCidade, estado, estadoSigla, bairros } = Astro.props;
 
 const { data: montadores } = await supabase
 	.from('montadores_pendentes')
@@ -43,6 +44,14 @@ const metaDesc = `Precisa de montador de móveis em ${nomeCidade}? Conectamos vo
 const schemaData = {
 	"@context": "https://schema.org",
 	"@graph": [
+		{
+			"@type": "BreadcrumbList",
+			"itemListElement": [
+				{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://portal.omontadordemoveis.com/" },
+				{ "@type": "ListItem", "position": 2, "name": estado, "item": `https://portal.omontadordemoveis.com/${estadoSigla.toLowerCase()}` },
+				{ "@type": "ListItem", "position": 3, "name": nomeCidade, "item": `https://portal.omontadordemoveis.com/${estadoSigla.toLowerCase()}/${Astro.props.cidade}` }
+			]
+		},
 		{
 			"@type": "LocalBusiness",
 			"name": `Montador de Móveis em ${nomeCidade}`,
@@ -104,17 +113,22 @@ const schemaData = {
 
 	<main class="max-w-7xl mx-auto px-4">
 		<article class="pt-16 pb-12">
-			<a href="/" class="hidden md:inline-flex items-center gap-1 text-slate-600 mb-6 text-sm">
-				<span class="material-symbols-outlined text-sm">arrow_back</span>
-				Voltar
-			</a>
+			<nav aria-label="Breadcrumb" class="mb-6">
+				<ol class="flex items-center gap-2 text-sm text-slate-600">
+					<li><a href="/" class="hover:text-amber-600 transition-colors">Home</a></li>
+					<li><span class="material-symbols-outlined text-xs">chevron_right</span></li>
+					<li><a href={`/${estadoSigla.toLowerCase()}`} class="hover:text-amber-600 transition-colors">{estado}</a></li>
+					<li><span class="material-symbols-outlined text-xs">chevron_right</span></li>
+					<li aria-current="page" class="font-medium text-slate-800">{nomeCidade}</li>
+				</ol>
+			</nav>
 			
 			<h1 class="font-headline text-3xl md:text-4xl font-bold text-slate-800 mb-4">
 				Montadores de Móveis Avaliados em {nomeCidade} - {estadoSigla}
 			</h1>
 			
 			<p class="text-slate-600 text-lg mb-6 max-w-2xl">
-				Precisa de <strong>montagem profissional</strong> em {nomeCidade}? 
+				{bairros.length > 0 && `Atendemos em ${bairros.slice(0, 2).join(', ')} e toda a região de `}{nomeCidade}. 
 				Conectamos você aos melhores profissionais da região com 
 				<strong>orçamentos transparentes</strong> e 
 				<strong>atendimento rápido</strong> via WhatsApp.

@@ -1,9 +1,15 @@
 ---
 interface Props {
 	title: string;
+	description?: string;
+	url?: string;
+	image?: string;
 }
 
-const { title } = Astro.props;
+const { title, description = "Encontre montadores de móveis profissionais próximos de você. Serviço rápido, seguro e com garantia. Solicite seu orçamento agora!", url = "https://portal.omontadordemoveis.com", image = "https://portal.omontadordemoveis.com/favicon.svg" } = Astro.props;
+
+const siteUrl = "https://portal.omontadordemoveis.com";
+const ogImage = image || `${siteUrl}/favicon.svg`;
 ---
 
 <!doctype html>
@@ -15,12 +21,22 @@ const { title } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<meta name="google-site-verification" content="e5f742fa0babeddf" />
 		<title>{title}</title>
-		<meta name="description" content="Encontre montadores de móveis profissionais próximos de você. Serviço rápido, seguro e com garantia. Mais de 15 estados, 40 cidades. Solicite seu orçamento agora!" />
-		<link rel="canonical" href="https://portal.omontadordemoveis.com" />
+		<meta name="description" content={description} />
+		<link rel="canonical" href={url} />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@400;700;800&display=swap" rel="stylesheet" />
 		<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={url} />
+		<meta property="og:type" content="website" />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:site_name" content="Portal O Montador de Móveis" />
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImage} />
 		<script type="application/ld+json">
 		{
 			"@context": "https://schema.org",
@@ -29,7 +45,7 @@ const { title } = Astro.props;
 					"@type": "Organization",
 					"name": "Portal O Montador de Móveis",
 					"url": "https://portal.omontadordemoveis.com",
-					"logo": "https://portal.omontadordemoveis.com/logo.png",
+					"logo": "https://portal.omontadordemoveis.com/favicon.svg",
 					"sameAs": [
 						"https://instagram.com/omontador",
 						"https://facebook.com/omontador"

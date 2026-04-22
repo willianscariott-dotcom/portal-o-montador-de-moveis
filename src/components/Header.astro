@@ -1,7 +1,7 @@
 ---
 ---
 
-<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm dark:shadow-none flex justify-between items-center px-6 h-16">
+<header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md shadow-sm flex justify-between items-center px-6 h-16">
 	<div class="flex items-center gap-3">
 		<a href="/" aria-label="Início" class="hidden md:flex items-center justify-center w-10 h-10 text-slate-500 hover:bg-amber-50 transition-colors rounded-full">
 			<span class="material-symbols-outlined">home</span>
@@ -9,9 +9,12 @@
 		<button aria-label="Menu" class="flex md:hidden items-center justify-center w-10 h-10 -ml-2 text-slate-500 hover:bg-amber-50 transition-colors rounded-full">
 			<span class="material-symbols-outlined">menu</span>
 		</button>
-		<span class="text-lg font-black text-slate-900 dark:text-white tracking-tight font-headline">Portal O Montador de Móveis</span>
+		<a href="/" class="flex items-center gap-1.5 font-headline tracking-tight no-underline">
+			<span class="font-black text-slate-900">O</span>
+			<span class="font-bold text-slate-600">Montador</span>
+		</a>
 	</div>
-	<a href="/cadastro" class="font-headline font-bold tracking-tight text-amber-500 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors px-3 py-2 rounded-md active:opacity-80 active:scale-95 transition-transform text-sm">
-		Sou Montador (Cadastrar)
+	<a href="/cadastro" class="font-headline font-bold tracking-tight text-amber-600 hover:bg-amber-50 transition-colors px-3 py-2 rounded-md active:opacity-80 active:scale-95 text-sm">
+		Sou Montador
 	</a>
 </header>

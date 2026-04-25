@@ -23,7 +23,7 @@ export async function getStaticPaths() {
 			if (m.cidade_estado) {
 				const [nome, estadoSigla] = m.cidade_estado.split(' - ');
 				if (nome && estadoSigla) {
-					const slugCidade = nome.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+					const slugCidade = nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
 					const estadoLower = estadoSigla.toLowerCase();
 					if (!cidadesUnicas.has(`${estadoLower}/${slugCidade}`)) {
 						cidadesUnicas.set(`${estadoLower}/${slugCidade}`, {

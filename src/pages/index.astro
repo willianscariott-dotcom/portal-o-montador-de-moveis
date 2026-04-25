@@ -14,7 +14,7 @@ const cidadesMap = new Map();
 		const [nome, sigla] = m.cidade_estado.split(' - ');
 		if (nome && sigla && !cidadesMap.has(nome)) {
 			cidadesMap.set(nome, {
-				id: nome.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-'),
+				id: nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, ''),
 				nome,
 				estado: sigla
 			});

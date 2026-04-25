@@ -53,14 +53,13 @@ citiesByRegion.forEach(r => {
 
 const totalMontadores = montadores?.length || 0;
 
-const locaisDeAtendimentoJS = JSON.stringify(
-	Array.from(cidadesMap.values()).reduce((acc, c) => {
-		const uf = c.estado;
-		if (!acc[uf]) acc[uf] = [];
-		if (!acc[uf].includes(c.nome)) acc[uf].push(c.nome);
-		return acc;
-	}, {})
-);
+const locaisDeAtendimentoData = {};
+Array.from(cidadesMap.values()).forEach(c => {
+	if (!locaisDeAtendimentoData[c.estado]) locaisDeAtendimentoData[c.estado] = [];
+	if (!locaisDeAtendimentoData[c.estado].includes(c.nome)) {
+		locaisDeAtendimentoData[c.estado].push(c.nome);
+	}
+});
 ---
 
 <Layout title="Portal O Montador - Encontre Montadores de Móveis Próximos a Você" description="Encontre montadores de móveis profissionais próximos de você. Serviço rápido, seguro e com garantia. Solicite seu orçamento agora!" url="https://portal.omontadordemoveis.com">
@@ -226,6 +225,8 @@ const locaisDeAtendimentoJS = JSON.stringify(
 	<BottomNavBar />
 </Layout>
 
+<script define:vars={{ locaisDeAtendimentoData }}>window.locaisDeAtendimentoData = locaisDeAtendimentoData;</script>
+
 <script>
 	const estadoSelect = document.getElementById('estado');
 	const cidadeSelect = document.getElementById('cidade');
@@ -239,7 +240,7 @@ const locaisDeAtendimentoJS = JSON.stringify(
 		'ES': 'Espírito Santo'
 	};
 
-	const locaisDeAtendimento = JSON.parse('`${locaisDeAtendimentoJS}`');
+	const locaisDeAtendimento = `locaisDeAtendimentoData` in window ? window.locaisDeAtendimentoData : {};
 
 	function carregarEstados() {
 		const estadosOrdenados = Object.keys(locaisDeAtendimento).sort();

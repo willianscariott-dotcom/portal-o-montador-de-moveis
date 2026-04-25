@@ -2,59 +2,56 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import BottomNavBar from '../components/BottomNavBar.astro';
+import { supabase } from '../lib/supabase';
+
+const { data: montadores } = await supabase
+	.from('montadores_pendentes')
+	.select('cidade_estado');
+
+const cidadesMap = new Map();
+(montadores || []).forEach(m => {
+	if (m.cidade_estado) {
+		const [nome, sigla] = m.cidade_estado.split(' - ');
+		if (nome && sigla && !cidadesMap.has(nome)) {
+			cidadesMap.set(nome, {
+				id: nome.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-'),
+				nome,
+				estado: sigla
+			});
+		}
+	}
+});
 
 const citiesByRegion = [
-	{ region: "Sudeste", cities: [
-		{ id: "sao-paulo", nome: "São Paulo" },
-		{ id: "rio-de-janeiro", nome: "Rio de Janeiro" },
-		{ id: "belo-horizonte", nome: "Belo Horizonte" },
-		{ id: "campinas", nome: "Campinas" },
-		{ id: "guarulhos", nome: "Guarulhos" },
-		{ id: "sao-bernardo-do-campo", nome: "São Bernardo do Campo" },
-		{ id: "osasco", nome: "Osasco" },
-		{ id: "sorocaba", nome: "Sorocaba" },
-		{ id: "ribeirao-preto", nome: "Ribeirão Preto" },
-		{ id: "duque-de-caxias", nome: "Duque de Caxias" },
-		{ id: "sao-goncalo", nome: "São Gonçalo" },
-		{ id: "santoandre", nome: "Santo André" },
-		{ id: "sao-jose-dos-campos", nome: "São José dos Campos" }
-	]},
-	{ region: "Sul", cities: [
-		{ id: "porto-alegre", nome: "Porto Alegre" },
-		{ id: "curitiba", nome: "Curitiba" },
-		{ id: "campo-largo", nome: "Campo Largo" },
-		{ id: "canoas", nome: "Canoas" },
-		{ id: "cachoeirinha", nome: "Cachoeirinha" },
-		{ id: "gravatai", nome: "Gravataí" },
-		{ id: "viamao", nome: "Viamão" },
-		{ id: "sao-leopoldo", nome: "São Leopoldo" },
-		{ id: "novo-hamburgo", nome: "Novo Hamburgo" },
-		{ id: "parobe", nome: "Parobé" },
-		{ id: "sapiranga", nome: "Sapiranga" },
-		{ id: "sapucaia-do-sul", nome: "Sapucaia do Sul" }
-	]},
-	{ region: "Nordeste", cities: [
-		{ id: "salvador", nome: "Salvador" },
-		{ id: "recife", nome: "Recife" },
-		{ id: "fortaleza", nome: "Fortaleza" },
-		{ id: "natal", nome: "Natal" },
-		{ id: "joao-pessoa", nome: "João Pessoa" },
-		{ id: "teresina", nome: "Teresina" },
-		{ id: "maceio", nome: "Maceió" }
-	]},
-	{ region: "Centro-Oeste", cities: [
-		{ id: "brasilia", nome: "Brasília" },
-		{ id: "goiania", nome: "Goiânia" },
-		{ id: "campo-grande", nome: "Campo Grande" },
-		{ id: "cuiaba", nome: "Cuiabá" }
-	]},
-	{ region: "Norte & Nordeste", cities: [
-		{ id: "manaus", nome: "Manaus" },
-		{ id: "belem", nome: "Belém" },
-		{ id: "sao-luis", nome: "São Luís" },
-		{ id: "uberlandia", nome: "Uberlândia" }
-	]}
+	{ region: "Sudeste", cities: [] },
+	{ region: "Sul", cities: [] },
+	{ region: "Nordeste", cities: [] },
+	{ region: "Centro-Oeste", cities: [] },
+	{ region: "Norte", cities: [] }
 ];
+
+const estadoRegiao = {
+	'SP': 'Sudeste', 'RJ': 'Sudeste', 'MG': 'Sudeste', 'ES': 'Sudeste',
+	'RS': 'Sul', 'SC': 'Sul', 'PR': 'Sul',
+	'BA': 'Nordeste', 'PE': 'Nordeste', 'CE': 'Nordeste', 'RN': 'Nordeste', 
+	'PB': 'Nordeste', 'AL': 'Nordeste', 'SE': 'Nordeste', 'MA': 'Nordeste', 'PI': 'Nordeste',
+	'DF': 'Centro-Oeste', 'GO': 'Centro-Oeste', 'MT': 'Centro-Oeste', 'MS': 'Centro-Oeste',
+	'AM': 'Norte', 'PA': 'Norte', 'RO': 'Norte', 'AC': 'Norte', 'AP': 'Norte', 'RR': 'Norte', 'TO': 'Norte'
+};
+
+Array.from(cidadesMap.values()).forEach(c => {
+	const regiao = estadoRegiao[c.estado] || 'Sudeste';
+	const regionObj = citiesByRegion.find(r => r.region === regiao);
+	if (regionObj && !regionObj.cities.find(ci => ci.nome === c.nome)) {
+		regionObj.cities.push(c);
+	}
+});
+
+citiesByRegion.forEach(r => {
+	r.cities.sort((a, b) => a.nome.localeCompare(b.nome));
+});
+
+const totalMontadores = montadores?.length || 0;
 ---
 
 <Layout title="Portal O Montador - Encontre Montadores de Móveis Próximos a Você" description="Encontre montadores de móveis profissionais próximos de você. Serviço rápido, seguro e com garantia. Solicite seu orçamento agora!" url="https://portal.omontadordemoveis.com">
@@ -82,7 +79,7 @@ const citiesByRegion = [
 					<div>
 						<div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6">
 							<span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-							<span class="text-white/80 text-sm font-medium">+500 profissionais ativos</span>
+							<span class="text-white/80 text-sm font-medium">{totalMontadores} profissionais ativos</span>
 						</div>
 						
 						<h1 id="hero-heading" class="font-headline text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6">

@@ -4,21 +4,43 @@ import Header from '../../components/Header.astro';
 import BottomNavBar from '../../components/BottomNavBar.astro';
 import MontadorCard from '../../components/MontadorCard.astro';
 import { supabase } from '../../lib/supabase';
-import { citiesData } from '../../data/cities.js';
 
-export function getStaticPaths() {
-	return citiesData.map(c => ({
-		params: { estado: c.estadoSigla.toLowerCase(), cidade: c.id },
+export async function getStaticPaths() {
+	const { data: montadores } = await supabase
+		.from('montadores_pendentes')
+		.select('cidade_estado, link_google_empresas');
+	
+	const cidadesUnicas = new Map();
+	
+	(montadores || []).forEach(m => {
+		if (m.cidade_estado) {
+			const [nome, estadoSigla] = m.cidade_estado.split(' - ');
+			if (nome && estadoSigla) {
+				const slugCidade = nome.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+				const estadoLower = estadoSigla.toLowerCase();
+				if (!cidadesUnicas.has(`${estadoLower}/${slugCidade}`)) {
+					cidadesUnicas.set(`${estadoLower}/${slugCidade}`, {
+						estado: estadoLower,
+						estadoSigla: estadoSigla,
+						nomeCidade: nome,
+						id: slugCidade
+					});
+				}
+			}
+		}
+	});
+	
+	return Array.from(cidadesUnicas.values()).map(c => ({
+		params: { estado: c.estado, cidade: c.id },
 		props: { 
-			nomeCidade: c.nome, 
-			estado: c.estado,
-			estadoSigla: c.estadoSigla,
-			bairros: c.bairros || []
+			nomeCidade: c.nomeCidade, 
+			estado: c.estadoSigla,
+			estadoSigla: c.estadoSigla
 		}
 	}));
 }
 
-const { nomeCidade, estado, estadoSigla, bairros } = Astro.props;
+const { nomeCidade, estado, estadoSigla } = Astro.props;
 
 const { data: montadores } = await supabase
 	.from('montadores_pendentes')

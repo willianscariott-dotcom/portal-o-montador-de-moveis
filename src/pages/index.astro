@@ -52,6 +52,15 @@ citiesByRegion.forEach(r => {
 });
 
 const totalMontadores = montadores?.length || 0;
+
+const locaisDeAtendimentoJS = JSON.stringify(
+	Array.from(cidadesMap.values()).reduce((acc, c) => {
+		const uf = c.estado;
+		if (!acc[uf]) acc[uf] = [];
+		if (!acc[uf].includes(c.nome)) acc[uf].push(c.nome);
+		return acc;
+	}, {})
+);
 ---
 
 <Layout title="Portal O Montador - Encontre Montadores de Móveis Próximos a Você" description="Encontre montadores de móveis profissionais próximos de você. Serviço rápido, seguro e com garantia. Solicite seu orçamento agora!" url="https://portal.omontadordemoveis.com">
@@ -230,15 +239,7 @@ const totalMontadores = montadores?.length || 0;
 		'ES': 'Espírito Santo'
 	};
 
-	const locaisDeAtendimento = {
-		"AL": ["Maceió"], "AM": ["Manaus"], "BA": ["Salvador"], "CE": ["Fortaleza"],
-		"DF": ["Brasília"], "GO": ["Goiânia"], "MA": ["São Luís"], "MG": ["Belo Horizonte", "Uberândia"],
-		"MS": ["Campo Grande"], "MT": ["Cuiabá"], "PA": ["Belém"], "PB": ["João Pessoa"],
-		"PE": ["Jaboatão dos Guararapes", "Recife"], "PI": ["Teresina"], "PR": ["Campo Largo", "Curitiba"],
-		"RJ": ["Duque de Caxias", "Rio de Janeiro", "São Gonçalo"], "RN": ["Natal"],
-		"RS": ["Cachoeirinha", "Campo Bom", "Canoas", "Dois Irmãos", "Gravataí", "Novo Hamburgo", "Parobé", "Portão", "Porto Alegre", "Sapiranga", "Sapucaia do Sul", "São Leopoldo", "Viamão"],
-		"SE": ["Aracaju"], "ES": ["Vila Velha"], "SP": ["Campinas", "Guarulhos", "Osasco", "Ribeirão Preto", "Santo André", "São Bernardo do Campo", "São José dos Campos", "São Paulo", "Sorocaba"]
-	};
+	const locaisDeAtendimento = JSON.parse('`${locaisDeAtendimentoJS}`');
 
 	function carregarEstados() {
 		const estadosOrdenados = Object.keys(locaisDeAtendimento).sort();

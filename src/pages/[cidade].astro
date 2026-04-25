@@ -7,28 +7,39 @@ import { supabase } from '../lib/supabase';
 import avaliacoesData from '../data/avaliacoes_reais.json';
 
 export async function getStaticPaths() {
-	const { data: montadores } = await supabase
-		.from('montadores_pendentes')
-		.select('cidade_estado');
-	
-	const cidadesUnicas = new Map();
-	
-	(montadores || []).forEach(m => {
-		if (m.cidade_estado) {
-			const [nome, estadoSigla] = m.cidade_estado.split(' - ');
-			if (nome && estadoSigla) {
-				const slug = nome.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
-				if (!cidadesUnicas.has(slug)) {
-					cidadesUnicas.set(slug, { id: slug, nome, estadoSigla });
+	try {
+		const { data: montadores, error } = await supabase
+			.from('montadores_pendentes')
+			.select('cidade_estado');
+		
+		if (error) {
+			console.log('Erro getStaticPaths:', error.message);
+			return [];
+		}
+		
+		const data = montadores || [];
+		const cidadesUnicas = new Map();
+		
+		data.forEach(m => {
+			if (m.cidade_estado) {
+				const [nome, estadoSigla] = m.cidade_estado.split(' - ');
+				if (nome && estadoSigla) {
+					const slug = nome.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+					if (!cidadesUnicas.has(slug)) {
+						cidadesUnicas.set(slug, { id: slug, nome, estadoSigla });
+					}
 				}
 			}
-		}
-	});
-	
-	return Array.from(cidadesUnicas.values()).map(c => ({
-		params: { cidade: c.id },
-		props: { nomeCidade: c.nome, estado: c.estadoSigla }
-	}));
+		});
+		
+		return Array.from(cidadesUnicas.values()).map(c => ({
+			params: { cidade: c.id },
+			props: { nomeCidade: c.nome, estado: c.estadoSigla }
+		}));
+	} catch (err) {
+		console.log('Erro catch getStaticPaths:', err.message);
+		return [];
+	}
 }
 
 const { nomeCidade, estado } = Astro.props;

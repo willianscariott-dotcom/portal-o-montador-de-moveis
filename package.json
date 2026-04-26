@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",
+    "@supabase/supabase-js": "^2.104.0",
     "astro": "^5.0.0",
     "dotenv": "^17.4.2",
     "googleapis": "^171.4.0",
@@ -18,7 +19,6 @@
   },
   "devDependencies": {
     "@astrojs/tailwind": "^6.0.0",
-    "@supabase/supabase-js": "^2.104.0",
     "csv-parser": "^3.2.0",
     "papaparse": "^5.5.3",
     "puppeteer": "^24.0.0",

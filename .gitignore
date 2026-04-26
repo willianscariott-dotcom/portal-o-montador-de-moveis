@@ -17,6 +17,7 @@ dist/
 # Optional
 portal-montador/
 google-credentials.json
+service-account.json
 
 # Environment
 .env

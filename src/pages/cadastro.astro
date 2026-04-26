@@ -100,7 +100,7 @@ import Header from '../components/Header.astro';
 
 					<div>
 						<label for="google-empresas" class="block text-sm font-medium text-[#0a1a3c] mb-2">
-							Link do seu Perfil no Google Empresas
+							Link do perfil no Google (Opcional)
 						</label>
 						<div class="relative">
 							<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#514532]/60">link</span>
@@ -109,12 +109,11 @@ import Header from '../components/Header.astro';
 								id="google-empresas"
 								name="googleEmpresas"
 								placeholder="https://business.google.com/..."
-								required
 								class="w-full h-14 pl-12 pr-4 bg-[#f2f3ff] text-[#0a1a3c] font-body text-base border-none rounded-md appearance-none focus:ring-2 focus:ring-[#ffb800] focus:ring-offset-2 focus:ring-offset-white transition-all placeholder:text-[#514532]/50"
 							/>
 						</div>
 						<p class="mt-2 text-sm text-[#514532]/70">
-							Isso ajuda clientes a encontrar sua empresa e ver suas avaliações
+							Recomendado para puxar suas estrelas e quantidade de avaliações. Deixe em branco se não tiver.
 						</p>
 					</div>
 
@@ -215,11 +214,14 @@ import Header from '../components/Header.astro';
 		const cidade = formData.get('cidade') as string;
 		const cidadeEstado = `${cidade} - ${estado}`;
 
+		const linkGoogle = formData.get('googleEmpresas');
+		const linkGoogleEmpresas = linkGoogle && linkGoogle.toString().trim() ? linkGoogle.toString().trim() : null;
+
 		const dados = {
 			nome_completo: formData.get('nome'),
 			whatsapp: formData.get('whatsapp'),
 			cidade_estado: cidadeEstado,
-			link_google_empresas: formData.get('googleEmpresas')
+			link_google_empresas: linkGoogleEmpresas
 		};
 
 		const { error } = await supabase

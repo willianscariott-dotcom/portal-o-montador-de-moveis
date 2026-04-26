@@ -4,6 +4,7 @@ import Header from '../../components/Header.astro';
 import BottomNavBar from '../../components/BottomNavBar.astro';
 import MontadorCard from '../../components/MontadorCard.astro';
 import { supabase } from '../../lib/supabase';
+import { filtrarEMontadores } from '../../lib/sanitizer';
 
 export async function getStaticPaths() {
 	try {
@@ -70,17 +71,20 @@ const bairros = [];
 
 const { data: montadores } = await supabase
 	.from('montadores_pendentes')
-	.select('*');
+	.select('*')
+	.range(0, 10000);
 
-const filtrados = (montadores || []).filter(m => 
+const sanitizados = filtrarEMontadores(montadores || []);
+
+const filtrados = sanitizados.filter(m => 
 	m.cidade_estado && m.cidade_estado.toLowerCase().includes(nomeCidade.toLowerCase())
 );
 
 const notaMedia = filtrados.length > 0 
-	? filtrados.reduce((acc, m) => acc + (m.nota || 0), 0) / filtrados.length 
-	: 0;
+	? filtrados.reduce((acc, m) => acc + (m.totalScore || 5), 0) / filtrados.length 
+	: 5;
 
-const totalAvaliacoes = filtrados.reduce((acc, m) => acc + (m.avaliacoes || 0), 0);
+const totalAvaliacoes = filtrados.reduce((acc, m) => acc + (m.reviewsCount || 1), 0);
 
 const countText = filtrados.length === 1 
 	? '1 profissional encontrado' 
@@ -202,8 +206,8 @@ const schemaData = {
 							<MontadorCard 
 								nome={m.nome_completo}
 								imagem={m.foto_url || ''}
-								avaliacao={m.nota || 0}
-								totalAvaliacoes={m.avaliacoes || 0}
+								avaliacao={m.totalScore || 5}
+								totalAvaliacoes={m.reviewsCount || 1}
 								linkGoogle={m.link_google_empresas || null}
 								cidade={nomeCidade}
 								estado={estado}

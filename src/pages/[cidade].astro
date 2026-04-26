@@ -5,6 +5,7 @@ import BottomNavBar from '../components/BottomNavBar.astro';
 import MontadorCard from '../components/MontadorCard.astro';
 import { supabase } from '../lib/supabase';
 import avaliacoesData from '../data/avaliacoes_reais.json';
+import { sanitizeCidade, sanitizeNota, filtrarEMontadores, sanitizeMontadorCompleto } from '../lib/sanitizer';
 
 export async function getStaticPaths() {
 	try {
@@ -95,9 +96,12 @@ const intro = intros[nomeCidade.length % intros.length];
 
 const { data: montadores } = await supabase
 	.from('montadores_pendentes')
-	.select('*');
+	.select('*')
+	.range(0, 10000);
 
-const filtrados = (montadores || []).filter(m => 
+const sanitizados = filtrarEMontadores(montadores || []);
+
+const filtrados = sanitizados.filter(m => 
 	m.cidade_estado && m.cidade_estado.toLowerCase().includes(nomeCidade.toLowerCase())
 );
 
@@ -132,8 +136,8 @@ const countText = filtrados.length === 1
 						<MontadorCard 
 							nome={m.nome_completo}
 							imagem={m.foto_url || ''}
-							avaliacao={m.nota || 0}
-							totalAvaliacoes={m.avaliacoes || 0}
+							avaliacao={m.totalScore || 5}
+							totalAvaliacoes={m.reviewsCount || 1}
 							linkGoogle={m.link_google_empresas || null}
 							cidade={nomeCidade}
 							estado={estado}

@@ -10,7 +10,8 @@ export async function getStaticPaths() {
 	try {
 		const { data: montadores, error } = await supabase
 			.from('montadores_pendentes')
-			.select('cidade_estado');
+			.select('cidade_estado')
+			.range(0, 10000);
 		
 		if (error) {
 			console.log('Erro getStaticPaths:', error.message);
@@ -20,17 +21,30 @@ export async function getStaticPaths() {
 		const data = montadores || [];
 		const cidadesUnicas = new Map();
 		
+		function slugify(text) {
+			return text
+				.toLowerCase()
+				.normalize('NFD')
+				.replace(/[\u0300-\u036f]/g, '')
+				.replace(/[^a-z0-9]/g, '-')
+				.replace(/-+/g, '-')
+				.replace(/^-|-$/g, '');
+		}
+		
 		data.forEach(m => {
 			if (m.cidade_estado) {
 				const [nome, estadoSigla] = m.cidade_estado.split(' - ');
 				if (nome && estadoSigla) {
-					const slug = nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+					const slug = slugify(nome);
+					const slugComposto = `${slug}-${slugify(estadoSigla)}`;
 					if (!cidadesUnicas.has(slug)) {
 						cidadesUnicas.set(slug, { id: slug, nome, estadoSigla });
 					}
 				}
 			}
 		});
+		
+		console.log(`getStaticPaths: ${cidadesUnicas.size} cidades únicas encontradas`);
 		
 		return Array.from(cidadesUnicas.values()).map(c => ({
 			params: { cidade: c.id },

@@ -1,8 +1,11 @@
 ---
-const { nome, imagem, avaliacao = 0, totalAvaliacoes = 0, cidade, estado, especialidades = [], online = false, telefone = '' } = Astro.props;
+const { nome, imagem, avaliacao = 0, totalAvaliacoes = 0, cidade, estado, especialidades = [], online = false, telefone = '', linkGoogle = null } = Astro.props;
 
 const telefoneWhatsApp = telefone ? telefone.replace(/\D/g, '') : '';
 const fotoAvatar = imagem || `https://ui-avatars.com/api/?name=${encodeURIComponent(nome)}&background=random&color=fff`;
+
+const avaliacaoFinal = (avaliacao === null || avaliacao === undefined || avaliacao === 0 || avaliacao === '') && !linkGoogle ? 5 : avaliacao;
+const totalAvaliacoesFinal = (totalAvaliacoes === null || totalAvaliacoes === undefined || totalAvaliacoes === 0) && !linkGoogle ? 1 : totalAvaliacoes;
 
 const renderStars = (rating) => {
 	const stars = [];
@@ -21,7 +24,10 @@ const renderStars = (rating) => {
 	return stars;
 };
 
-const stars = renderStars(avaliacao);
+const stars = renderStars(avaliacaoFinal);
+
+	const starCount = typeof avaliacaoFinal === 'number' ? avaliacaoFinal : 0;
+	const reviewCount = typeof totalAvaliacoesFinal === 'number' ? totalAvaliacoesFinal : 0;
 ---
 
 <article class="bg-white rounded-xl p-5 ambient-shadow-sm hover:-translate-y-1 transition-transform duration-300">
@@ -34,11 +40,11 @@ const stars = renderStars(avaliacao);
 			<h3 class="font-headline font-bold text-lg text-[#0a1a3c]">{nome}</h3>
 			<div class="flex items-center gap-1 mt-0.5 mb-1 text-[#ffb800]">
 				{stars.map((star) => (
-					<span class="material-symbols-outlined text-sm" style={star === 'star' && avaliacao >= 1 ? "font-variation-settings: 'FILL' 1;" : ''}>
+					<span class="material-symbols-outlined text-sm" style={star === 'star' && starCount >= 1 ? "font-variation-settings: 'FILL' 1;" : ''}>
 						{star}
 					</span>
 				))}
-				<span class="text-[#514532] text-sm ml-1 font-medium">{avaliacao.toFixed(1)} ({totalAvaliacoes})</span>
+				<span class="text-[#514532] text-sm ml-1 font-medium">{starCount.toFixed(1)} ({reviewCount})</span>
 			</div>
 			<p class="text-xs text-[#514532]/80 font-medium">{cidade}, {estado}</p>
 		</div>

@@ -37,6 +37,14 @@ const ogImage = image || `${siteUrl}/favicon.svg`;
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={ogImage} />
+		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y8D7HP1H4Q"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', 'G-Y8D7HP1H4Q');
+		</script>
 		<script type="application/ld+json">
 		{
 			"@context": "https://schema.org",

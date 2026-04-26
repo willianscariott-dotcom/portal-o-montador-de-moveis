@@ -42,7 +42,9 @@ import Header from '../components/Header.astro';
 
 			<div class="bg-white rounded-xl p-8 ambient-shadow">
 				<h2 class="font-headline text-xl font-bold text-[#0a1a3c] mb-6">Enviar Mensagem</h2>
-				<form class="space-y-6" action="#" method="POST">
+				<form class="space-y-6" action="https://formsubmit.co/contato@grupows.com" method="POST">
+					<input type="hidden" name="_captcha" value="false" />
+					<input type="hidden" name="_subject" value="Nova mensagem do Portal O Montador" />
 					<div>
 						<label for="nome" class="block text-sm font-medium text-[#0a1a3c] mb-2">Nome Completo</label>
 						<input

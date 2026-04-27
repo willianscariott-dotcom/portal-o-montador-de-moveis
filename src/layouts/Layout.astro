@@ -17,6 +17,7 @@ const ogImage = image || `${siteUrl}/favicon.svg`;
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://servicodados.ibge.gov.br https://*.supabase.co;" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="google-site-verification" content="e5f742fa0babeddf" />
@@ -65,7 +66,10 @@ const ogImage = image || `${siteUrl}/favicon.svg`;
 					"url": "https://portal.omontadordemoveis.com",
 					"potentialAction": {
 						"@type": "SearchAction",
-						"target": "https://portal.omontadordemoveis.com/{search_term_string}",
+						"target": {
+							"@type": "EntryPoint",
+							"urlTemplate": "https://portal.omontadordemoveis.com/?s={search_term_string}"
+						},
 						"query-input": "required name=search_term_string"
 					}
 				}

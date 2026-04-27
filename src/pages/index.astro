@@ -263,7 +263,7 @@ Array.from(cidadesMap.values()).forEach(c => {
 
 	estadoSelect.addEventListener('change', function() {
 		const ufSelecionado = estadoSelect.value;
-		cidadeSelect.innerHTML = '<option disabled selected value="">Selecione a Cidade</option>';
+		cidadeSelect.textContent = 'Selecione a Cidade';
 		
 		if (locaisDeAtendimento[ufSelecionado]) {
 			locaisDeAtendimento[ufSelecionado].sort().forEach(function(cidade) {

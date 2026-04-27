@@ -148,8 +148,8 @@ import Header from '../components/Header.astro';
 <script>
 	import { createClient } from '@supabase/supabase-js';
 
-	const supabaseUrl = 'https://zbxclibijjngvorcynpw.supabase.co';
-	const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpieGNsaWJpampuZ3ZvcmN5bnB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NDE2OTIsImV4cCI6MjA5MjIxNzY5Mn0.yL21n_56GRd8xb1NPfKNYSyvGRTMHu5SC96u7BuzmfA';
+	const supabaseUrl = import.meta.env.SUPABASE_URL;
+	const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY;
 	const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 	const form = document.getElementById('cadastro-form');
@@ -178,13 +178,13 @@ import Header from '../components/Header.astro';
 
 	async function carregarCidades(uf: string) {
 		try {
-			cidadeSelect.innerHTML = '<option disabled selected value="">Carregando...</option>';
+			cidadeSelect.textContent = 'Carregando...';
 			cidadeSelect.disabled = true;
 
 			const response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`);
 			const municipios = await response.json();
 
-			cidadeSelect.innerHTML = '<option disabled selected value="">Selecione uma cidade</option>';
+			cidadeSelect.textContent = 'Selecione uma cidade';
 			
 			municipios.forEach((municipio: { nome: string }) => {
 				const option = document.createElement('option');
@@ -196,7 +196,7 @@ import Header from '../components/Header.astro';
 			cidadeSelect.disabled = false;
 		} catch (error) {
 			console.error('Erro ao carregar cidades:', error);
-			cidadeSelect.innerHTML = '<option disabled selected value="">Erro ao carregar</option>';
+			cidadeSelect.textContent = 'Erro ao carregar';
 		}
 	}
 

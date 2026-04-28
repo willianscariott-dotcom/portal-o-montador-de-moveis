@@ -3,24 +3,36 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import BottomNavBar from '../components/BottomNavBar.astro';
 import { supabase } from '../lib/supabase';
+import { citiesData } from '../data/cities.js';
 
 const { data: montadores } = await supabase
 	.from('montadores_pendentes')
 	.select('cidade_estado');
 
 const cidadesMap = new Map();
-(montadores || []).forEach(m => {
-	if (m.cidade_estado) {
-		const [nome, sigla] = m.cidade_estado.split(' - ');
-		if (nome && sigla && !cidadesMap.has(nome)) {
-			cidadesMap.set(nome, {
-				id: nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, ''),
-				nome,
-				estado: sigla
-			});
+
+if (!montadores || montadores.length === 0) {
+	citiesData.forEach(c => {
+		cidadesMap.set(c.nome, {
+			id: c.id,
+			nome: c.nome,
+			estado: c.estadoSigla
+		});
+	});
+} else {
+	montadores.forEach(m => {
+		if (m.cidade_estado) {
+			const [nome, sigla] = m.cidade_estado.split(' - ');
+			if (nome && sigla && !cidadesMap.has(nome)) {
+				cidadesMap.set(nome, {
+					id: nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, ''),
+					nome,
+					estado: sigla
+				});
+			}
 		}
-	}
-});
+	});
+}
 
 const citiesByRegion = [
 	{ region: "Sudeste", cities: [] },

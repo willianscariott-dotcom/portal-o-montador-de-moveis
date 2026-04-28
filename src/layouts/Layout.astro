@@ -19,6 +19,7 @@ const ogImage = image || `${siteUrl}/favicon.svg`;
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://servicodados.ibge.gov.br https://*.supabase.co;" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 		<meta name="generator" content={Astro.generator} />
 		<meta name="google-site-verification" content="e5f742fa0babeddf" />
 		<title>{title}</title>
@@ -32,7 +33,7 @@ const ogImage = image || `${siteUrl}/favicon.svg`;
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={url} />
 		<meta property="og:type" content="website" />
-		<meta property="og:image" content={ogImage} />
+		<meta property="og:image" content="/og-image.png" />
 		<meta property="og:site_name" content="Portal O Montador de Móveis" />
 		<meta name="twitter:card" content="summary" />
 		<meta name="twitter:title" content={title} />

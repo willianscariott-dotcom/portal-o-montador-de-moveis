@@ -263,14 +263,15 @@ Array.from(cidadesMap.values()).forEach(c => {
 
 	estadoSelect.addEventListener('change', function() {
 		const ufSelecionado = estadoSelect.value;
-		cidadeSelect.textContent = 'Selecione a Cidade';
+		cidadeSelect.innerHTML = '<option disabled selected value="">Selecione a Cidade</option>';
 		
 		if (locaisDeAtendimento[ufSelecionado]) {
 			locaisDeAtendimento[ufSelecionado].sort().forEach(function(cidade) {
 				const slug = cidade.toLowerCase()
 					.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-					.replace(/ã/g, 'a').replace(/õ/g, 'o')
-					.replace(/\s+/g, '-');
+					.replace(/[^a-z0-9]/g, '-')
+					.replace(/-+/g, '-')
+					.replace(/^-|-$/g, '');
 				const option = document.createElement('option');
 				option.value = slug;
 				option.textContent = cidade;

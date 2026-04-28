@@ -260,7 +260,7 @@ Array.from(cidadesMap.values()).forEach(c => {
 		'ES': 'Espírito Santo'
 	};
 
-	const locaisDeAtendimento = `locaisDeAtendimentoData` in window ? window.locaisDeAtendimentoData : {};
+	const locaisDeAtendimento = 'locaisDeAtendimentoData' in window ? window.locaisDeAtendimentoData : {};
 
 	function carregarEstados() {
 		const estadosOrdenados = Object.keys(locaisDeAtendimento).sort();

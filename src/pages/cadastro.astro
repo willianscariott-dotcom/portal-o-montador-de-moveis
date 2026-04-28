@@ -259,8 +259,15 @@ import Header from '../components/Header.astro';
 				submitBtn.disabled = false;
 				alert('Erro ao cadastrar: ' + error.message);
 			} else {
-			form.classList.add('hidden');
-			successMessage.classList.remove('hidden');
+				form.classList.add('hidden');
+				successMessage.classList.remove('hidden');
+			}
+		} catch (err) {
+			console.error('Erro:', err);
+			btnText.textContent = 'Tentar Novamente';
+			btnIcon.textContent = 'error';
+			submitBtn.disabled = false;
+			alert('Erro ao cadastrar. Tente novamente.');
 		}
 	});
 

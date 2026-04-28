@@ -158,8 +158,8 @@ import Header from '../components/Header.astro';
 </Layout>
 
 <script>
-	const supabaseUrl = import.meta.env.SUPABASE_URL;
-	const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY;
+	const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+	const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
 	const form = document.getElementById('cadastro-form');
 	const submitBtn = document.getElementById('submit-btn');
@@ -223,6 +223,9 @@ import Header from '../components/Header.astro';
 		btnIcon.textContent = 'hourglass_empty';
 		submitBtn.disabled = true;
 
+		console.log('SUPABASE_URL:', supabaseUrl);
+		console.log('SUPABASE_KEY:', supabaseAnonKey ? 'present' : 'missing');
+
 		const formData = new FormData(form);
 		const estado = formData.get('estado');
 		const cidade = formData.get('cidade');
@@ -238,20 +241,24 @@ import Header from '../components/Header.astro';
 			link_google_empresas: linkGoogleEmpresas
 		};
 
-		const { createClient } = await import('@supabase/supabase-js');
-		const supabase = createClient(supabaseUrl, supabaseAnonKey);
+		console.log('Dados a enviar:', dados);
 
-		const { error } = await supabase
-			.from('montadores_pendentes')
-			.insert([dados]);
+		try {
+			const { createClient } = await import('@supabase/supabase-js');
+			const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-		if (error) {
-			console.error('Erro ao cadastrar:', error);
-			btnText.textContent = 'Tentar Novamente';
-			btnIcon.textContent = 'error';
-			submitBtn.disabled = false;
-			alert('Erro ao cadastrar. Tente novamente.');
-		} else {
+			console.log('Enviando para Supabase...');
+			const { error } = await supabase
+				.from('montadores_pendentes')
+				.insert([dados]);
+
+			if (error) {
+				console.error('Erro ao cadastrar:', error);
+				btnText.textContent = 'Tentar Novamente';
+				btnIcon.textContent = 'error';
+				submitBtn.disabled = false;
+				alert('Erro ao cadastrar: ' + error.message);
+			} else {
 			form.classList.add('hidden');
 			successMessage.classList.remove('hidden');
 		}

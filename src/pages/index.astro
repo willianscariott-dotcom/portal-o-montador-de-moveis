@@ -248,64 +248,68 @@ Array.from(cidadesMap.values()).forEach(c => {
 <script define:vars={{ locaisDeAtendimentoData }}>window.locaisDeAtendimentoData = locaisDeAtendimentoData;</script>
 
 <script>
-	const estadoSelect = document.getElementById('estado');
-	const cidadeSelect = document.getElementById('cidade');
+	document.addEventListener('DOMContentLoaded', function() {
+		const estadoSelect = document.getElementById('estado');
+		const cidadeSelect = document.getElementById('cidade');
 
-	const estadosBrasileiros = {
-		'AL': 'Alagoas', 'AM': 'Amazonas', 'BA': 'Bahia', 'CE': 'Ceará',
-		'DF': 'Distrito Federal', 'GO': 'Goiás', 'MA': 'Maranhão', 'MG': 'Minas Gerais',
-		'MS': 'Mato Grosso do Sul', 'MT': 'Mato Grosso', 'PA': 'Pará', 'PB': 'Paraíba',
-		'PE': 'Pernambuco', 'PI': 'Piauí', 'PR': 'Paraná', 'RJ': 'Rio de Janeiro',
-		'RN': 'Rio Grande do Norte', 'RS': 'Rio Grande do Sul', 'SE': 'Sergipe', 'SP': 'São Paulo',
-		'ES': 'Espírito Santo'
-	};
+		const estadosBrasileiros = {
+			'AL': 'Alagoas', 'AM': 'Amazonas', 'BA': 'Bahia', 'CE': 'Ceará',
+			'DF': 'Distrito Federal', 'GO': 'Goiás', 'MA': 'Maranhão', 'MG': 'Minas Gerais',
+			'MS': 'Mato Grosso do Sul', 'MT': 'Mato Grosso', 'PA': 'Pará', 'PB': 'Paraíba',
+			'PE': 'Pernambuco', 'PI': 'Piauí', 'PR': 'Paraná', 'RJ': 'Rio de Janeiro',
+			'RN': 'Rio Grande do Norte', 'RS': 'Rio Grande do Sul', 'SE': 'Sergipe', 'SP': 'São Paulo',
+			'ES': 'Espírito Santo'
+		};
 
-	const locaisDeAtendimento = 'locaisDeAtendimentoData' in window ? window.locaisDeAtendimentoData : {};
+		const locaisDeAtendimento = 'locaisDeAtendimentoData' in window ? window.locaisDeAtendimentoData : {};
+		console.log('locaisDeAtendimento:', locaisDeAtendimento);
+		console.log('keys:', Object.keys(locaisDeAtendimento));
 
-	function carregarEstados() {
-		const estadosOrdenados = Object.keys(locaisDeAtendimento).sort();
-		estadosOrdenados.forEach(function(uf) {
-			const nome = estadosBrasileiros[uf] || uf;
-			const option = document.createElement('option');
-			option.value = uf;
-			option.textContent = nome;
-			estadoSelect.appendChild(option);
-		});
-	}
-
-	estadoSelect.addEventListener('change', function() {
-		const ufSelecionado = estadoSelect.value;
-		cidadeSelect.innerHTML = '<option disabled selected value="">Selecione a Cidade</option>';
-		
-		if (locaisDeAtendimento[ufSelecionado]) {
-			locaisDeAtendimento[ufSelecionado].sort().forEach(function(cidade) {
-				const slug = cidade.toLowerCase()
-					.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-					.replace(/[^a-z0-9]/g, '-')
-					.replace(/-+/g, '-')
-					.replace(/^-|-$/g, '');
+		function carregarEstados() {
+			const estadosOrdenados = Object.keys(locaisDeAtendimento).sort();
+			estadosOrdenados.forEach(function(uf) {
+				const nome = estadosBrasileiros[uf] || uf;
 				const option = document.createElement('option');
-				option.value = slug;
-				option.textContent = cidade;
-				cidadeSelect.appendChild(option);
+				option.value = uf;
+				option.textContent = nome;
+				estadoSelect.appendChild(option);
 			});
-			cidadeSelect.disabled = false;
-		} else {
-			cidadeSelect.disabled = true;
 		}
-	});
 
-	carregarEstados();
+		estadoSelect.addEventListener('change', function() {
+			const ufSelecionado = estadoSelect.value;
+			cidadeSelect.innerHTML = '<option disabled selected value="">Selecione a Cidade</option>';
+			
+			if (locaisDeAtendimento[ufSelecionado]) {
+				locaisDeAtendimento[ufSelecionado].sort().forEach(function(cidade) {
+					const slug = cidade.toLowerCase()
+						.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+						.replace(/[^a-z0-9]/g, '-')
+						.replace(/-+/g, '-')
+						.replace(/^-|-$/g, '');
+					const option = document.createElement('option');
+					option.value = slug;
+					option.textContent = cidade;
+					cidadeSelect.appendChild(option);
+				});
+				cidadeSelect.disabled = false;
+			} else {
+				cidadeSelect.disabled = true;
+			}
+		});
 
-	const form = document.querySelector('form');
-	form.addEventListener('submit', function(e) {
-		e.preventDefault();
-		const estado = estadoSelect.value;
-		const cidade = cidadeSelect.value;
-		if (!estado || !cidade) {
-			alert('Por favor, selecione o Estado e a Cidade.');
-			return;
-		}
-		window.location.href = '/' + cidade;
+		carregarEstados();
+
+		const form = document.querySelector('form');
+		form.addEventListener('submit', function(e) {
+			e.preventDefault();
+			const estado = estadoSelect.value;
+			const cidade = cidadeSelect.value;
+			if (!estado || !cidade) {
+				alert('Por favor, selecione o Estado e a Cidade.');
+				return;
+			}
+			window.location.href = '/' + cidade;
+		});
 	});
 </script>

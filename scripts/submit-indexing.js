@@ -1,24 +1,24 @@
-import { readFileSync, existsSync, writeFileSync, appendFileSync } from 'fs';
+import { readFileSync, existsSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { parseString } from 'xml2js';
+import { config } from 'dotenv';
+import { createClient } from '@supabase/supabase-js';
 import { google } from 'googleapis';
+
+config();
 
 const BATCH_SIZE = 200;
 const STATE_FILE = join(process.cwd(), 'scripts', 'indexed-urls.json');
 const CREDS_FILE = join(process.cwd(), 'google-credentials.json');
+const SITE_URL = process.env.SITE_URL || 'https://portal.omontadordemoveis.com';
 
-function loadXmlUrls(sitemapPath) {
-  const xml = readFileSync(sitemapPath, 'utf-8');
-  return new Promise((resolve, reject) => {
-    parseString(xml, (err, result) => {
-      if (err) reject(err);
-      else {
-        const urls = result?.urlset?.url || [];
-        const locs = urls.map(u => u.loc[0]).filter(Boolean);
-        resolve(locs);
-      }
-    });
-  });
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
 }
 
 function loadIndexedUrls() {
@@ -42,18 +42,60 @@ function loadCredentials() {
   return JSON.parse(readFileSync(CREDS_FILE, 'utf-8'));
 }
 
-async function main() {
-  const sitemapPath = join(process.cwd(), 'dist', 'sitemap-0.xml');
+async function fetchUrlsFromSupabase() {
+  const supabaseUrl = process.env.PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY;
   
-  if (!existsSync(sitemapPath)) {
-    console.error(`Sitemap não encontrado: ${sitemapPath}`);
-    console.log('Execute "npm run build" primeiro.');
-    process.exit(1);
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('PUBLIC_SUPABASE_URL e PUBLIC_SUPABASE_ANON_KEY devem estar configurados no .env');
   }
 
-  console.log('📥 Carregando URLs do sitemap...');
-  const allUrls = await loadXmlUrls(sitemapPath);
-  console.log(`Total de URLs no sitemap: ${allUrls.length}`);
+  const supabase = createClient(supabaseUrl, supabaseAnonKey);
+  
+  const { data: montadores, error } = await supabase
+    .from('tabela_montadores')
+    .select('cidade_estado, bairro_zona')
+    .range(0, 10000);
+
+  if (error) throw error;
+
+  const urls = new Set();
+  
+  urls.add(`${SITE_URL}/`);
+  urls.add(`${SITE_URL}/cadastro`);
+
+  const cidadesMap = new Map();
+
+  montadores?.forEach(m => {
+    if (m.cidade_estado) {
+      const [nome, estadoSigla] = m.cidade_estado.split(' - ');
+      if (nome && estadoSigla) {
+        const slugCidade = slugify(nome);
+        const slugEstado = slugify(estadoSigla);
+        
+        const urlCidade = `${SITE_URL}/${slugEstado}/${slugCidade}`;
+        if (!cidadesMap.has(urlCidade)) {
+          cidadesMap.set(urlCidade, { estado: estadoSigla, cidade: nome });
+          urls.add(urlCidade);
+        }
+
+        if (m.bairro_zona && m.bairro_zona.toLowerCase() !== 'todos os bairros') {
+          const slugZona = slugify(m.bairro_zona);
+          const urlZona = `${SITE_URL}/${slugEstado}/${slugCidade}/${slugZona}`;
+          urls.add(urlZona);
+        }
+      }
+    }
+  });
+
+  console.log(`Total de URLs geradas: ${urls.size}`);
+  return Array.from(urls);
+}
+
+async function main() {
+  console.log('📥 Buscando URLs do banco de dados...');
+  const allUrls = await fetchUrlsFromSupabase();
+  console.log(`Total de URLs: ${allUrls.length}`);
 
   const indexedUrls = loadIndexedUrls();
   const pendingUrls = allUrls.filter(url => !indexedUrls.has(url));

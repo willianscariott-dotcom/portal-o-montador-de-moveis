@@ -7,11 +7,11 @@ export async function GET() {
   );
 
   const { count } = await supabase
-    .from('montadores_pendentes')
+    .from('tabela_montadores')
     .select('*', { count: 'exact', head: true });
 
   const { data } = await supabase
-    .from('montadores_pendentes')
+    .from('tabela_montadores')
     .select('cidade_estado');
 
   const cidadesUnicas = new Set(data?.map(d => d.cidade_estado));

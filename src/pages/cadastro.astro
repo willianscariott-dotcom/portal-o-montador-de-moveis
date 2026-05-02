@@ -99,6 +99,23 @@ import Header from '../components/Header.astro';
 					</div>
 
 					<div>
+						<label for="bairro-zona" class="block text-sm font-medium text-[#0a1a3c] mb-2">
+							Bairro ou Zona de Atendimento
+						</label>
+						<div class="relative">
+							<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#514532]/60">place</span>
+							<input
+								type="text"
+								id="bairro-zona"
+								name="bairroZona"
+								placeholder="Ex: Centro, Zona Sul, etc."
+								required
+								class="w-full h-14 pl-12 pr-4 bg-[#f2f3ff] text-[#0a1a3c] font-body text-base border-none rounded-md appearance-none focus:ring-2 focus:ring-[#ffb800] focus:ring-offset-2 focus:ring-offset-white transition-all placeholder:text-[#514532]/50"
+							/>
+						</div>
+					</div>
+
+					<div>
 						<label for="google-empresas" class="block text-sm font-medium text-[#0a1a3c] mb-2">
 							Link do perfil no Google (Opcional)
 						</label>
@@ -236,9 +253,10 @@ import Header from '../components/Header.astro';
 
 		const dados = {
 			nome_completo: formData.get('nome'),
-			whatsapp: formData.get('whatsapp'),
+			whatsapp: formData.get('whatsapp').toString().toLowerCase(),
 			cidade_estado: cidadeEstado,
-			link_google_empresas: linkGoogleEmpresas
+			link_google_empresas: linkGoogleEmpresas,
+			bairro_zona: formData.get('bairroZona')
 		};
 
 		console.log('Dados a enviar:', dados);
@@ -247,10 +265,10 @@ import Header from '../components/Header.astro';
 			const { createClient } = await import('@supabase/supabase-js');
 			const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-			console.log('Enviando para Supabase...');
+			console.log('Enviando para Supabase (UPSERT)...');
 			const { error } = await supabase
-				.from('montadores_pendentes')
-				.insert([dados]);
+				.from('tabela_montadores')
+				.upsert([dados], { onConflict: 'whatsapp' });
 
 			if (error) {
 				console.error('Erro ao cadastrar:', error);

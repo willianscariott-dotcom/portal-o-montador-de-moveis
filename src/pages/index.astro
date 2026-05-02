@@ -6,7 +6,7 @@ import { supabase } from '../lib/supabase';
 import { citiesData } from '../data/cities.js';
 
 const { data: montadores } = await supabase
-	.from('montadores_pendentes')
+	.from('tabela_montadores')
 	.select('cidade_estado');
 
 const cidadesMap = new Map();

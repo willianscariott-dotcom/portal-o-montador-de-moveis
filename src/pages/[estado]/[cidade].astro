@@ -9,7 +9,7 @@ import { filtrarEMontadores } from '../../lib/sanitizer';
 export async function getStaticPaths() {
 	try {
 		const { data: montadores, error } = await supabase
-			.from('montadores_pendentes')
+			.from('tabela_montadores')
 			.select('cidade_estado, link_google_empresas')
 			.range(0, 10000);
 		
@@ -70,7 +70,7 @@ const { nomeCidade, estado, estadoSigla } = Astro.props;
 const bairros = [];
 
 const { data: montadores } = await supabase
-	.from('montadores_pendentes')
+	.from('tabela_montadores')
 	.select('*')
 	.range(0, 10000);
 

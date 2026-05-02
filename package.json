@@ -11,9 +11,8 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",
-    "@astrojs/vercel": "^10.0.6",
     "@supabase/supabase-js": "^2.104.0",
-    "astro": "^5.0.0",
+    "astro": "^5.2.0",
     "dotenv": "^17.4.2",
     "googleapis": "^171.4.0",
     "xml2js": "^0.6.2"

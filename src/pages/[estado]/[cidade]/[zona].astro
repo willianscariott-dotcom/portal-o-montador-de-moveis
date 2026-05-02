@@ -1,0 +1,243 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import BottomNavBar from '../../components/BottomNavBar.astro';
+import MontadorCard from '../../components/MontadorCard.astro';
+import { supabase } from '../../lib/supabase';
+import avaliacoesData from '../../data/avaliacoes_reais.json';
+import { sanitizeCidade, sanitizeNota, filtrarEMontadores, sanitizeMontadorCompleto } from '../../lib/sanitizer';
+
+export async function getStaticPaths() {
+	try {
+		const { data: montadores, error } = await supabase
+			.from('tabela_montadores')
+			.select('cidade_estado, bairro_zona')
+			.range(0, 10000);
+		
+		if (error) {
+			console.log('Erro getStaticPaths zona:', error.message);
+			return [];
+		}
+		
+		const data = montadores || [];
+		const zonasMap = new Map();
+		
+		function slugify(text) {
+			return text
+				.toLowerCase()
+				.normalize('NFD')
+				.replace(/[\u0300-\u036f]/g, '')
+				.replace(/[^a-z0-9]/g, '-')
+				.replace(/-+/g, '-')
+				.replace(/^-|-$/g, '');
+		}
+		
+		data.forEach(m => {
+			if (m.cidade_estado && m.bairro_zona) {
+				const [nome, estadoSigla] = m.cidade_estado.split(' - ');
+				if (nome && estadoSigla) {
+					const slugCidade = slugify(nome);
+					const slugEstado = slugify(estadoSigla);
+					const zonaLower = m.bairro_zona.toLowerCase();
+					if (zonaLower !== 'todos os bairros') {
+						const slugZona = slugify(m.bairro_zona);
+						const key = `${slugEstado}/${slugCidade}/${slugZona}`;
+						if (!zonasMap.has(key)) {
+							zonasMap.set(key, {
+								estado: slugEstado,
+								estadoSigla: estadoSigla,
+								nomeCidade: nome,
+								idCidade: slugCidade,
+								nomeZona: m.bairro_zona,
+								idZona: slugZona
+							});
+						}
+					}
+				}
+			}
+		});
+		
+		console.log(`getStaticPaths: ${zonasMap.size} zonas únicas encontradas`);
+		
+		return Array.from(zonasMap.values()).map(z => ({
+			params: { estado: z.estado, cidade: z.idCidade, zona: z.idZona },
+			props: { 
+				nomeCidade: z.nomeCidade, 
+				estado: z.estadoSigla,
+				nomeZona: z.nomeZona
+			}
+		}));
+	} catch (err) {
+		console.log('Erro catch getStaticPaths zona:', err.message);
+		return [];
+	}
+}
+
+const { nomeCidade, estado, nomeZona } = Astro.props;
+
+function lcg(seed) {
+	let state = seed;
+	return function() {
+		state = (state * 1664525 + 1013904223) % 4294967296;
+		return state / 4294967296;
+	};
+}
+
+const citySlug = nomeCidade.toLowerCase().replace(/[^a-z0-9]/g, '');
+const seed = citySlug.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+const random = lcg(seed);
+
+const allReviews = avaliacoesData.reviews || [];
+const selectedReviews = [];
+const usedIndices = new Set();
+
+while (selectedReviews.length < 5 && usedIndices.size < allReviews.length) {
+	const idx = Math.floor(random() * allReviews.length);
+	if (!usedIndices.has(idx)) {
+		usedIndices.add(idx);
+		selectedReviews.push(allReviews[idx]);
+	}
+}
+
+const intros = [
+	`Precisa de montador de móveis na ${nomeZona} em ${nomeCidade}? Aqui você encontra os melhores profissionais da região.`,
+	`Procurando montador na ${nomeZona}, ${nomeCidade}? Os profissionais mais bem avaliados estão aqui esperando por você.`,
+	`Montagem de móveis na ${nomeZona}, ${estado}? Achou! Separamos os montadores mais confiáveis da região.`,
+	`Está na ${nomeZona} e precisa montar um móvel em ${nomeCidade}? Temos os profissionais certos para você.`,
+	`Precisa de um montador de móveis na ${nomeZona}? Encontre os melhores profissionais avaliados de ${nomeCidade}.`
+];
+
+const intro = intros[nomeCidade.length % intros.length];
+
+const { data: montadores } = await supabase
+	.from('tabela_montadores')
+	.select('*')
+	.range(0, 10000);
+
+const sanitizados = filtrarEMontadores(montadores || []);
+
+const zonaLower = nomeZona.toLowerCase();
+const filtrados = sanitizados.filter(m => {
+	const matchCidade = m.cidade_estado && m.cidade_estado.toLowerCase().includes(nomeCidade.toLowerCase());
+	const matchZona = m.bairro_zona && (
+		m.bairro_zona.toLowerCase().includes(zonaLower) ||
+		m.bairro_zona.toLowerCase() === 'todos os bairros'
+	);
+	return matchCidade && matchZona;
+});
+
+const countText = filtrados.length === 1 
+	? '1 profissional encontrado' 
+	: `${filtrados.length} profissionais encontrados`;
+
+const pageTitle = `Montador de Móveis na ${nomeZona} - ${nomeCidade} | O Montador de Móveis`;
+const metaDesc = `Precisa de montador de móveis na ${nomeZona}, ${nomeCidade}? Encontre os melhores profissionais avaliados da região. Solicite seu orçamento direto pelo WhatsApp!`;
+
+const schemaData = {
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "BreadcrumbList",
+			"itemListElement": [
+				{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://portal.omontadordemoveis.com/" },
+				{ "@type": "ListItem", "position": 2, "name": estado, "item": `https://portal.omontadordemoveis.com/${estado.toLowerCase()}` },
+				{ "@type": "ListItem", "position": 3, "name": nomeCidade, "item": `https://portal.omontadordemoveis.com/${estado.toLowerCase()}/${nomeCidade.toLowerCase().replace(/[^a-z0-9]/g, '-')}` },
+				{ "@type": "ListItem", "position": 4, "name": nomeZona, "item": `https://portal.omontadordemoveis.com/${estado.toLowerCase()}/${nomeCidade.toLowerCase().replace(/[^a-z0-9]/g, '-')}/${nomeZona.toLowerCase().replace(/[^a-z0-9]/g, '-')}` }
+			]
+		},
+		{
+			"@type": "LocalBusiness",
+			"name": `Montador de Móveis na ${nomeZona}`,
+			"address": {
+				"@type": "PostalAddress",
+				"addressLocality": nomeCidade,
+				"addressRegion": estado,
+				"addressCountry": "BR"
+			},
+			"areaServed": {
+				"@type": "Place",
+				"name": nomeZona
+			},
+			"priceRange": "$$"
+		},
+		{
+			"@type": "FAQPage",
+			"mainEntity": [
+				{
+					"@type": "Question",
+					"name": `Como encontrar montador na ${nomeZona}, ${nomeCidade}?`,
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": `Selecione a zona ${nomeZona} no filtro acima. Conectamos você aos montadores que atuam nessa região.`
+					}
+				},
+				{
+					"@type": "Question",
+					"name": `Qual o preço da montagem de móveis na ${nomeZona}?`,
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": "O preço varia conforme o tipo de móvel. Em média, custa entre R$80 e R$150 por peça."
+					}
+				}
+			]
+		}
+	]
+};
+---
+
+<Layout title={pageTitle} description={metaDesc} url={`https://portal.omontadordemoveis.com/${estado.toLowerCase()}/${nomeCidade.toLowerCase().replace(/[^a-z0-9]/g, '-')}/${nomeZona.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}>
+	<Header />
+
+	<main class="max-w-7xl mx-auto px-4">
+		<article class="pt-16 pb-12">
+			<nav aria-label="Breadcrumb" class="mb-6">
+				<ol class="flex items-center gap-2 text-sm text-slate-600">
+					<li><a href="/" class="hover:text-amber-600 transition-colors">Home</a></li>
+					<li><span class="material-symbols-outlined text-xs">chevron_right</span></li>
+					<li><a href={`/${estado.toLowerCase()}`} class="hover:text-amber-600 transition-colors">{estado}</a></li>
+					<li><span class="material-symbols-outlined text-xs">chevron_right</span></li>
+					<li><a href={`/${estado.toLowerCase()}/${nomeCidade.toLowerCase().replace(/[^a-z0-9]/g, '-')}`} class="hover:text-amber-600 transition-colors">{nomeCidade}</a></li>
+					<li><span class="material-symbols-outlined text-xs">chevron_right</span></li>
+					<li aria-current="page" class="font-medium text-slate-800">{nomeZona}</li>
+				</ol>
+			</nav>
+			
+			<h1 class="font-headline text-3xl md:text-4xl font-bold text-slate-800 mb-4">
+				Montadores de Móveis na {nomeZona} - {nomeCidade}
+			</h1>
+			
+			<p class="text-slate-600 text-lg mb-6 max-w-2xl">{intro}</p>
+			
+			<p class="text-slate-700 font-medium mb-8">{countText}</p>
+
+			{filtrados.length === 0 ? (
+				<div class="text-center py-12 bg-slate-50 rounded-2xl">
+					<span class="material-symbols-outlined text-6xl text-slate-300">search_off</span>
+					<p class="text-slate-600 mt-4">Nenhum montador encontrado na {nomeZona}.</p>
+					<a href="/cadastro" class="inline-block mt-4 text-amber-600 font-bold">Seja o primeiro a se cadastrar!</a>
+				</div>
+			) : (
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+					{filtrados.map(m => (
+						<MontadorCard 
+							nome={m.nome_completo}
+							imagem={m.foto_url || ''}
+							avaliacao={m.totalScore || 5}
+							totalAvaliacoes={m.reviewsCount || 1}
+							linkGoogle={m.link_google_empresas || null}
+							cidade={nomeCidade}
+							estado={estado}
+							especialidades={[]}
+							online={true}
+							telefone={m.whatsapp || ''}
+						/>
+					))}
+				</div>
+			)}
+		</article>
+	</main>
+
+	<script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+
+	<BottomNavBar />
+</Layout>

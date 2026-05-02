@@ -105,6 +105,14 @@ const filtrados = sanitizados.filter(m =>
 	m.cidade_estado && m.cidade_estado.toLowerCase().includes(nomeCidade.toLowerCase())
 );
 
+const zonasUnicas = new Set();
+filtrados.forEach(m => {
+	if (m.bairro_zona && m.bairro_zona.toLowerCase() !== 'todos os bairros') {
+		zonasUnicas.add(m.bairro_zona);
+	}
+});
+const zonasArray = Array.from(zonasUnicas).sort();
+
 const countText = filtrados.length === 1 
 	? '1 profissional encontrado' 
 	: `${filtrados.length} profissionais encontrados`;
@@ -122,7 +130,20 @@ const countText = filtrados.length === 1
 				Montadores de Móveis em {nomeCidade} - {estado}
 			</h1>
 			<p class="text-[#514532] text-lg mb-6 max-w-2xl">{intro}</p>
-			<p class="text-[#514532] mb-8">{countText}</p>
+			<p class="text-[#514532] mb-4">{countText}</p>
+
+			{zonasArray.length > 0 && (
+				<div class="flex flex-wrap gap-2 mb-6">
+					<a href={`/${Astro.props.cidade}`} class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-[#514532] hover:bg-[#ffb800] hover:text-[#6b4c00] transition-colors">
+						Todos os bairros
+					</a>
+					{zonasArray.map(zona => (
+						<a href={`/${Astro.props.cidade}/${zona.toLowerCase().replace(/[^a-z0-9]/g, '-')}`} class="px-4 py-2 rounded-full text-sm font-medium bg-white border border-gray-200 text-[#514532] hover:bg-[#ffb800] hover:text-[#6b4c00] hover:border-[#ffb800] transition-colors">
+							{zona}
+						</a>
+					))}
+				</div>
+			)}
 
 			{filtrados.length === 0 ? (
 				<div class="text-center py-12">

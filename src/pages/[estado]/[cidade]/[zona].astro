@@ -1,11 +1,13 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import Header from '../../components/Header.astro';
-import BottomNavBar from '../../components/BottomNavBar.astro';
-import MontadorCard from '../../components/MontadorCard.astro';
-import { supabase } from '../../lib/supabase';
-import avaliacoesData from '../../data/avaliacoes_reais.json';
-import { sanitizeCidade, sanitizeNota, filtrarEMontadores, sanitizeMontadorCompleto } from '../../lib/sanitizer';
+export const prerender = true;
+
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+import BottomNavBar from '../../../components/BottomNavBar.astro';
+import MontadorCard from '../../../components/MontadorCard.astro';
+import { supabase } from '../../../lib/supabase';
+import avaliacoesData from '../../../data/avaliacoes_reais.json';
+import { sanitizeCidade, sanitizeNota, filtrarEMontadores, sanitizeMontadorCompleto } from '../../../lib/sanitizer';
 
 export async function getStaticPaths() {
 	try {

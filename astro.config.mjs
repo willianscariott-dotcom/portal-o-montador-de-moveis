@@ -4,6 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
 
 export default defineConfig({
+  output: 'server',
   integrations: [tailwind(), sitemap()],
   adapter: vercel(),
   base: '/',

@@ -103,9 +103,14 @@ const { data: montadores } = await supabase
 
 const sanitizados = filtrarEMontadores(montadores || []);
 
-const filtrados = sanitizados.filter(m => 
-	m.cidade_estado && m.cidade_estado.toLowerCase().includes(nomeCidade.toLowerCase())
-);
+const filtrados = sanitizados
+	.filter(m => m.cidade_estado && m.cidade_estado.toLowerCase().includes(nomeCidade.toLowerCase()))
+	.reduce((acc, m) => {
+		if (!acc.some(existing => existing.whatsapp === m.whatsapp)) {
+			acc.push(m);
+		}
+		return acc;
+	}, []);
 
 const zonasUnicas = new Set();
 filtrados.forEach(m => {

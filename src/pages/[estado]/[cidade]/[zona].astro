@@ -119,14 +119,21 @@ const { data: montadores } = await supabase
 const sanitizados = filtrarEMontadores(montadores || []);
 
 const zonaLower = nomeZona.toLowerCase();
-const filtrados = sanitizados.filter(m => {
-	const matchCidade = m.cidade_estado && m.cidade_estado.toLowerCase().includes(nomeCidade.toLowerCase());
-	const matchZona = m.bairro_zona && (
-		m.bairro_zona.toLowerCase().includes(zonaLower) ||
-		m.bairro_zona.toLowerCase() === 'todos os bairros'
-	);
-	return matchCidade && matchZona;
-});
+const filtrados = sanitizados
+	.filter(m => {
+		const matchCidade = m.cidade_estado && m.cidade_estado.toLowerCase().includes(nomeCidade.toLowerCase());
+		const matchZona = m.bairro_zona && (
+			m.bairro_zona.toLowerCase().includes(zonaLower) ||
+			m.bairro_zona.toLowerCase() === 'todos os bairros'
+		);
+		return matchCidade && matchZona;
+	})
+	.reduce((acc, m) => {
+		if (!acc.some(existing => existing.whatsapp === m.whatsapp)) {
+			acc.push(m);
+		}
+		return acc;
+	}, []);
 
 const countText = filtrados.length === 1 
 	? '1 profissional encontrado' 

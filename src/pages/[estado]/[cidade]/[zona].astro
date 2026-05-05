@@ -116,31 +116,31 @@ const { data: montadores } = await supabase
 	.select('*')
 	.range(0, 10000);
 
-const sanitizados = filtrarEMontadores(montadores || []);
-
 function normalizarWhatsapp(whatsapp) {
 	if (!whatsapp) return '';
 	return whatsapp.toString().replace(/\D/g, '').replace(/^55/, '');
 }
 
+const montadoresRaw = montadores || [];
+
 const zonaLower = nomeZona.toLowerCase();
-const filtrados = sanitizados
-	.filter(m => {
-		const matchCidade = m.cidade_estado && m.cidade_estado.toLowerCase().includes(nomeCidade.toLowerCase());
-		const matchZona = m.bairro_zona && (
-			m.bairro_zona.toLowerCase().includes(zonaLower) ||
-			m.bairro_zona.toLowerCase() === 'todos os bairros'
-		);
-		return matchCidade && matchZona;
-	})
-	.reduce((acc, m) => {
-		const wpNormalizado = normalizarWhatsapp(m.whatsapp);
-		const jaExiste = acc.some(existing => normalizarWhatsapp(existing.whatsapp) === wpNormalizado);
-		if (!jaExiste) {
-			acc.push(m);
-		}
-		return acc;
-	}, []);
+const porZona = montadoresRaw.filter(m => {
+	const matchCidade = m.cidade_estado && m.cidade_estado.toLowerCase().includes(nomeCidade.toLowerCase());
+	const matchZona = m.bairro_zona && (
+		m.bairro_zona.toLowerCase().includes(zonaLower) ||
+		m.bairro_zona.toLowerCase() === 'todos os bairros'
+	);
+	return matchCidade && matchZona;
+});
+
+const filtrados = porZona.reduce((acc, m) => {
+	const wpNormalizado = normalizarWhatsapp(m.whatsapp);
+	const jaExiste = acc.some(existing => normalizarWhatsapp(existing.whatsapp) === wpNormalizado);
+	if (!jaExiste) {
+		acc.push(m);
+	}
+	return acc;
+}, []);
 
 const countText = filtrados.length === 1 
 	? '1 profissional encontrado' 

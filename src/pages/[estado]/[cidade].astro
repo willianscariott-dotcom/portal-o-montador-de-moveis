@@ -76,23 +76,25 @@ const { data: montadores } = await supabase
 	.select('*')
 	.range(0, 10000);
 
-const sanitizados = filtrarEMontadores(montadores || []);
-
 function normalizarWhatsapp(whatsapp) {
 	if (!whatsapp) return '';
 	return whatsapp.toString().replace(/\D/g, '').replace(/^55/, '');
 }
 
-const filtrados = sanitizados
-	.filter(m => m.cidade_estado && m.cidade_estado.toLowerCase().includes(nomeCidade.toLowerCase()))
-	.reduce((acc, m) => {
-		const wpNormalizado = normalizarWhatsapp(m.whatsapp);
-		const jaExiste = acc.some(existing => normalizarWhatsapp(existing.whatsapp) === wpNormalizado);
-		if (!jaExiste) {
-			acc.push(m);
-		}
-		return acc;
-	}, []);
+const montadoresRaw = montadores || [];
+
+const porCidade = montadoresRaw.filter(m => 
+	m.cidade_estado && m.cidade_estado.toLowerCase().includes(nomeCidade.toLowerCase())
+);
+
+const filtrados = porCidade.reduce((acc, m) => {
+	const wpNormalizado = normalizarWhatsapp(m.whatsapp);
+	const jaExiste = acc.some(existing => normalizarWhatsapp(existing.whatsapp) === wpNormalizado);
+	if (!jaExiste) {
+		acc.push(m);
+	}
+	return acc;
+}, []);
 
 const notaMedia = filtrados.length > 0 
 	? filtrados.reduce((acc, m) => acc + (m.totalScore || 5), 0) / filtrados.length 

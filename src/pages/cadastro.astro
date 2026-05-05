@@ -107,7 +107,7 @@ import Header from '../components/Header.astro';
 							<input
 								type="text"
 								id="bairro-zona"
-								name="bairroZona"
+								name="bairro_zona"
 								placeholder="Ex: Zona Sul, Centro (ou digite Todos os bairros)"
 								required
 								class="w-full h-14 pl-12 pr-4 bg-[#f2f3ff] text-[#0a1a3c] font-body text-base border-none rounded-md appearance-none focus:ring-2 focus:ring-[#ffb800] focus:ring-offset-2 focus:ring-offset-white transition-all placeholder:text-[#514532]/50"
@@ -256,7 +256,7 @@ import Header from '../components/Header.astro';
 			whatsapp: formData.get('whatsapp').toString().toLowerCase(),
 			cidade_estado: cidadeEstado,
 			link_google_empresas: linkGoogleEmpresas,
-			bairro_zona: formData.get('bairroZona')
+			bairro_zona: formData.get('bairro_zona')
 		};
 
 		console.log('Dados a enviar:', dados);

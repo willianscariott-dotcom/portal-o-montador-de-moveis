@@ -121,6 +121,15 @@ function normalizarWhatsapp(whatsapp) {
 	return whatsapp.toString().replace(/\D/g, '').replace(/^55/, '');
 }
 
+function normalizarNome(nome) {
+	if (!nome) return '';
+	return nome.toLowerCase()
+		.normalize('NFD')
+		.replace(/[\u0300-\u036f]/g, '')
+		.replace(/[^a-z0-9]/g, '')
+		.trim();
+}
+
 const montadoresRaw = montadores || [];
 
 const zonaLower = nomeZona.toLowerCase();
@@ -135,7 +144,11 @@ const porZona = montadoresRaw.filter(m => {
 
 const filtrados = porZona.reduce((acc, m) => {
 	const wpNormalizado = normalizarWhatsapp(m.whatsapp);
-	const jaExiste = acc.some(existing => normalizarWhatsapp(existing.whatsapp) === wpNormalizado);
+	const nomeNormalizado = normalizarNome(m.nome_completo);
+	const jaExiste = acc.some(existing => 
+		normalizarWhatsapp(existing.whatsapp) === wpNormalizado || 
+		normalizarNome(existing.nome_completo) === nomeNormalizado
+	);
 	if (!jaExiste) {
 		acc.push(m);
 	}

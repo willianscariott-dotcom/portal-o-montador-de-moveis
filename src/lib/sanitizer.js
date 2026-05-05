@@ -11,7 +11,7 @@ export function sanitizeMontadores(montadores) {
       continue;
     }
 
-    const phoneClean = m.whatsapp.replace(/\D/g, '');
+    const phoneClean = m.whatsapp.toString().replace(/\D/g, '').replace(/^55/, '');
 
     if (phonesSeen.has(phoneClean)) {
       continue;
@@ -75,7 +75,8 @@ export function sanitizeMontadorCompleto(m) {
     reviewsCount: reviews,
     foto_url: m.foto_url,
     nomeCidade: nomeCidade,
-    estado: estado
+    estado: estado,
+    bairro_zona: m.bairro_zona || null
   };
 }
 

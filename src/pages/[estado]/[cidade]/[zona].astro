@@ -118,6 +118,11 @@ const { data: montadores } = await supabase
 
 const sanitizados = filtrarEMontadores(montadores || []);
 
+function normalizarWhatsapp(whatsapp) {
+	if (!whatsapp) return '';
+	return whatsapp.toString().replace(/\D/g, '').replace(/^55/, '');
+}
+
 const zonaLower = nomeZona.toLowerCase();
 const filtrados = sanitizados
 	.filter(m => {
@@ -129,7 +134,9 @@ const filtrados = sanitizados
 		return matchCidade && matchZona;
 	})
 	.reduce((acc, m) => {
-		if (!acc.some(existing => existing.whatsapp === m.whatsapp)) {
+		const wpNormalizado = normalizarWhatsapp(m.whatsapp);
+		const jaExiste = acc.some(existing => normalizarWhatsapp(existing.whatsapp) === wpNormalizado);
+		if (!jaExiste) {
 			acc.push(m);
 		}
 		return acc;

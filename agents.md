@@ -33,10 +33,12 @@
 
 ## Comandos de validação
 
-- `npm run build` — build Astro + gera `sitemap-index.xml`/`sitemap-0.xml` (gera após o build em `dist/client`).
+- `npm run build` — apenas build Astro (sem sitemap).
+- `npm run sitemap` — `node scripts/generate-sitemap.mjs`: gera `sitemap-index.xml`/`sitemap-0.xml` em `dist/client`.
 - `npm run validate` — `node scripts/validate-build.mjs`: confere canonical (sem `/undefined`), título/descrição/h1, JSON-LD, contagem de rotas vs `scripts/baseline-routes.json` e consistência do sitemap.
-- `npm run verify` — build + validate (porta de entrada antes de merge/deploy).
+- `npm run verify` — `npm run build && npm run sitemap && npm run validate` (porta de entrada antes de merge/deploy).
 - `npm run check` — `astro check`; ATENÇÃO: o repo tem ~200 erros de tipo pré-existentes em scripts inline/estática (modal de lead, formulários, tipagem de frontmatter). Não fazem parte do P0; não agrave e corrija apenas erros novos introduzidos no diff.
+- Ambiente Windows/OneDrive: o build Astro apresentou crash nativo intermitente no teardown (`exit 0xC0000409`) — equivale a rodar os passos do `verify` como comandos separados em caso de ocorrência.
 
 ## Load de dados (build)
 

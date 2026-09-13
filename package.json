@@ -5,12 +5,13 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build && node scripts/generate-sitemap.mjs",
+    "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
+    "sitemap": "node scripts/generate-sitemap.mjs",
     "validate": "node scripts/validate-build.mjs",
-    "verify": "npm run build && npm run validate",
+    "verify": "npm run build && npm run sitemap && npm run validate",
     "index:google": "node scripts/submit-indexing.js"
   },
   "dependencies": {

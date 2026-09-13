@@ -34,10 +34,11 @@
 ## Comandos de validação
 
 - `npm run build` — apenas build Astro (sem sitemap).
-- `npm run sitemap` — `node scripts/generate-sitemap.mjs`: gera `sitemap-index.xml`/`sitemap-0.xml` em `dist/client`.
-- `npm run validate` — `node scripts/validate-build.mjs`: confere canonical (sem `/undefined`), título/descrição/h1, JSON-LD, contagem de rotas vs `scripts/baseline-routes.json` e consistência do sitemap.
+- `npm run sitemap` — `node scripts/generate-sitemap.mjs`: gera `sitemap-index.xml`/`sitemap-0.xml` em `dist/client` com as rotas estáticas + rotas SSR canônicas `/`, `/cadastro`, `/contato`, `/privacidade`, `/termos` (total esperado 310 URLs).
+- `npm run validate` — `node scripts/validate-build.mjs`: confere canonical (sem `/undefined`), título/descrição/h1, JSON-LD, contagem de rotas vs `scripts/baseline-routes.json`, presença das rotas SSR canônicas no sitemap, HTML público indevido em `dist/client` (exceto verificação `google<16hex>.html`), placeholders literais `{cidade}`/`{estado}` e consistência do sitemap.
 - `npm run verify` — `npm run build && npm run sitemap && npm run validate` (porta de entrada antes de merge/deploy).
-- `npm run check` — `astro check`; ATENÇÃO: o repo tem ~200 erros de tipo pré-existentes em scripts inline/estática (modal de lead, formulários, tipagem de frontmatter). Não fazem parte do P0; não agrave e corrija apenas erros novos introduzidos no diff.
+- Vercel: `vercel.json` define `buildCommand: "npm run verify"` — build, geração de sitemap e validação rodam em todo deploy; qualquer falha de sitemap/validate aborta o deploy.
+- `npm run check` — `astro check`; o repo tem 200 erros de tipo PRÉ-EXISTENTES (206 no `master`, esta branch reduziu 6 e não criou nenhum novo). Ver "Dívida técnica" abaixo. Não agrave e corrija apenas erros novos introduzidos no diff.
 - Ambiente Windows/OneDrive: o build Astro apresentou crash nativo intermitente no teardown (`exit 0xC0000409`) — equivale a rodar os passos do `verify` como comandos separados em caso de ocorrência.
 
 ## Load de dados (build)
@@ -48,4 +49,9 @@
 
 ## Pendências conhecidas
 
-- Pares canônicos `/cidade` vs `/uf/cidade` (127 cidades) ainda sem decisão de preferência — ver `docs/canonical-pendings.md`.
+- Pares canônicos `/cidade` vs `/uf/cidade` (126 cidades) ainda sem decisão de preferência — ver `docs/canonical-pendings.md`.
+
+## Dívida técnica (astro check)
+
+- `npm run check` reporta **200 erros de tipo** (206 no `master`): está comprovado por comparação `master` vs `fix/seo-p0` que esta branch **reduziu 6 erros e não criou nenhum novo** (delta: `[cidade].astro` −4, `[estado]/[cidade].astro` −2; demais arquivos inalterados; `404.astro` sem erros).
+- Origem: scripts inline de modal/lead, formulários e tipagem de frontmatter pré-existentes — **fora do escopo do P0**. Não tentar corrigir em lote sem tarefa dedicada; apenas não agravar nem introduzir erros novos no diff.

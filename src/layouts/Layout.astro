@@ -5,9 +5,10 @@ interface Props {
 	title: string;
 	description?: string;
 	image?: string;
+	noindex?: boolean;
 }
 
-const { title, description = "Encontre montadores de móveis profissionais próximos de você. Serviço rápido, seguro e com garantia. Solicite seu orçamento agora!", image = "" } = Astro.props;
+const { title, description = "Encontre montadores de móveis profissionais próximos de você. Serviço rápido, seguro e com garantia. Solicite seu orçamento agora!", image = "", noindex = false } = Astro.props;
 
 const site = Astro.site ? Astro.site.toString() : (process.env.SITE_URL || 'https://portal.omontadordemoveis.com');
 const origin = site.replace(/\/+$/, '');
@@ -24,12 +25,13 @@ const ogImage = image || `${origin}/og-image.png`;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="google-site-verification" content="e5f742fa0babeddf" />
-		<link rel="canonical" href={canonical} />
+		{noindex && <meta name="robots" content="noindex, follow" />}
+		{!noindex && <link rel="canonical" href={canonical} />}
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@400;700;800&display=swap" rel="stylesheet" />
 		<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-		<title>{title}</title><meta name="description" content={description}><meta property="og:type" content="website"><meta property="og:url" content={canonical}><meta property="og:title" content={title}><meta property="og:description" content={description}><meta property="og:image" content={ogImage}><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+		<title>{title}</title><meta name="description" content={description}><meta property="og:type" content="website">{!noindex && <meta property="og:url" content={canonical} />}<meta property="og:title" content={title}><meta property="og:description" content={description}><meta property="og:image" content={ogImage}><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 		<meta name="twitter:card" content="summary" />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
@@ -42,28 +44,30 @@ const ogImage = image || `${origin}/og-image.png`;
 			gtag('js', new Date());
 			gtag('config', 'G-Y8D7HP1H4Q');
 		</script>
-		<script type="application/ld+json">
-		{
-			"@context": "https://schema.org",
-			"@graph": [
-				{
-					"@type": "Organization",
-					"name": "Portal O Montador de Móveis",
-					"url": "https://portal.omontadordemoveis.com",
-					"logo": "https://portal.omontadordemoveis.com/favicon.svg",
-					"sameAs": [
-						"https://instagram.com/omontador",
-						"https://facebook.com/omontador"
-					]
-				},
-				{
-					"@type": "WebSite",
-					"name": "Portal O Montador de Móveis",
-					"url": "https://portal.omontadordemoveis.com"
-				}
-			]
-		}
-		</script>
+		{!noindex && (
+			<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@graph": [
+					{
+						"@type": "Organization",
+						"name": "Portal O Montador de Móveis",
+						"url": "https://portal.omontadordemoveis.com",
+						"logo": "https://portal.omontadordemoveis.com/favicon.svg",
+						"sameAs": [
+							"https://instagram.com/omontador",
+							"https://facebook.com/omontador"
+						]
+					},
+					{
+						"@type": "WebSite",
+						"name": "Portal O Montador de Móveis",
+						"url": "https://portal.omontadordemoveis.com"
+					}
+				]
+			}
+			</script>
+		)}
 	</head>
 	<body class="font-body text-[#0a1a3c] antialiased pt-16 pb-24 selection:bg-[#ffb800] selection:text-[#6b4c00]">
 		<slot />

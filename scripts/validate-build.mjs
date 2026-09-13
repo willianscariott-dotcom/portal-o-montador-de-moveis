@@ -35,6 +35,12 @@ function nivel(url) {
 
 const SITE_URL = 'https://portal.omontadordemoveis.com';
 
+const ROTAS_SSR_CANONICAS = ['/', '/cadastro', '/contato', '/privacidade', '/termos'];
+
+function relSsr(rota) {
+  return rota === '/' ? `${SITE_URL}/` : `${SITE_URL}${rota}`;
+}
+
 function canonicalEsperado(url) {
   const partes = url.split('/').filter(Boolean);
   if (partes.length === 0) return `${SITE_URL}/`;
@@ -52,8 +58,17 @@ if (!fs.existsSync(DIST_CLIENT)) {
 
 const files = walk(DIST_CLIENT);
 const contadores = { city: 0, ufCity: 0, zona: 0, outro: 0 };
-const problemas = { canonicalUndefined: 0, canonicalInvalida: 0, semCanonical: 0, semTitle: 0, semDescription: 0, semH1: 0, jsonldInvalido: 0, textoUndefined: 0 };
+const problemas = { canonicalUndefined: 0, canonicalInvalida: 0, semCanonical: 0, semTitle: 0, semDescription: 0, semH1: 0, jsonldInvalido: 0, textoUndefined: 0, htmlPublicoIndevido: 0, placeholderLiteral: 0 };
 const exemplos = [];
+
+const htmlRaiz = fs
+  .readdirSync(DIST_CLIENT)
+  .filter(
+    (f) =>
+      f.toLowerCase().endsWith('.html') &&
+      !/^google[a-f0-9]{16}\.html$/i.test(f) &&
+      !/^sitemap.*\.xml$/.test(f)
+  );
 
 for (const file of files) {
   const rel = path.relative(DIST_CLIENT, file).replace(/\\/g, '/');
@@ -61,6 +76,11 @@ for (const file of files) {
   const html = fs.readFileSync(file, 'utf-8');
   const level = nivel(url);
   contadores[level]++;
+
+  if (/\{cidade\}|\{estado\}/i.test(html)) {
+    problemas.placeholderLiteral++;
+    if (exemplos.length < 12) exemplos.push({ url, problema: 'placeholder literal {cidade}/{estado}' });
+  }
 
   const canonicalMatch = html.match(/<link rel="canonical" href="([^"]+)"/);
   const canonical = canonicalMatch ? canonicalMatch[1] : null;
@@ -108,6 +128,15 @@ for (const file of files) {
 }
 
 const totalGeral = files.length;
+if (htmlRaiz.length) {
+  problemas.htmlPublicoIndevido = htmlRaiz.length;
+  for (const h of htmlRaiz) {
+    if (/\{cidade\}|\{estado\}/i.test(fs.readFileSync(path.join(DIST_CLIENT, h), 'utf-8'))) {
+      problemas.placeholderLiteral++;
+    }
+    if (exemplos.length < 12) exemplos.push({ url: h, problema: 'HTML público indevido' });
+  }
+}
 const previstoTotais = {
   city: baseline.cityPages,
   ufCity: baseline.ufCity,
@@ -170,8 +199,18 @@ if (!temIndex || sitemaps.length === 0) {
   }
   const unicos = new Set(locs);
   console.log(`[validate-build] URLs no sitemap: ${locs.length} (${unicos.size} únicas)`);
-  if (locs.length !== totalGeral) {
-    console.error(`[validate-build] FALHA: sitemap com ${locs.length} URLs, mas ${totalGeral} index.html no build.`);
+  const esperadoSitemap = totalGeral + ROTAS_SSR_CANONICAS.length;
+  if (locs.length !== esperadoSitemap) {
+    console.error(`[validate-build] FALHA: sitemap com ${locs.length} URLs, mas esperado ${esperadoSitemap} (${totalGeral} index.html + ${ROTAS_SSR_CANONICAS.length} SSR canônicas).`);
+    fail = true;
+  }
+  const ssrFaltando = ROTAS_SSR_CANONICAS.filter((r) => !unicos.has(relSsr(r)));
+  if (ssrFaltando.length) {
+    console.error(`[validate-build] FALHA: rotas SSR canônicas ausentes no sitemap: ${ssrFaltando.join(', ')}`);
+    fail = true;
+  }
+  if (unicos.size !== locs.length) {
+    console.error(`[validate-build] FALHA: sitemap com URLs duplicadas (${locs.length} total, ${unicos.size} únicas).`);
     fail = true;
   }
   const invalidas = unicosPerigoso(locs);

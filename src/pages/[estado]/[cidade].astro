@@ -15,8 +15,8 @@ export async function getStaticPaths() {
 
 	return cidades.map(c => ({
 		params: { estado: c.estado, cidade: c.id },
-		props: { 
-			nomeCidade: c.nomeCidade, 
+		props: {
+			nomeCidade: c.nomeCidade,
 			estado: c.estadoSigla,
 			estadoSigla: c.estadoSigla
 		}

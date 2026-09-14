@@ -1,9 +1,9 @@
 # Plano de SEO, SEO programático, GEO e blog
 
-**Portal:** [portal.omontadordemoveis.com](https://portal.omontadordemoveis.com/)  
-**Responsável editorial:** Willian Souza  
-**Data-base do plano:** 12 de setembro de 2026  
-**Ferramentas de execução:** GitHub, Vercel, OpenCode e Antigravity
+- **Portal:** [portal.omontadordemoveis.com](https://portal.omontadordemoveis.com/)
+- **Responsável editorial:** Willian Souza
+- **Data-base do plano:** 12 de setembro de 2026
+- **Ferramentas de execução:** GitHub, Vercel, OpenCode e Antigravity
 
 ## 1. Resultado que buscamos
 

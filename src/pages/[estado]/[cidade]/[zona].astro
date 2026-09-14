@@ -16,8 +16,8 @@ export async function getStaticPaths() {
 
 	return zonas.map(z => ({
 		params: { estado: z.estado, cidade: z.idCidade, zona: z.idZona },
-		props: { 
-			nomeCidade: z.nomeCidade, 
+		props: {
+			nomeCidade: z.nomeCidade,
 			estado: z.estadoSigla,
 			nomeZona: z.nomeZona
 		}

@@ -5,7 +5,6 @@ import Layout from '../../../layouts/Layout.astro';
 import Header from '../../../components/Header.astro';
 import BottomNavBar from '../../../components/BottomNavBar.astro';
 import MontadorCard from '../../../components/MontadorCard.astro';
-import avaliacoesData from '../../../data/avaliacoes_reais.json';
 import { buscarMontadores, listarZonas, montadoresValidosPorZona } from '../../../lib/montadores';
 
 export async function getStaticPaths() {
@@ -26,30 +25,6 @@ export async function getStaticPaths() {
 
 const { nomeCidade, estado, nomeZona } = Astro.props;
 const { estado: estadoSlug, cidade: cidadeSlug, zona: zonaSlug } = Astro.params;
-
-function lcg(seed) {
-	let state = seed;
-	return function() {
-		state = (state * 1664525 + 1013904223) % 4294967296;
-		return state / 4294967296;
-	};
-}
-
-const citySlug = nomeCidade.toLowerCase().replace(/[^a-z0-9]/g, '');
-const seed = citySlug.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-const random = lcg(seed);
-
-const allReviews = avaliacoesData.reviews || [];
-const selectedReviews = [];
-const usedIndices = new Set();
-
-while (selectedReviews.length < 5 && usedIndices.size < allReviews.length) {
-	const idx = Math.floor(random() * allReviews.length);
-	if (!usedIndices.has(idx)) {
-		usedIndices.add(idx);
-		selectedReviews.push(allReviews[idx]);
-	}
-}
 
 const intros = [
 	`Precisa de montador de móveis na ${nomeZona} em ${nomeCidade}? Aqui você encontra os melhores profissionais da região.`,

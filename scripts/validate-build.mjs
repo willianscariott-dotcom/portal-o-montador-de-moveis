@@ -58,7 +58,17 @@ if (!fs.existsSync(DIST_CLIENT)) {
 
 const files = walk(DIST_CLIENT);
 const contadores = { city: 0, ufCity: 0, zona: 0, outro: 0 };
-const problemas = { canonicalUndefined: 0, canonicalInvalida: 0, semCanonical: 0, semTitle: 0, semDescription: 0, semH1: 0, jsonldInvalido: 0, textoUndefined: 0, htmlPublicoIndevido: 0, placeholderLiteral: 0 };
+const problemas = { canonicalUndefined: 0, canonicalInvalida: 0, semCanonical: 0, semTitle: 0, semDescription: 0, semH1: 0, jsonldInvalido: 0, textoUndefined: 0, htmlPublicoIndevido: 0, placeholderLiteral: 0, precoFixo: 0, depoimentoNaoLocal: 0 };
+
+const ROTAS_CIDADE_SRC = [
+  ['src', 'pages', '[cidade].astro'],
+  ['src', 'pages', '[estado]', '[cidade].astro'],
+  ['src', 'pages', '[estado]', '[cidade]', '[zona].astro']
+].map((p) => path.resolve(...p));
+
+const PADRAO_PRECO_FIXO = /R\$\s?80|R\$\s?150/i;
+
+const PADRAO_DEPOIMENTO_NAO_LOCAL = /avaliacoes_reais|selectedReviews|\blcg\s*\(|\bMath\.random\b/;
 const exemplos = [];
 
 const htmlRaiz = fs
@@ -76,6 +86,11 @@ for (const file of files) {
   const html = fs.readFileSync(file, 'utf-8');
   const level = nivel(url);
   contadores[level]++;
+
+  if (PADRAO_PRECO_FIXO.test(html)) {
+    problemas.precoFixo++;
+    if (exemplos.length < 12) exemplos.push({ url, problema: 'preço genérico R$80–R$150 no HTML' });
+  }
 
   if (/\{cidade\}|\{estado\}/i.test(html)) {
     problemas.placeholderLiteral++;
@@ -135,6 +150,19 @@ if (htmlRaiz.length) {
       problemas.placeholderLiteral++;
     }
     if (exemplos.length < 12) exemplos.push({ url: h, problema: 'HTML público indevido' });
+  }
+}
+
+for (const srcFile of ROTAS_CIDADE_SRC) {
+  if (!fs.existsSync(srcFile)) {
+    if (exemplos.length < 12) exemplos.push({ url: path.basename(srcFile), problema: 'rota de cidade/zona ausente' });
+    problemas.depoimentoNaoLocal++;
+    continue;
+  }
+  const conteudo = fs.readFileSync(srcFile, 'utf-8');
+  if (PADRAO_DEPOIMENTO_NAO_LOCAL.test(conteudo)) {
+    problemas.depoimentoNaoLocal++;
+    if (exemplos.length < 12) exemplos.push({ url: path.relative(path.resolve('.'), srcFile), problema: 'avaliação não local (avaliacoes_reais/LCG/selectedReviews/Math.random) na rota de cidade/zona' });
   }
 }
 const previstoTotais = {

@@ -5,76 +5,30 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import BottomNavBar from '../../components/BottomNavBar.astro';
 import MontadorCard from '../../components/MontadorCard.astro';
-import { supabase } from '../../lib/supabase';
-import { filtrarEMontadores } from '../../lib/sanitizer';
+import { buscarMontadores, listarCidadesComEstado, montadoresValidosPorCidade } from '../../lib/montadores';
 
 export async function getStaticPaths() {
-	try {
-		const { data: montadores, error } = await supabase
-			.from('tabela_montadores')
-			.select('cidade_estado, link_google_empresas')
-			.range(0, 10000);
-		
-		if (error) {
-			console.log('Erro getStaticPaths:', error.message);
-			return [];
+	const montadores = await buscarMontadores(['cidade_estado']);
+	const cidades = listarCidadesComEstado(montadores);
+
+	console.log(`getStaticPaths: ${cidades.length} cidades únicas (com estado)`);
+
+	return cidades.map(c => ({
+		params: { estado: c.estado, cidade: c.id },
+		props: {
+			nomeCidade: c.nomeCidade,
+			estado: c.estadoSigla,
+			estadoSigla: c.estadoSigla
 		}
-		
-		const data = montadores || [];
-		const cidadesUnicas = new Map();
-		
-		function slugify(text) {
-			return text
-				.toLowerCase()
-				.normalize('NFD')
-				.replace(/[\u0300-\u036f]/g, '')
-				.replace(/[^a-z0-9]/g, '-')
-				.replace(/-+/g, '-')
-				.replace(/^-|-$/g, '');
-		}
-		
-		data.forEach(m => {
-			if (m.cidade_estado) {
-				const [nome, estadoSigla] = m.cidade_estado.split(' - ');
-				if (nome && estadoSigla) {
-					const slugCidade = slugify(nome);
-					const estadoLower = slugify(estadoSigla);
-					if (!cidadesUnicas.has(`${estadoLower}/${slugCidade}`)) {
-						cidadesUnicas.set(`${estadoLower}/${slugCidade}`, {
-							estado: estadoLower,
-							estadoSigla: estadoSigla,
-							nomeCidade: nome,
-							id: slugCidade
-						});
-					}
-				}
-			}
-		});
-		
-		console.log(`getStaticPaths: ${cidadesUnicas.size} cidades únicas (com estado)`);
-		
-		return Array.from(cidadesUnicas.values()).map(c => ({
-			params: { estado: c.estado, cidade: c.id },
-			props: { 
-				nomeCidade: c.nomeCidade, 
-				estado: c.estadoSigla,
-				estadoSigla: c.estadoSigla
-			}
-		}));
-	} catch (err) {
-		console.log('Erro catch getStaticPaths:', err.message);
-		return [];
-	}
+	}));
 }
 
 const { nomeCidade, estado, estadoSigla } = Astro.props;
+const { cidade: cidadeSlug, estado: estadoSlug } = Astro.params;
 
 const bairros = [];
 
-const { data: montadores } = await supabase
-	.from('tabela_montadores')
-	.select('*')
-	.range(0, 10000);
+const montadores = await buscarMontadores(['*']);
 
 function normalizarWhatsapp(whatsapp) {
 	if (!whatsapp) return '';
@@ -92,9 +46,7 @@ function normalizarNome(nome) {
 
 const montadoresRaw = montadores || [];
 
-const porCidade = montadoresRaw.filter(m => 
-	m.cidade_estado && m.cidade_estado.toLowerCase().includes(nomeCidade.toLowerCase())
-);
+const porCidade = montadoresValidosPorCidade(montadoresRaw, nomeCidade, estadoSigla);
 
 const filtrados = porCidade.reduce((acc, m) => {
 	const wpNormalizado = normalizarWhatsapp(m.whatsapp);
@@ -129,58 +81,34 @@ const schemaData = {
 			"@type": "BreadcrumbList",
 			"itemListElement": [
 				{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://portal.omontadordemoveis.com/" },
-				{ "@type": "ListItem", "position": 2, "name": estado, "item": `https://portal.omontadordemoveis.com/${estadoSigla.toLowerCase()}` },
-				{ "@type": "ListItem", "position": 3, "name": nomeCidade, "item": `https://portal.omontadordemoveis.com/${estadoSigla.toLowerCase()}/${Astro.props.cidade}` }
+				{ "@type": "ListItem", "position": 2, "name": nomeCidade, "item": `https://portal.omontadordemoveis.com/${estadoSlug}/${cidadeSlug}` }
 			]
-		},
-		{
-			"@type": "LocalBusiness",
-			"name": `Montador de Móveis em ${nomeCidade}`,
-			"address": {
-				"@type": "PostalAddress",
-				"addressLocality": nomeCidade,
-				"addressRegion": estadoSigla,
-				"addressCountry": "BR"
-			},
-			"areaServed": {
-				"@type": "City",
-				"name": nomeCidade
-			},
-			"priceRange": "$$",
-			"aggregateRating": {
-				"@type": "AggregateRating",
-				"ratingValue": notaMedia > 0 ? notaMedia.toFixed(1) : "5.0",
-				"bestRating": "5",
-				"worstRating": "1",
-				"ratingCount": totalAvaliacoes > 0 ? totalAvaliacoes : 150,
-				"reviewCount": totalAvaliacoes > 0 ? totalAvaliacoes : 150
-			}
 		},
 		{
 			"@type": "FAQPage",
 			"mainEntity": [
 				{
 					"@type": "Question",
-					"name": `Como encontrar montador de móveis em ${nomeCidade}?`,
-					"acceptedAnswer": {
-						"@type": "Answer",
-						"text": "Basta selecionar sua cidade no formulário acima. Conectamos você diretamente aos montadores mais bem avaliados de ${nomeCidade}."
-					}
-				},
-				{
-					"@type": "Question",
 					"name": `Quanto custa a montagem de móveis em ${nomeCidade}?`,
 					"acceptedAnswer": {
 						"@type": "Answer",
-						"text": "O preço varia conforme o tipo e quantidade de móveis. Em média, a montagem de guarda-roupa ou rack de TV custa entre R$80 e R$150."
+						"text": "Não existe um preço único para montagem de móveis. O valor depende do tipo e da quantidade de móveis, da complexidade da montagem, do deslocamento e da região. Solicite um orçamento diretamente ao profissional antes de contratar."
 					}
 				},
 				{
 					"@type": "Question",
-					"name": `O montador atende em ${nomeCidade}?`,
+					"name": `Como escolher um bom montador em ${estado}?`,
 					"acceptedAnswer": {
 						"@type": "Answer",
-						"text": "Sim! Todos os montadores listados fazem atendimento na região de ${nomeCidade}."
+						"text": "Veja a nota e quantidade de avaliações do profissional. Prefira quem tem nota acima de 4.5 com várias avaliações."
+					}
+				},
+				{
+					"@type": "Question",
+					"name": `O montador vai até minha casa em ${nomeCidade}?`,
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": `Sim! Todos os montadores listados fazem atendimento em ${nomeCidade}.`
 					}
 				}
 			]
@@ -189,7 +117,7 @@ const schemaData = {
 };
 ---
 
-<Layout title={pageTitle} description={metaDesc} url={`https://portal.omontadordemoveis.com/${estadoSigla.toLowerCase()}/${Astro.props.cidade}`}>
+<Layout title={pageTitle} description={metaDesc}>
 	<Header />
 
 	<main class="max-w-7xl mx-auto px-4">
@@ -198,7 +126,7 @@ const schemaData = {
 				<ol class="flex items-center gap-2 text-sm text-slate-600">
 					<li><a href="/" class="hover:text-amber-600 transition-colors">Home</a></li>
 					<li><span class="material-symbols-outlined text-xs">chevron_right</span></li>
-					<li><a href={`/${estadoSigla.toLowerCase()}`} class="hover:text-amber-600 transition-colors">{estado}</a></li>
+					<li><span class="text-slate-600">{estado}</span></li>
 					<li><span class="material-symbols-outlined text-xs">chevron_right</span></li>
 					<li aria-current="page" class="font-medium text-slate-800">{nomeCidade}</li>
 				</ol>
@@ -257,11 +185,11 @@ const schemaData = {
 			<div class="space-y-4 max-w-2xl">
 				<details class="bg-slate-50 rounded-lg">
 					<summary class="px-6 py-4 cursor-pointer font-medium text-slate-800 flex items-center justify-between">
-						Quanto custa a montage de móveis em {nomeCidade}?
+						Quanto custa a montagem de móveis em {nomeCidade}?
 						<span class="material-symbols-outlined text-slate-400">expand_more</span>
 					</summary>
 					<div class="px-6 pb-4 text-slate-600">
-						O preço varia conforme o tipo e quantidade de móveis. Em média, a montagem de um guarda-roupa ou rack de TV custa entre R$80 e R$150.
+						Não existe um preço único para montagem de móveis. O valor depende do tipo e da quantidade de móveis, da complexidade da montagem, do deslocamento e da região. Solicite um orçamento diretamente ao profissional antes de contratar.
 					</div>
 				</details>
 				<details class="bg-slate-50 rounded-lg">

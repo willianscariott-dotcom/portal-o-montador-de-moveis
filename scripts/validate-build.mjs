@@ -37,6 +37,25 @@ const SITE_URL = 'https://portal.omontadordemoveis.com';
 
 const ROTAS_SSR_CANONICAS = ['/', '/cadastro', '/contato', '/privacidade', '/termos'];
 
+function checarIndexingApiRemovida() {
+  const erros = [];
+  const pkg = JSON.parse(fs.readFileSync(path.resolve('package.json'), 'utf-8'));
+  const roteiros = Object.values(pkg.scripts || {});
+  if (roteiros.some((s) => String(s).includes('index:google'))) {
+    erros.push('package.json voltou a expor o comando index:google');
+  }
+  const padroes = [/urlNotifications\.publish/, /google\.indexing/];
+  for (const nome of fs.readdirSync(path.resolve('scripts')).filter((n) => /\.(js|mjs|cjs)$/.test(n))) {
+    const conteudo = fs.readFileSync(path.resolve('scripts', nome), 'utf-8');
+    for (const p of padroes) {
+      if (p.test(conteudo)) {
+        erros.push(`scripts/${nome} contém referência a ${p.source}`);
+      }
+    }
+  }
+  return erros;
+}
+
 function relSsr(rota) {
   return rota === '/' ? `${SITE_URL}/` : `${SITE_URL}${rota}`;
 }
@@ -246,6 +265,12 @@ if (!temIndex || sitemaps.length === 0) {
     console.error(`[validate-build] FALHA: sitemap contém URLs inválidas: ${invalidas.join(', ')}`);
     fail = true;
   }
+}
+
+const errosIndexing = checarIndexingApiRemovida();
+if (errosIndexing.length) {
+  for (const e of errosIndexing) console.error(`[validate-build] FALHA: ${e}`);
+  fail = true;
 }
 
 if (fail) {

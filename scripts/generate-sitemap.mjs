@@ -15,7 +15,7 @@ function buscarIndexHtml(dir) {
   return resultados;
 }
 
-const ROTAS_SSR_CANONICAS = ['/', '/cadastro', '/contato', '/privacidade', '/termos'];
+const ROTAS_SSR_CANONICAS = ['/cadastro', '/contato', '/privacidade', '/termos'];
 
 export function gerarSitemap(distClient) {
   const DIST_CLIENT = path.resolve(distClient);
@@ -30,7 +30,7 @@ export function gerarSitemap(distClient) {
     buscarIndexHtml(DIST_CLIENT)
       .map((f) => {
         const rel = path.relative(DIST_CLIENT, f).replace(/\\/g, '/');
-        const rota = rel.replace(/\/index\.html$/, '');
+        const rota = rel === 'index.html' ? '' : rel.replace(/\/index\.html$/, '');
         if (/^404\.html$/.test(rel)) return null;
         return rota === '' ? `${SITE_URL}/` : `${SITE_URL}/${rota}`;
       })
@@ -38,7 +38,7 @@ export function gerarSitemap(distClient) {
   );
 
   for (const rota of ROTAS_SSR_CANONICAS) {
-    urls.add(rota === '/' ? `${SITE_URL}/` : `${SITE_URL}${rota}`);
+    urls.add(`${SITE_URL}${rota}`);
   }
 
   const lista = [...urls].sort();

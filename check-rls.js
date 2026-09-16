@@ -1,7 +1,18 @@
 import { createClient } from '@supabase/supabase-js';
+import 'dotenv/config';
 
-const supabaseUrl = 'https://zbxclibijjngvorcynpw.supabase.co';
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpieGNsaWJpampuZ3ZvcmN5bnB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NDE2OTIsImV4cCI6MjA5MjIxNzY5Mn0.yL21n_56GRd8xb1NPfKNYSyvGRTMHu5SC96u7BuzmfA';
+const supabaseUrl = process.env.PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+
+if (!supabaseUrl) {
+  console.error('❌ Variável de ambiente ausente: PUBLIC_SUPABASE_URL (ou SUPABASE_URL).');
+  process.exit(1);
+}
+
+if (!supabaseAnonKey) {
+  console.error('❌ Variável de ambiente ausente: PUBLIC_SUPABASE_ANON_KEY (ou SUPABASE_ANON_KEY).');
+  process.exit(1);
+}
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 

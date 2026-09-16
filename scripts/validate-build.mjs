@@ -35,20 +35,62 @@ function nivel(url) {
 
 const SITE_URL = 'https://portal.omontadordemoveis.com';
 
-const ROTAS_SSR_CANONICAS = ['/', '/cadastro', '/contato', '/privacidade', '/termos'];
+const ROTAS_SSR_CANONICAS = ['/cadastro', '/contato', '/privacidade', '/termos'];
+
+function checarIndexingApiRemovida() {
+  const erros = [];
+  const pkg = JSON.parse(fs.readFileSync(path.resolve('package.json'), 'utf-8'));
+  const roteiros = Object.values(pkg.scripts || {});
+  if (roteiros.some((s) => String(s).includes('index:google'))) {
+    erros.push('package.json voltou a expor o comando index:google');
+  }
+  const padroes = [/urlNotifications\.publish/, /google\.indexing/];
+  for (const nome of fs.readdirSync(path.resolve('scripts')).filter((n) => /\.(js|mjs|cjs)$/.test(n))) {
+    const conteudo = fs.readFileSync(path.resolve('scripts', nome), 'utf-8');
+    for (const p of padroes) {
+      if (p.test(conteudo)) {
+        erros.push(`scripts/${nome} contém referência a ${p.source}`);
+      }
+    }
+  }
+  return erros;
+}
 
 function relSsr(rota) {
-  return rota === '/' ? `${SITE_URL}/` : `${SITE_URL}${rota}`;
+  return `${SITE_URL}${rota}`;
 }
 
 function canonicalEsperado(url) {
   const partes = url.split('/').filter(Boolean);
-  if (partes.length === 0) return `${SITE_URL}/`;
+  if (partes.length === 0) return SITE_URL;
   return `${SITE_URL}/${partes.join('/')}`;
 }
 
 function unicosPerigoso(locs) {
   return locs.filter((u) => /undefined|\/null(?:[/?#]|$)/.test(u));
+}
+
+function extrairRotasInternas(html) {
+  const rotas = new Set();
+  const origem = new URL(SITE_URL);
+  for (const m of html.matchAll(/<a\b[^>]*\bhref\s*=\s*["']([^"']*)["']/gi)) {
+    const href = m[1].trim();
+    if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('//')) continue;
+    if (/^https?:\/\//i.test(href)) {
+      try {
+        const u = new URL(href);
+        if (u.origin !== origem.origin) continue;
+        rotas.add(u.pathname.replace(/\/+$/, '') || '/');
+      } catch { /* URL malformada ignorada */ }
+      continue;
+    }
+    const semQueryHash = href.split(/[?#]/)[0];
+    if (!semQueryHash) continue;
+    let rota = semQueryHash;
+    if (!rota.startsWith('/')) rota = `/${rota}`;
+    rotas.add(rota.replace(/\/+$/, '') || '/');
+  }
+  return rotas;
 }
 
 if (!fs.existsSync(DIST_CLIENT)) {
@@ -71,6 +113,9 @@ const PADRAO_PRECO_FIXO = /R\$\s?80|R\$\s?150/i;
 const PADRAO_DEPOIMENTO_NAO_LOCAL = /avaliacoes_reais|selectedReviews|\blcg\s*\(|\bMath\.random\b/;
 const exemplos = [];
 
+const homeIndex = path.join(DIST_CLIENT, 'index.html');
+const temHomeEstatica = fs.existsSync(homeIndex);
+
 const htmlRaiz = fs
   .readdirSync(DIST_CLIENT)
   .filter(
@@ -80,9 +125,50 @@ const htmlRaiz = fs
       !/^sitemap.*\.xml$/.test(f)
   );
 
+const htmlRaizIndevido = htmlRaiz.filter((f) => f !== 'index.html');
+
+if (htmlRaizIndevido.length) {
+  problemas.htmlPublicoIndevido += htmlRaizIndevido.length;
+  for (const h of htmlRaizIndevido) {
+    if (/\{cidade\}|\{estado\}/i.test(fs.readFileSync(path.join(DIST_CLIENT, h), 'utf-8'))) {
+      problemas.placeholderLiteral++;
+    }
+    if (exemplos.length < 12) exemplos.push({ url: h, problema: 'HTML público indevido' });
+  }
+}
+
+if (temHomeEstatica) {
+  const homeHtml = fs.readFileSync(homeIndex, 'utf-8');
+
+  if (/\{cidade\}|\{estado\}/i.test(homeHtml)) {
+    problemas.placeholderLiteral++;
+    if (exemplos.length < 12) exemplos.push({ url: '/', problema: 'placeholder literal {cidade}/{estado} na home' });
+  }
+  if (!/<title>(.*?)<\/title>/i.test(homeHtml)) {
+    problemas.semTitle++;
+    if (exemplos.length < 12) exemplos.push({ url: '/', problema: 'home sem title' });
+  }
+  if (!/<meta\s+name="description"\s+content="[^"]+"/i.test(homeHtml)) {
+    problemas.semDescription++;
+    if (exemplos.length < 12) exemplos.push({ url: '/', problema: 'home sem description' });
+  }
+  if (!/<h1[^>]*>/i.test(homeHtml)) {
+    problemas.semH1++;
+    if (exemplos.length < 12) exemplos.push({ url: '/', problema: 'home sem h1' });
+  }
+  const homeCanonical = homeHtml.match(/<link\s+rel="canonical"\s+href="([^"]+)"/i);
+  if (!homeCanonical) {
+    problemas.semCanonical++;
+    if (exemplos.length < 12) exemplos.push({ url: '/', problema: 'home sem canonical' });
+  } else if (homeCanonical[1].replace(/\/+$/, '') !== SITE_URL) {
+    problemas.canonicalInvalida++;
+    if (exemplos.length < 12) exemplos.push({ url: '/', problema: `home canonical ${homeCanonical[1]} !== ${SITE_URL}` });
+  }
+}
+
 for (const file of files) {
   const rel = path.relative(DIST_CLIENT, file).replace(/\\/g, '/');
-  const url = rel.replace(/\/index\.html$/, '');
+  const url = rel === 'index.html' ? '' : rel.replace(/\/index\.html$/, '');
   const html = fs.readFileSync(file, 'utf-8');
   const level = nivel(url);
   contadores[level]++;
@@ -143,15 +229,6 @@ for (const file of files) {
 }
 
 const totalGeral = files.length;
-if (htmlRaiz.length) {
-  problemas.htmlPublicoIndevido = htmlRaiz.length;
-  for (const h of htmlRaiz) {
-    if (/\{cidade\}|\{estado\}/i.test(fs.readFileSync(path.join(DIST_CLIENT, h), 'utf-8'))) {
-      problemas.placeholderLiteral++;
-    }
-    if (exemplos.length < 12) exemplos.push({ url: h, problema: 'HTML público indevido' });
-  }
-}
 
 for (const srcFile of ROTAS_CIDADE_SRC) {
   if (!fs.existsSync(srcFile)) {
@@ -185,13 +262,23 @@ for (const ex of exemplos) {
 
 let fail = false;
 
+if (contadores.city !== baseline.cityPages || contadores.ufCity !== baseline.ufCity || contadores.zona !== baseline.zona) {
+  console.error(`[validate-build] FALHA: contagem de rotas não bate com a baseline (city=${contadores.city}, ufCity=${contadores.ufCity}, zona=${contadores.zona}; esperado ${baseline.cityPages}/${baseline.ufCity}/${baseline.zona}).`);
+  fail = true;
+}
+
 if (contadores.city < floors.city || contadores.ufCity < floors.ufCity || contadores.zona < floors.zona) {
   console.error(`[validate-build] FALHA: contagem de rotas abaixo do piso mínimo (city>=${floors.city}, ufCity>=${floors.ufCity}, zona>=${floors.zona}).`);
   fail = true;
 }
 
-if (totalGeral < baseline.totalIndexHtml - 10) {
-  console.error(`[validate-build] FALHA: total de páginas (${totalGeral}) muito abaixo da baseline (${baseline.totalIndexHtml}).`);
+if (!temHomeEstatica) {
+  console.error(`[validate-build] FALHA: home não é estática — index.html ausente na raiz de dist/client.`);
+  fail = true;
+}
+
+if (totalGeral !== baseline.totalIndexHtml) {
+  console.error(`[validate-build] FALHA: total de páginas ${totalGeral}, esperado ${baseline.totalIndexHtml}.`);
   fail = true;
 }
 
@@ -246,6 +333,48 @@ if (!temIndex || sitemaps.length === 0) {
     console.error(`[validate-build] FALHA: sitemap contém URLs inválidas: ${invalidas.join(', ')}`);
     fail = true;
   }
+  if (unicos.size !== baseline.totalSitemapUrls) {
+    console.error(`[validate-build] FALHA: sitemap com ${unicos.size} URLs únicas, esperado exatamente ${baseline.totalSitemapUrls}.`);
+    fail = true;
+  }
+  const ocorrenciasHome = locs.filter((l) => {
+    try {
+      return new URL(l).pathname === '/';
+    } catch {
+      return false;
+    }
+  }).length;
+  console.log(`[validate-build] "/" no sitemap: ${ocorrenciasHome} vez(es)`);
+  if (ocorrenciasHome !== 1) {
+    console.error(`[validate-build] FALHA: "/" deve ocorrer exatamente 1 vez no sitemap (encontrado ${ocorrenciasHome}).`);
+    fail = true;
+  }
+  const rotasNoSitemap = new Set();
+  for (const l of locs) {
+    try {
+      const u = new URL(l);
+      rotasNoSitemap.add(u.pathname.replace(/\/+$/, '') || '/');
+    } catch { /* URLs inválidas já cobertas por unicosPerigoso */ }
+  }
+  if (temHomeEstatica) {
+    const linksHome = extrairRotasInternas(fs.readFileSync(homeIndex, 'utf-8'));
+    for (const rota of linksHome) {
+      if (/null|undefined/i.test(rota)) {
+        console.error(`[validate-build] FALHA: link interno inválido na home: ${rota}`);
+        fail = true;
+      } else if (!rotasNoSitemap.has(rota)) {
+        console.error(`[validate-build] FALHA: link interno da home fora do sitemap: ${rota}`);
+        fail = true;
+      }
+    }
+    console.log(`[validate-build] links internos da home conferidos contra o sitemap (${linksHome.size} únicos)`);
+  }
+}
+
+const errosIndexing = checarIndexingApiRemovida();
+if (errosIndexing.length) {
+  for (const e of errosIndexing) console.error(`[validate-build] FALHA: ${e}`);
+  fail = true;
 }
 
 if (fail) {

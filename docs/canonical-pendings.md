@@ -5,7 +5,7 @@ Decisão do P0: não mudamos URLs nem aplicamos 301/noindex. Cada página de cid
 - Formato A (city): `https://portal.omontadordemoveis.com/{cidade}` — 126 páginas
 - Formato B (ufCity): `https://portal.omontadordemoveis.com/{uf}/{cidade}` — 126 páginas
 - Total de pares sem decisão: 126
-- Observação: a auditoria anterior registrou `scripts/indexed-urls.json` com 112 URLs no formato B (incluindo `/ac/null`). Este arquivo NÃO é fonte de decisão canônica; o cidadão `/ac/null` foi eliminado do build. O Search Console permanece como fonte oficial de preferência.
+- Observação: a auditoria anterior registrou `scripts/indexed-urls.json` com 112 URLs no formato B (incluindo `/ac/null`), agora arquivado em `docs/indexing-api-removal.md` junto da remoção dos scripts de Indexing API. Este arquivo NÃO é fonte de decisão canônica; o cidadão `/ac/null` foi eliminado do build. O Search Console permanece como fonte oficial de preferência.
 
 ## Critério para resolver (próxima fase `feat/seo-validation`)
 

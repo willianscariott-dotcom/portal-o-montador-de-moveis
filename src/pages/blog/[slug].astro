@@ -4,34 +4,54 @@ export const prerender = true;
 import Layout from '../../layouts/Layout.astro';
 import { getCollection, render } from 'astro:content';
 
+// Fonte unica de verdade: data.slug (do frontmatter). O nome do arquivo (post.id)
+// entra apenas como referencia de log quando divergir do slug.
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => {
-    return data.draft !== true;
-  });
+  const posts = await getCollection('blog', ({ data }) => data.draft !== true);
 
-  return posts.map(post => ({
-    params: { slug: post.data.slug ?? post.id },
+  for (const post of posts) {
+    if (post.data.slug && post.data.slug !== post.id) {
+      console.info(`[blog] ${post.id}.md serve a rota /blog/${post.data.slug} (file id divergente)`);
+    }
+  }
+
+  return posts.map((post) => ({
+    params: { slug: post.data.slug },
     props: { post },
   }));
+}
+
+// Helper puro de imagem: devolve o src usado na tag <img> e a URL absoluta usada
+// apenas no Open Graph e no JSON-LD (absoluta montada via Astro.site).
+function resolverImagem(image, site) {
+  if (!image) return { src: undefined, absoluta: undefined };
+  if (/^https?:\/\//i.test(image)) return { src: image, absoluta: image };
+  const base = String(site ?? '').replace(/\/+$/, '');
+  return {
+    src: image,
+    absoluta: `${base}${image.startsWith('/') ? '' : '/'}${image}`,
+  };
 }
 
 const { post } = Astro.props;
 const { Content } = await render(post);
 
+const noindex = post.data.noindex;
 const title = post.data.title;
 const description = post.data.description;
-const noindex = post.data.noindex;
 
 const site = Astro.site ? Astro.site.toString().replace(/\/+$/, '') : 'https://portal.omontadordemoveis.com';
 const canonical = site + Astro.url.pathname;
 
-const imagem = post.data.image
-  ? /^https?:\/\//i.test(post.data.image)
-    ? post.data.image
-    : `${site}${post.data.image.startsWith('/') ? '' : '/'}${post.data.image}`
-  : undefined;
+const { src: imageSrc, absoluta: imagemAbsoluta } = resolverImagem(post.data.image ?? '', site);
 
-const graph: any[] = [
+// P2A: enquanto a P2B nao resolve authorId -> Person real, author e publisher
+// do BlogPosting usam a mesma Organization do Layout global (#organization),
+// sem criar Person ficticia nem duplicar a entidade.
+const graph: any[] = [];
+
+if (!noindex) {
+  graph.push(
     {
       "@type": "BlogPosting",
       "mainEntityOfPage": {
@@ -40,14 +60,15 @@ const graph: any[] = [
       },
       "headline": title,
       "description": description,
-      "image": imagem,
+      "image": imagemAbsoluta,
       "datePublished": post.data.publishedAt.toISOString(),
       "dateModified": post.data.updatedAt ? post.data.updatedAt.toISOString() : post.data.publishedAt.toISOString(),
       "author": {
-        "@type": "Person",
-        "name": post.data.authorId
+        "@type": "Organization",
+        "@id": `${site}/#organization`
       },
       "publisher": {
+        "@type": "Organization",
         "@id": `${site}/#organization`
       }
     },
@@ -74,20 +95,21 @@ const graph: any[] = [
         }
       ]
     }
-  ];
+  );
 
-if (post.data.faq && post.data.faq.length > 0) {
-  graph.push({
-    "@type": "FAQPage",
-    "mainEntity": post.data.faq.map(q => ({
-      "@type": "Question",
-      "name": q.question,
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": q.answer
-      }
-    }))
-  });
+  if (post.data.faq && post.data.faq.length > 0) {
+    graph.push({
+      "@type": "FAQPage",
+      "mainEntity": post.data.faq.map(q => ({
+        "@type": "Question",
+        "name": q.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": q.answer
+        }
+      }))
+    });
+  }
 }
 
 const jsonLd = {
@@ -96,8 +118,10 @@ const jsonLd = {
 };
 ---
 
-<Layout title={title} description={description} noindex={noindex} image={post.data.image}>
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+<Layout title={title} description={description} noindex={noindex} image={imagemAbsoluta}>
+  {!noindex && (
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+  )}
 
   <nav aria-label="Breadcrumb" class="max-w-prose mx-auto px-4 pt-8 pb-4">
     <ol class="flex items-center space-x-2 text-sm text-on-surface-variant">
@@ -127,9 +151,9 @@ const jsonLd = {
 
     <h1 class="text-4xl md:text-5xl font-headline font-bold text-on-surface mb-6 leading-tight">{title}</h1>
 
-    {post.data.image && (
+    {imageSrc && (
         <figure class="mb-10">
-          <img src={post.data.image} alt={post.data.imageAlt} class="w-full h-auto rounded-2xl ambient-shadow-sm" />
+          <img src={imageSrc} alt={post.data.imageAlt} class="w-full h-auto rounded-2xl ambient-shadow-sm" />
         </figure>
       )}
     </header>

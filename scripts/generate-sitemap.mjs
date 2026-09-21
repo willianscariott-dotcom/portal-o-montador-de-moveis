@@ -32,6 +32,12 @@ export function gerarSitemap(distClient) {
         const rel = path.relative(DIST_CLIENT, f).replace(/\\/g, '/');
         const rota = rel === 'index.html' ? '' : rel.replace(/\/index\.html$/, '');
         if (/^404\.html$/.test(rel)) return null;
+
+        const html = fs.readFileSync(f, 'utf-8');
+        if (/<meta[^>]+name=["']robots["'][^>]+content=["'][^"']*noindex[^"']*["']/i.test(html)) {
+          return null;
+        }
+
         return rota === '' ? `${SITE_URL}/` : `${SITE_URL}/${rota}`;
       })
       .filter(Boolean)

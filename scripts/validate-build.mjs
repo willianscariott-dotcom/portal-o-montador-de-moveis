@@ -3,6 +3,7 @@ import path from 'node:path';
 
 const DIST_CLIENT = path.resolve('dist/client');
 const BASELINE_FILE = path.resolve('scripts/baseline-routes.json');
+const BLOG_DIR = path.resolve('src/content/blog');
 
 let baseline;
 try {
@@ -27,6 +28,7 @@ function walk(dir) {
 
 function nivel(url) {
   const partes = url.split('/').filter(Boolean);
+  if (partes[0] === 'blog') return 'blog';
   if (partes.length === 1) return 'city';
   if (partes.length === 2) return 'ufCity';
   if (partes.length === 3) return 'zona';
@@ -93,14 +95,60 @@ function extrairRotasInternas(html) {
   return rotas;
 }
 
+const RE_ROBOTS_NOINDEX = /<meta[^>]+name=["']robots["'][^>]+content=["'][^"']*noindex[^"']*["']/i;
+
+function listarMarkdown(dir) {
+  if (!fs.existsSync(dir)) return [];
+  const resultado = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      resultado.push(...listarMarkdown(full));
+    } else if (/\.md$/.test(entry.name)) {
+      resultado.push(full);
+    }
+  }
+  return resultado;
+}
+
+function parseFrontmatter(conteudo) {
+  const m = conteudo.match(/^\uFEFF?---\r?\n([\s\S]*?)\r?\n---/);
+  const dados = {};
+  if (!m) return dados;
+  for (const linha of m[1].split(/\r?\n/)) {
+    const kv = linha.match(/^([A-Za-z_][A-Za-z0-9_]*):\s*(.*)$/);
+    if (kv && kv[2].trim() !== '') dados[kv[1]] = kv[2].trim();
+  }
+  return dados;
+}
+
+function boolVal(raw) {
+  return /^true$/i.test(raw || '');
+}
+
+function extrairRelated(raw) {
+  if (!raw) return [];
+  return raw
+    .split(',')
+    .map((s) => s.replace(/^["'\s]+|["'\s]+$/g, ''))
+    .filter((s) => s.startsWith('/') && !/\s/.test(s));
+}
+
 if (!fs.existsSync(DIST_CLIENT)) {
   console.error('[validate-build] dist/client não existe. Rode `npm run build` antes de validar.');
   process.exit(1);
 }
 
 const files = walk(DIST_CLIENT);
-const contadores = { city: 0, ufCity: 0, zona: 0, outro: 0 };
-const problemas = { canonicalUndefined: 0, canonicalInvalida: 0, semCanonical: 0, semTitle: 0, semDescription: 0, semH1: 0, jsonldInvalido: 0, textoUndefined: 0, htmlPublicoIndevido: 0, placeholderLiteral: 0, precoFixo: 0, depoimentoNaoLocal: 0 };
+const contadores = { city: 0, ufCity: 0, zona: 0, blog: 0, outro: 0 };
+const problemas = {
+  canonicalUndefined: 0, canonicalInvalida: 0, semCanonical: 0, semTitle: 0, semDescription: 0,
+  semH1: 0, jsonldInvalido: 0, textoUndefined: 0, htmlPublicoIndevido: 0, placeholderLiteral: 0,
+  precoFixo: 0, depoimentoNaoLocal: 0, rotasBlogDraft: 0, slugDuplicado: 0, canonicalDuplicada: 0,
+  blogPostAusenteListagem: 0, relatedPageForaSitemap: 0, blogSemBlogPosting: 0,
+  htmlNoindexNoSitemap: 0, htmlIndexavelForaDoSitemap: 0, blogIndexSemNoindex: 0, blogIndexNoindexComConteudo: 0
+};
+const exemplos = [];
 
 const ROTAS_CIDADE_SRC = [
   ['src', 'pages', '[cidade].astro'],
@@ -111,7 +159,23 @@ const ROTAS_CIDADE_SRC = [
 const PADRAO_PRECO_FIXO = /R\$\s?80|R\$\s?150/i;
 
 const PADRAO_DEPOIMENTO_NAO_LOCAL = /avaliacoes_reais|selectedReviews|\blcg\s*\(|\bMath\.random\b/;
-const exemplos = [];
+
+const postsBlog = listarMarkdown(BLOG_DIR).map((f) => {
+  const conteudo = fs.readFileSync(f, 'utf-8');
+  const fm = parseFrontmatter(conteudo);
+  const id = path.basename(f, '.md');
+  const slug = (fm.slug || '').trim() || id;
+  return {
+    file: path.relative(path.resolve('.'), f),
+    id,
+    slug,
+    draft: boolVal(fm.draft),
+    noindex: boolVal(fm.noindex),
+    published: !boolVal(fm.draft),
+    indexable: !boolVal(fm.draft) && !boolVal(fm.noindex),
+    relatedPages: extrairRelated(fm.relatedPages)
+  };
+});
 
 const homeIndex = path.join(DIST_CLIENT, 'index.html');
 const temHomeEstatica = fs.existsSync(homeIndex);
@@ -166,12 +230,21 @@ if (temHomeEstatica) {
   }
 }
 
+const rotasIndexaveisHtml = new Set();
+const rotasNoindexHtml = new Set();
+const canonicalPorRota = new Map();
+
 for (const file of files) {
   const rel = path.relative(DIST_CLIENT, file).replace(/\\/g, '/');
   const url = rel === 'index.html' ? '' : rel.replace(/\/index\.html$/, '');
   const html = fs.readFileSync(file, 'utf-8');
   const level = nivel(url);
   contadores[level]++;
+
+  const isNoindex = RE_ROBOTS_NOINDEX.test(html);
+  const rotaCompleta = url === '' ? '/' : `/${url}`;
+  if (isNoindex) rotasNoindexHtml.add(rotaCompleta);
+  else rotasIndexaveisHtml.add(rotaCompleta);
 
   if (PADRAO_PRECO_FIXO.test(html)) {
     problemas.precoFixo++;
@@ -187,15 +260,18 @@ for (const file of files) {
   const canonical = canonicalMatch ? canonicalMatch[1] : null;
   const esperado = canonicalEsperado(url);
 
-  if (!canonical) {
-    problemas.semCanonical++;
-    if (exemplos.length < 12) exemplos.push({ url, problema: 'sem canonical' });
-  } else if (/\/undefined|\/null(?:[/?#]|$)/.test(canonical)) {
-    problemas.canonicalUndefined++;
-    if (exemplos.length < 12) exemplos.push({ url, problema: `canonical: ${canonical}` });
-  } else if (canonical !== esperado) {
-    problemas.canonicalInvalida++;
-    if (exemplos.length < 12) exemplos.push({ url, problema: `canonical ${canonical} !== ${esperado}` });
+  if (!isNoindex) {
+    if (!canonical) {
+      problemas.semCanonical++;
+      if (exemplos.length < 12) exemplos.push({ url, problema: 'sem canonical' });
+    } else if (/\/undefined|\/null(?:[/?#]|$)/.test(canonical)) {
+      problemas.canonicalUndefined++;
+      if (exemplos.length < 12) exemplos.push({ url, problema: `canonical: ${canonical}` });
+    } else if (canonical !== esperado) {
+      problemas.canonicalInvalida++;
+      if (exemplos.length < 12) exemplos.push({ url, problema: `canonical ${canonical} !== ${esperado}` });
+    }
+    canonicalPorRota.set(rotaCompleta, canonical);
   }
 
   const title = html.match(/<title>(.*?)<\/title>/);
@@ -226,6 +302,11 @@ for (const file of files) {
       break;
     }
   }
+
+  if (level === 'blog' && url !== 'blog' && !isNoindex && !/BlogPosting/.test(html)) {
+    problemas.blogSemBlogPosting++;
+    if (exemplos.length < 12) exemplos.push({ url, problema: 'artigo do blog sem JSON-LD BlogPosting' });
+  }
 }
 
 const totalGeral = files.length;
@@ -242,6 +323,7 @@ for (const srcFile of ROTAS_CIDADE_SRC) {
     if (exemplos.length < 12) exemplos.push({ url: path.relative(path.resolve('.'), srcFile), problema: 'avaliação não local (avaliacoes_reais/LCG/selectedReviews/Math.random) na rota de cidade/zona' });
   }
 }
+
 const previstoTotais = {
   city: baseline.cityPages,
   ufCity: baseline.ufCity,
@@ -249,10 +331,15 @@ const previstoTotais = {
 };
 const floors = { city: 50, ufCity: 50, zona: 10 };
 
-console.log(`[validate-build] total index.html: ${totalGeral} (baseline ${baseline.totalIndexHtml})`);
-for (const k of ['city', 'ufCity', 'zona', 'outro']) {
+const geramRota = postsBlog.filter((p) => p.published).length;
+const publicosIndexaveis = postsBlog.filter((p) => p.indexable);
+const esperadoBlogFiles = 1 + geramRota;
+
+console.log(`[validate-build] total index.html: ${totalGeral} (base ${baseline.totalIndexHtml}\t+ blog ${contadores.blog})`);
+for (const k of ['city', 'ufCity', 'zona', 'blog', 'outro']) {
   console.log(`[validate-build]   ${k}: ${contadores[k]} (baseline ${previstoTotais[k] ?? '-'})`);
 }
+console.log(`[validate-build] posts markdown em src/content/blog: ${postsBlog.length} (${geramRota} geram rota; ${postsBlog.length - geramRota} draft)`);
 
 const objetoProblemas = Object.entries(problemas).filter(([, v]) => v > 0);
 
@@ -272,14 +359,80 @@ if (contadores.city < floors.city || contadores.ufCity < floors.ufCity || contad
   fail = true;
 }
 
+if (contadores.outro !== 1) {
+  console.error(`[validate-build] FALHA: ${contadores.outro} HTML inesperado fora das rotas conhecidas (esperado 1: a home estática).`);
+  fail = true;
+}
+
 if (!temHomeEstatica) {
   console.error(`[validate-build] FALHA: home não é estática — index.html ausente na raiz de dist/client.`);
   fail = true;
 }
 
-if (totalGeral !== baseline.totalIndexHtml) {
-  console.error(`[validate-build] FALHA: total de páginas ${totalGeral}, esperado ${baseline.totalIndexHtml}.`);
+if (contadores.blog !== esperadoBlogFiles) {
+  console.error(`[validate-build] FALHA: ${contadores.blog} arquivos do blog gerados, esperado ${esperadoBlogFiles} (1 índice + ${geramRota} artigo(s) público(s)).`);
   fail = true;
+}
+
+const esperadoTotalIndex = baseline.totalIndexHtml + esperadoBlogFiles;
+if (totalGeral !== esperadoTotalIndex) {
+  console.error(`[validate-build] FALHA: total de páginas ${totalGeral}, esperado ${esperadoTotalIndex} (${baseline.totalIndexHtml} base + ${esperadoBlogFiles} blog).`);
+  fail = true;
+}
+
+const contagemRotasBlog = new Map();
+for (const p of postsBlog) {
+  contagemRotasBlog.set(p.slug, (contagemRotasBlog.get(p.slug) || 0) + 1);
+}
+for (const [slug, n] of contagemRotasBlog) {
+  if (n > 1) {
+    problemas.slugDuplicado++;
+    if (exemplos.length < 12) exemplos.push({ url: `/blog/${slug}`, problema: `slug duplicado usado por ${n} posts` });
+  }
+}
+
+for (const p of postsBlog.filter((p) => p.draft)) {
+  const caminho = path.join(DIST_CLIENT, 'blog', `${p.slug}.html`);
+  if (fs.existsSync(caminho)) {
+    problemas.rotasBlogDraft++;
+    if (exemplos.length < 12) exemplos.push({ url: `/${p.file}`, problema: `draft gerou rota /blog/${p.slug}` });
+  }
+}
+
+const porCanonical = new Map();
+for (const [, canonical] of canonicalPorRota) {
+  const norm = canonical.replace(/\/+$/, '');
+  porCanonical.set(norm, (porCanonical.get(norm) || 0) + 1);
+}
+for (const [canonical, n] of porCanonical) {
+  if (n > 1) {
+    problemas.canonicalDuplicada++;
+    if (exemplos.length < 12) exemplos.push({ url: canonical, problema: `canonical duplicada em ${n} páginas` });
+  }
+}
+
+const blogIndexFile = path.join(DIST_CLIENT, 'blog', 'index.html');
+if (!fs.existsSync(blogIndexFile)) {
+  console.error('[validate-build] FALHA: /blog não foi gerado (blog/index.html ausente).');
+  fail = true;
+} else {
+  const blogHtml = fs.readFileSync(blogIndexFile, 'utf-8');
+  if (publicosIndexaveis.length === 0) {
+    if (!RE_ROBOTS_NOINDEX.test(blogHtml)) {
+      problemas.blogIndexSemNoindex++;
+      if (exemplos.length < 12) exemplos.push({ url: '/blog', problema: 'índice vazio sem robots noindex' });
+    }
+  } else if (RE_ROBOTS_NOINDEX.test(blogHtml)) {
+    problemas.blogIndexNoindexComConteudo++;
+    if (exemplos.length < 12) exemplos.push({ url: '/blog', problema: 'índice com conteúdo publicado mas com robots noindex' });
+  }
+  for (const p of publicosIndexaveis) {
+    const rota = `/blog/${p.slug}`;
+    if (!blogHtml.includes(`href="${rota}"`)) {
+      problemas.blogPostAusenteListagem++;
+      if (exemplos.length < 12) exemplos.push({ url: rota, problema: `artigo público ausente da listagem em /blog (${p.file})` });
+    }
+  }
 }
 
 if (problemas.canonicalUndefined > 0) {
@@ -314,11 +467,49 @@ if (!temIndex || sitemaps.length === 0) {
   }
   const unicos = new Set(locs);
   console.log(`[validate-build] URLs no sitemap: ${locs.length} (${unicos.size} únicas)`);
-  const esperadoSitemap = totalGeral + ROTAS_SSR_CANONICAS.length;
-  if (locs.length !== esperadoSitemap) {
-    console.error(`[validate-build] FALHA: sitemap com ${locs.length} URLs, mas esperado ${esperadoSitemap} (${totalGeral} index.html + ${ROTAS_SSR_CANONICAS.length} SSR canônicas).`);
-    fail = true;
+
+  const pathSitemap = new Set();
+  for (const l of locs) {
+    try {
+      const u = new URL(l);
+      pathSitemap.add(u.pathname.replace(/\/+$/, '') || '/');
+    } catch { /* URLs inválidas tratadas por unicosPerigoso */ }
   }
+
+  for (const rota of rotasNoindexHtml) {
+    if (pathSitemap.has(rota)) {
+      problemas.htmlNoindexNoSitemap++;
+      if (exemplos.length < 12) exemplos.push({ url: rota, problema: 'HTML noindex presente no sitemap' });
+    }
+  }
+
+  const faltandoIndexaveis = [...rotasIndexaveisHtml].filter((r) => !pathSitemap.has(r));
+  if (faltandoIndexaveis.length) {
+    problemas.htmlIndexavelForaDoSitemap += faltandoIndexaveis.length;
+    for (const r of faltandoIndexaveis.slice(0, 12 - exemplos.length)) {
+      if (exemplos.length < 12) exemplos.push({ url: r, problema: 'HTML indexável ausente do sitemap' });
+    }
+  }
+
+  const ssrPaths = new Set(ROTAS_SSR_CANONICAS.map((r) => new URL(SITE_URL + r).pathname));
+  const extras = [...pathSitemap].filter((r) => !rotasIndexaveisHtml.has(r) && !ssrPaths.has(r));
+  if (extras.length) {
+    problemas.htmlIndexavelForaDoSitemap += extras.length;
+    for (const r of extras.slice(0, 12 - exemplos.length)) {
+      if (exemplos.length < 12) exemplos.push({ url: r, problema: 'URL no sitemap sem HTML indexável correspondente' });
+    }
+  }
+
+  for (const p of postsBlog.filter((p) => p.published)) {
+    for (const rel of p.relatedPages) {
+      const norm = rel.replace(/\/+$/, '') || '/';
+      if (!pathSitemap.has(norm)) {
+        problemas.relatedPageForaSitemap++;
+        if (exemplos.length < 12) exemplos.push({ url: `${p.file}`, problema: `relatedPages ${rel} inexistente ou fora do sitemap` });
+      }
+    }
+  }
+
   const ssrFaltando = ROTAS_SSR_CANONICAS.filter((r) => !unicos.has(relSsr(r)));
   if (ssrFaltando.length) {
     console.error(`[validate-build] FALHA: rotas SSR canônicas ausentes no sitemap: ${ssrFaltando.join(', ')}`);
@@ -333,8 +524,10 @@ if (!temIndex || sitemaps.length === 0) {
     console.error(`[validate-build] FALHA: sitemap contém URLs inválidas: ${invalidas.join(', ')}`);
     fail = true;
   }
-  if (unicos.size !== baseline.totalSitemapUrls) {
-    console.error(`[validate-build] FALHA: sitemap com ${unicos.size} URLs únicas, esperado exatamente ${baseline.totalSitemapUrls}.`);
+  const esperadoUnicas = rotasIndexaveisHtml.size + ROTAS_SSR_CANONICAS.length;
+  console.log(`[validate-build] igualdade HTML indexável x sitemap: ${rotasIndexaveisHtml.size} indexáveis + ${ROTAS_SSR_CANONICAS.length} SSR = ${esperadoUnicas} esperado`);
+  if (unicos.size !== esperadoUnicas) {
+    console.error(`[validate-build] FALHA: sitemap com ${unicos.size} URLs únicas, esperado ${esperadoUnicas} (${rotasIndexaveisHtml.size} HTML indexável + ${ROTAS_SSR_CANONICAS.length} SSR canônicas).`);
     fail = true;
   }
   const ocorrenciasHome = locs.filter((l) => {
@@ -349,20 +542,13 @@ if (!temIndex || sitemaps.length === 0) {
     console.error(`[validate-build] FALHA: "/" deve ocorrer exatamente 1 vez no sitemap (encontrado ${ocorrenciasHome}).`);
     fail = true;
   }
-  const rotasNoSitemap = new Set();
-  for (const l of locs) {
-    try {
-      const u = new URL(l);
-      rotasNoSitemap.add(u.pathname.replace(/\/+$/, '') || '/');
-    } catch { /* URLs inválidas já cobertas por unicosPerigoso */ }
-  }
   if (temHomeEstatica) {
     const linksHome = extrairRotasInternas(fs.readFileSync(homeIndex, 'utf-8'));
     for (const rota of linksHome) {
       if (/null|undefined/i.test(rota)) {
         console.error(`[validate-build] FALHA: link interno inválido na home: ${rota}`);
         fail = true;
-      } else if (!rotasNoSitemap.has(rota)) {
+      } else if (!pathSitemap.has(rota)) {
         console.error(`[validate-build] FALHA: link interno da home fora do sitemap: ${rota}`);
         fail = true;
       }

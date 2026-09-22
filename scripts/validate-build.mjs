@@ -2,6 +2,46 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const DIST_CLIENT = path.resolve('dist/client');
+
+// READ-ONLY: nunca corrige, nunca reescreve, nunca apaga. Valida que o artefato publicado
+// (.vercel/output/static) contém os mesmos bytes de dist/client para os sitemaps gerados.
+const nomePar = ['sitemap-0.xml', 'sitemap-index.xml'];
+const dirVer = path.resolve('.vercel/output/static');
+const dirCli = path.resolve('dist/client');
+if (fs.existsSync(dirVer)) {
+  for (const f of nomePar) {
+    const pv = path.join(dirVer, f);
+    const pc = path.join(dirCli, f);
+    const temV = fs.existsSync(pv);
+    const temC = fs.existsSync(pc);
+    if (!temV && !temC) {
+      console.error('validate read-only: faltando em dist/client e em .vercel/output/static: ' + f);
+      process.exitCode = 1;
+      continue;
+    }
+    if (!temV) {
+      console.error('validate read-only: faltando em .vercel/output/static (dist/client possui): ' + f);
+      process.exitCode = 1;
+      continue;
+    }
+    if (!temC) {
+      console.error('validate read-only: faltando em dist/client (.vercel/output/static possui): ' + f);
+      process.exitCode = 1;
+      continue;
+    }
+    const bv = fs.readFileSync(pv);
+    const bc = fs.readFileSync(pc);
+    if (!bv.equals(bc)) {
+      console.error('validate read-only: DIVERGENCIA byte a byte em ' + f + ' (.vercel/output/static vs dist/client)');
+      process.exitCode = 1;
+    } else {
+      console.log('validate read-only: byte a byte identico em ' + f);
+    }
+  }
+} else {
+  console.log('validate read-only: sem .vercel/output/static neste ambiente');
+}
+
 const BASELINE_FILE = path.resolve('scripts/baseline-routes.json');
 const BLOG_DIR = path.resolve('src/content/blog');
 

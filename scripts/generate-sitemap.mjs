@@ -19,6 +19,14 @@ const ROTAS_SSR_CANONICAS = ['/cadastro', '/contato', '/privacidade', '/termos']
 
 export function gerarSitemap(distClient) {
   const DIST_CLIENT = path.resolve(distClient);
+  const OUTPUT_VERCEL_STATIC = path.resolve('.vercel/output/static');
+  const destinos = [DIST_CLIENT];
+  if (fs.existsSync(OUTPUT_VERCEL_STATIC)) {
+    destinos.push(OUTPUT_VERCEL_STATIC);
+    console.log(`[generate-sitemap] destino extra publicado: ${OUTPUT_VERCEL_STATIC}`);
+  } else if (process.env.VERCEL === '1' || process.env.VERCEL_ENV) {
+    throw new Error(`[generate-sitemap] build Vercel sem ${OUTPUT_VERCEL_STATIC} - sitemap nunca chegaria ao artefato publicado. Abortando.`);
+  }
   const SITE_URL = 'https://portal.omontadordemoveis.com';
   const POR_ARQUIVO = 20000;
 
@@ -52,7 +60,7 @@ export function gerarSitemap(distClient) {
   console.log(`[generate-sitemap] ${lista.length} URLs`);
 
   for (const f of fs.readdirSync(DIST_CLIENT).filter((n) => /^sitemap.*\.xml(\.gz)?$/.test(n))) {
-    fs.rmSync(path.join(DIST_CLIENT, f));
+    for (const d of destinos) fs.rmSync(path.join(d, f));
   }
 
   const hoje = new Date().toISOString().slice(0, 10);
@@ -63,7 +71,7 @@ export function gerarSitemap(distClient) {
     const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${bloco
       .map((u) => `  <url>\n    <loc>${u}</loc>\n    <lastmod>${hoje}</lastmod>\n  </url>`)
       .join('\n')}\n</urlset>\n`;
-    fs.writeFileSync(path.join(DIST_CLIENT, nome), xml);
+    for (const d of destinos) fs.writeFileSync(path.join(d, nome), xml);
     partes.push(nome);
     console.log(`[generate-sitemap] gerado ${nome} (${bloco.length} urls)`);
   }
@@ -71,7 +79,7 @@ export function gerarSitemap(distClient) {
   const index = `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${partes
     .map((p) => `  <sitemap>\n    <loc>${SITE_URL}/${p}</loc>\n    <lastmod>${hoje}</lastmod>\n  </sitemap>`)
     .join('\n')}\n</sitemapindex>\n`;
-  fs.writeFileSync(path.join(DIST_CLIENT, 'sitemap-index.xml'), index);
+  for (const d of destinos) fs.writeFileSync(path.join(d, 'sitemap-index.xml'), index);
   console.log('[generate-sitemap] gerado sitemap-index.xml');
 }
 

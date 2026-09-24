@@ -1,0 +1,113 @@
+---
+export const prerender = true;
+
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import FooterInstitucional from '../components/FooterInstitucional.astro';
+import BottomNavBar from '../components/BottomNavBar.astro';
+import { canonicalUrl } from '../lib/canonical';
+
+const origin = 'https://portal.omontadordemoveis.com';
+const canonical = canonicalUrl('/politica-editorial', origin);
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "BreadcrumbList",
+			"itemListElement": [
+				{
+					"@type": "ListItem",
+					"position": 1,
+					"name": "Início",
+					"item": origin
+				},
+				{
+					"@type": "ListItem",
+					"position": 2,
+					"name": "Política Editorial",
+					"item": canonical
+				}
+			]
+		}
+	]
+};
+---
+
+<Layout title="Política Editorial | Portal O Montador de Móveis" description="Conheça a política editorial do Portal O Montador de Móveis: quem define e revisa os conteúdos, uso de fontes, correções e atualizações.">
+	<Header />
+
+	<script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+
+	<nav aria-label="Breadcrumb" class="max-w-prose mx-auto px-4 pt-8 pb-4">
+		<ol class="flex items-center space-x-2 text-sm text-on-surface-variant">
+			<li><a href="/" class="hover:text-primary transition-colors">Início</a></li>
+			<li><span class="material-symbols-outlined text-sm">chevron_right</span></li>
+			<li class="font-medium text-on-surface" aria-current="page">Política Editorial</li>
+		</ol>
+	</nav>
+
+	<main class="max-w-prose mx-auto px-4 py-8">
+		<article>
+			<header class="mb-10">
+				<h1 class="text-4xl md:text-5xl font-headline font-bold text-on-surface mb-4 leading-tight">Política Editorial</h1>
+				<p class="text-lg text-on-surface-variant leading-relaxed">
+					Como o Portal produz, revisa, atualiza e corrige os conteúdos publicados no blog.
+				</p>
+				<p class="mt-4 text-sm text-on-surface-variant">
+					Última atualização: setembro de 2026
+				</p>
+			</header>
+
+			<div class="space-y-8 text-on-surface-variant text-lg leading-relaxed">
+				<section aria-labelledby="quem-define-heading">
+					<h2 id="quem-define-heading" class="text-2xl md:text-3xl font-headline font-bold text-on-surface mb-4">Quem define e revisa os conteúdos</h2>
+					<p class="mb-4">
+						As pautas e orientações são definidas por <a href="/autor/willian-scariott" class="font-medium text-primary underline underline-offset-2 hover:text-secondary transition-colors">Willian Scariott</a>. Ferramentas de inteligência artificial podem apoiar a organização e a redação, mas todo conteúdo é revisado e aprovado pelo editor antes da publicação.
+					</p>
+					<p>
+						Atualmente não existe revisor técnico no Portal. Os conteúdos são revisados e aprovados pelo editor antes de irem ao ar.
+					</p>
+				</section>
+
+				<section aria-labelledby="assuntos-heading">
+					<h2 id="assuntos-heading" class="text-2xl md:text-3xl font-headline font-bold text-on-surface mb-4">Como escolhemos os assuntos</h2>
+					<p>
+						Os assuntos partem de dúvidas comuns sobre montagem de móveis, como custos, tempo de serviço, cuidados na contratação e segurança. Priorizamos temas que ajudam o cliente a se preparar e a combinar o serviço com mais clareza.
+					</p>
+				</section>
+
+				<section aria-labelledby="fontes-heading">
+					<h2 id="fontes-heading" class="text-2xl md:text-3xl font-headline font-bold text-on-surface mb-4">Uso de fontes</h2>
+					<p>
+						Textos factuais e assuntos de segurança podem utilizar fontes externas confiáveis, sempre citadas no próprio artigo. Quando uma fonte é usada, deixamos claro de onde vem a informação e a data de acesso.
+					</p>
+				</section>
+
+				<section aria-labelledby="nao-inventamos-heading">
+					<h2 id="nao-inventamos-heading" class="text-2xl md:text-3xl font-headline font-bold text-on-surface mb-4">O que não fazemos</h2>
+					<p>
+						Preços, avaliações, depoimentos, estatísticas ou garantias não são inventados. Quando não há dado confirmado, o texto explica a variação e orienta a confirmar as condições diretamente com o profissional. Da mesma forma, o Portal não afirma que os profissionais cadastrados são verificados, aprovados ou certificados.
+					</p>
+				</section>
+
+				<section aria-labelledby="atualizacoes-heading">
+					<h2 id="atualizacoes-heading" class="text-2xl md:text-3xl font-headline font-bold text-on-surface mb-4">Atualizações</h2>
+					<p>
+						Os conteúdos podem ser atualizados quando houver informação nova ou correção. Quando um artigo é atualizado, a data de atualização continua visível na página.
+					</p>
+				</section>
+
+				<section aria-labelledby="correcoes-heading" class="border-t border-surface-container-highest pt-8">
+					<h2 id="correcoes-heading" class="text-2xl md:text-3xl font-headline font-bold text-on-surface mb-4">Correções</h2>
+					<p>
+						Se você encontrar um erro ou quiser solicitar uma correção, envie uma mensagem para <a href="mailto:contato@grupows.com" class="font-medium text-primary underline underline-offset-2 hover:text-secondary transition-colors">contato@grupows.com</a>. As solicitações são analisadas pelo editor e as correções necessárias são publicadas conforme este processo editorial.
+					</p>
+				</section>
+			</div>
+		</article>
+	</main>
+
+	<FooterInstitucional />
+	<BottomNavBar />
+</Layout>

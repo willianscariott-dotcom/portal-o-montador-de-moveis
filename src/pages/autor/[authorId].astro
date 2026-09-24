@@ -1,0 +1,187 @@
+---
+export const prerender = true;
+
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import FooterInstitucional from '../../components/FooterInstitucional.astro';
+import BottomNavBar from '../../components/BottomNavBar.astro';
+import { getImage } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import { listAuthors } from '../../lib/authors';
+
+export function getStaticPaths() {
+	return listAuthors().map((author) => ({
+		params: { authorId: author.id },
+		props: { author },
+	}));
+}
+
+const { author } = Astro.props;
+const site = Astro.site ? Astro.site.toString().replace(/\/+$/, '') : 'https://portal.omontadordemoveis.com';
+const canonical = `${site}${author.pageUrl}`;
+const personId = `${canonical}#person`;
+
+const artigos = await getCollection('blog', ({ data }) => {
+	return data.draft !== true && data.noindex !== true && data.authorId === author.id;
+});
+const artigosOrdenados = artigos.sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+
+const foto = await getImage({
+	src: author.photo,
+	width: 640,
+	format: 'webp',
+	quality: 85,
+});
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "Person",
+			"@id": personId,
+			"name": author.name,
+			"url": canonical,
+			"image": `${site}${foto.src}`,
+			"jobTitle": author.jobTitle,
+			"worksFor": {
+				"@id": `${site}/#organization`
+			},
+			"homeLocation": {
+				"@type": "Place",
+				"address": {
+					"@type": "PostalAddress",
+					"addressLocality": "Novo Hamburgo",
+					"addressRegion": "RS",
+					"addressCountry": "BR"
+				}
+			}
+		},
+		{
+			"@type": "BreadcrumbList",
+			"itemListElement": [
+				{
+					"@type": "ListItem",
+					"position": 1,
+					"name": "Início",
+					"item": site
+				},
+				{
+					"@type": "ListItem",
+					"position": 2,
+					"name": author.name,
+					"item": canonical
+				}
+			]
+		}
+	]
+};
+
+const title = `${author.name} | Autor do Portal O Montador de Móveis`;
+const description = `${author.name}, criador e editor do Portal O Montador de Móveis. Conheça a história do Portal e os artigos publicados.`;
+---
+
+<Layout title={title} description={description} image={`${site}${foto.src}`}>
+	<Header />
+
+	<script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+
+	<nav aria-label="Breadcrumb" class="max-w-prose mx-auto px-4 pt-8 pb-4">
+		<ol class="flex items-center space-x-2 text-sm text-on-surface-variant">
+			<li><a href="/" class="hover:text-primary transition-colors">Início</a></li>
+			<li><span class="material-symbols-outlined text-sm">chevron_right</span></li>
+			<li class="font-medium text-on-surface" aria-current="page">{author.name}</li>
+		</ol>
+	</nav>
+
+	<main class="max-w-prose mx-auto px-4 py-8">
+		<article>
+			<header class="mb-10">
+				<div class="flex flex-col sm:flex-row sm:items-center gap-6 mb-6">
+					<div class="w-36 h-36 md:w-44 md:h-44 rounded-full overflow-hidden bg-surface-container-high shadow-md flex-shrink-0">
+						<img
+							src={foto.src}
+							width={foto.attributes.width}
+							height={foto.attributes.height}
+							alt="Willian Scariott, criador e editor do Portal O Montador de Móveis"
+							class="w-full h-full object-cover"
+							loading="eager"
+						/>
+					</div>
+					<div>
+						<h1 class="text-4xl md:text-5xl font-headline font-bold text-on-surface mb-2 leading-tight">{author.name}</h1>
+						<p class="text-lg font-headline font-semibold text-primary mb-1">{author.jobTitle}</p>
+						<p class="text-sm text-on-surface-variant">{author.location}</p>
+					</div>
+				</div>
+			</header>
+
+			<div class="space-y-8 text-on-surface-variant text-lg leading-relaxed">
+				<section aria-labelledby="biografia-heading">
+					<h2 id="biografia-heading" class="text-2xl md:text-3xl font-headline font-bold text-on-surface mb-4">Biografia</h2>
+					<p class="mb-4">{author.bio}</p>
+					<ul class="list-disc pl-5 space-y-2 mb-4">
+						<li>Cinco anos trabalhando com projetos de móveis.</li>
+						<li>Um ano trabalhando com criação de sites.</li>
+					</ul>
+				</section>
+
+				<section aria-labelledby="criacao-portal-heading">
+					<h2 id="criacao-portal-heading" class="text-2xl md:text-3xl font-headline font-bold text-on-surface mb-4">A criação do Portal</h2>
+					<p>
+						Willian criou o Portal em fevereiro de 2026 com o objetivo de ampliar as oportunidades de trabalho dos montadores de móveis e facilitar o encontro entre clientes que precisam de serviços de montagem e profissionais disponíveis em sua região. O Portal é gratuito e não realiza análise ou verificação prévia dos profissionais cadastrados.
+					</p>
+				</section>
+
+				<section aria-labelledby="projetos-heading">
+					<h2 id="projetos-heading" class="text-2xl md:text-3xl font-headline font-bold text-on-surface mb-4">Outros projetos</h2>
+					<p class="mb-4">Além do Portal, Willian mantém outros projetos com assuntos complementares:</p>
+					<ul class="list-disc pl-5 space-y-2">
+						<li>
+							<a href="https://www.anuncioesite.com.br/" target="_blank" rel="noopener noreferrer" class="font-medium text-primary underline underline-offset-2 hover:text-secondary transition-colors">Anúncio e Site</a>
+							<span class="text-on-surface-variant"> — projeto para desenvolver sites e landing pages para prestadores de serviços e pequenos negócios.</span>
+						</li>
+						<li>
+							<a href="https://www.marceneirodigital.com.br/" target="_blank" rel="noopener noreferrer" class="font-medium text-primary underline underline-offset-2 hover:text-secondary transition-colors">Marceneiro Digital</a>
+							<span class="text-on-surface-variant"> — projeto para desenvolver projetos de móveis planejados utilizando o CorteCloud.</span>
+						</li>
+					</ul>
+				</section>
+
+				<section aria-labelledby="artigos-heading" class="border-t border-surface-container-highest pt-8">
+					<h2 id="artigos-heading" class="text-2xl md:text-3xl font-headline font-bold text-on-surface mb-4">Artigos publicados</h2>
+					{artigosOrdenados.length > 0 ? (
+						<ul class="space-y-4">
+							{artigosOrdenados.map((post) => (
+								<li class="border border-surface-container-highest rounded-xl p-5 ambient-shadow-sm">
+									<article>
+										<span class="inline-block px-3 py-1 bg-primary-container text-on-primary-container text-xs font-semibold rounded-full mb-3">
+											{post.data.category}
+										</span>
+										<h3 class="text-lg font-headline font-semibold text-on-surface mb-1">
+											<a href={`/blog/${post.data.slug ?? post.id}`} class="hover:text-primary transition-colors">{post.data.title}</a>
+										</h3>
+										<time datetime={post.data.publishedAt.toISOString()} class="text-sm text-on-surface-variant">
+											Publicado em {post.data.publishedAt.toLocaleDateString('pt-BR')}
+										</time>
+									</article>
+								</li>
+							))}
+						</ul>
+					) : (
+						<p>Nenhum artigo publicado até o momento.</p>
+					)}
+				</section>
+
+				<section aria-labelledby="editorial-heading" class="border-t border-surface-container-highest pt-8">
+					<h2 id="editorial-heading" class="text-2xl md:text-3xl font-headline font-bold text-on-surface mb-4">Contato editorial</h2>
+					<p>
+						Correções e dúvidas sobre o conteúdo podem ser enviadas para <a href="mailto:contato@grupows.com" class="font-medium text-primary underline underline-offset-2 hover:text-secondary transition-colors">contato@grupows.com</a>. Conheça também a nossa <a href="/politica-editorial" class="font-medium text-primary underline underline-offset-2 hover:text-secondary transition-colors">política editorial</a>.
+					</p>
+				</section>
+			</div>
+		</article>
+	</main>
+
+	<FooterInstitucional />
+	<BottomNavBar />
+</Layout>

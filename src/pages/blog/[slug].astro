@@ -3,6 +3,7 @@ export const prerender = true;
 
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
+import FooterInstitucional from '../../components/FooterInstitucional.astro';
 import BottomNavBar from '../../components/BottomNavBar.astro';
 import { getCollection, render } from 'astro:content';
 import { getAuthorName } from '../../lib/authors';
@@ -48,8 +49,9 @@ const canonical = site + Astro.url.pathname;
 
 const { src: imageSrc, absoluta: imagemAbsoluta } = resolverImagem(post.data.image ?? '', site);
 
-// P2C: authorId -> Person real via registro tipado (src/lib/authors.ts).
+// P2C/P2B: authorId -> Person real via registro tipado (src/lib/authors.ts).
 // publisher continua apontando para a Organization existente no Layout global (#organization).
+// A Person do autor usa @id estavel #person da pagina /autor/<id>.
 const authorName = getAuthorName(post.data.authorId);
 const graph: any[] = [];
 
@@ -69,7 +71,8 @@ if (!noindex) {
       "author": {
         "@type": "Person",
         "name": authorName,
-        "@id": `${site}/#author-${post.data.authorId}`
+        "@id": `${site}/autor/${post.data.authorId}#person`,
+        "url": `${site}/autor/${post.data.authorId}`
       },
       "publisher": {
         "@type": "Organization",
@@ -150,7 +153,7 @@ const jsonLd = {
         </time>
         <span class="flex items-center gap-1">
           <span class="material-symbols-outlined text-sm">person</span>
-          Por {authorName}
+          <a href={`/autor/${post.data.authorId}`} rel="author" class="hover:text-primary transition-colors underline underline-offset-2">Por {authorName}</a>
         </span>
 </div>
 
@@ -199,6 +202,7 @@ const jsonLd = {
     )}
   </article>
 
+  <FooterInstitucional />
   <BottomNavBar />
 </Layout>
 

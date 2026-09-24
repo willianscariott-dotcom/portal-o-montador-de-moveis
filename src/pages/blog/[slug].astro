@@ -2,7 +2,10 @@
 export const prerender = true;
 
 import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import BottomNavBar from '../../components/BottomNavBar.astro';
 import { getCollection, render } from 'astro:content';
+import { getAuthorName } from '../../lib/authors';
 
 // Fonte unica de verdade: data.slug (do frontmatter). O nome do arquivo (post.id)
 // entra apenas como referencia de log quando divergir do slug.
@@ -45,9 +48,9 @@ const canonical = site + Astro.url.pathname;
 
 const { src: imageSrc, absoluta: imagemAbsoluta } = resolverImagem(post.data.image ?? '', site);
 
-// P2A: enquanto a P2B nao resolve authorId -> Person real, author e publisher
-// do BlogPosting usam a mesma Organization do Layout global (#organization),
-// sem criar Person ficticia nem duplicar a entidade.
+// P2C: authorId -> Person real via registro tipado (src/lib/authors.ts).
+// publisher continua apontando para a Organization existente no Layout global (#organization).
+const authorName = getAuthorName(post.data.authorId);
 const graph: any[] = [];
 
 if (!noindex) {
@@ -64,8 +67,9 @@ if (!noindex) {
       "datePublished": post.data.publishedAt.toISOString(),
       "dateModified": post.data.updatedAt ? post.data.updatedAt.toISOString() : post.data.publishedAt.toISOString(),
       "author": {
-        "@type": "Organization",
-        "@id": `${site}/#organization`
+        "@type": "Person",
+        "name": authorName,
+        "@id": `${site}/#author-${post.data.authorId}`
       },
       "publisher": {
         "@type": "Organization",
@@ -119,6 +123,7 @@ const jsonLd = {
 ---
 
 <Layout title={title} description={description} noindex={noindex} image={imagemAbsoluta}>
+  <Header />
   {!noindex && (
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
   )}
@@ -145,7 +150,7 @@ const jsonLd = {
         </time>
         <span class="flex items-center gap-1">
           <span class="material-symbols-outlined text-sm">person</span>
-          {post.data.authorId}
+          Por {authorName}
         </span>
 </div>
 
@@ -193,6 +198,8 @@ const jsonLd = {
       </section>
     )}
   </article>
+
+  <BottomNavBar />
 </Layout>
 
 <style is:global>

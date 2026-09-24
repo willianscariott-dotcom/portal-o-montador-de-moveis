@@ -170,8 +170,8 @@ function extrairRelated(raw) {
   if (!raw) return [];
   return raw
     .split(',')
-    .map((s) => s.replace(/^["'\s]+|["'\s]+$/g, ''))
-    .filter((s) => s.startsWith('/') && !/\s/.test(s));
+    .map((s) => s.replace(/^["'[\s]+|["'\s\]]+$/g, ''))
+    .filter((s) => s.startsWith('/') && !/\s/.test(s) && !s.includes('[') && !s.includes(']'));
 }
 
 if (!fs.existsSync(DIST_CLIENT)) {
@@ -186,7 +186,8 @@ const problemas = {
   semH1: 0, jsonldInvalido: 0, textoUndefined: 0, htmlPublicoIndevido: 0, placeholderLiteral: 0,
   precoFixo: 0, depoimentoNaoLocal: 0, rotasBlogDraft: 0, slugDuplicado: 0, canonicalDuplicada: 0,
   blogPostAusenteListagem: 0, relatedPageForaSitemap: 0, blogSemBlogPosting: 0,
-  htmlNoindexNoSitemap: 0, htmlIndexavelForaDoSitemap: 0, blogIndexSemNoindex: 0, blogIndexNoindexComConteudo: 0
+  htmlNoindexNoSitemap: 0, htmlIndexavelForaDoSitemap: 0, blogIndexSemNoindex: 0, blogIndexNoindexComConteudo: 0,
+  blogPostingUnico: 0, breadcrumbUnico: 0, h1Unico: 0, assinaturaVisivel: 0, faqDesalinhado: 0, blogNavAusente: 0
 };
 const exemplos = [];
 
@@ -268,6 +269,10 @@ if (temHomeEstatica) {
     problemas.canonicalInvalida++;
     if (exemplos.length < 12) exemplos.push({ url: '/', problema: `home canonical ${homeCanonical[1]} !== ${SITE_URL}` });
   }
+  if (!/<a\b[^>]*\bhref="\/blog"/i.test(homeHtml)) {
+    problemas.blogNavAusente++;
+    if (exemplos.length < 12) exemplos.push({ url: '/', problema: 'link de navegação para /blog ausente na home' });
+  }
 }
 
 const rotasIndexaveisHtml = new Set();
@@ -346,6 +351,46 @@ for (const file of files) {
   if (level === 'blog' && url !== 'blog' && !isNoindex && !/BlogPosting/.test(html)) {
     problemas.blogSemBlogPosting++;
     if (exemplos.length < 12) exemplos.push({ url, problema: 'artigo do blog sem JSON-LD BlogPosting' });
+  }
+
+  if (level === 'blog' && url !== 'blog' && !isNoindex) {
+    const js = (re) => html.match(re) || [];
+
+    const qtdBlogPosting = js(/"@type":\s*"BlogPosting"/g).length;
+    if (qtdBlogPosting !== 1) {
+      problemas.blogPostingUnico++;
+      if (exemplos.length < 12) exemplos.push({ url, problema: `BlogPosting presente ${qtdBlogPosting} vez(es), esperado 1` });
+    }
+
+    const qtdBreadcrumb = js(/"@type":\s*"BreadcrumbList"/g).length;
+    if (qtdBreadcrumb !== 1) {
+      problemas.breadcrumbUnico++;
+      if (exemplos.length < 12) exemplos.push({ url, problema: `BreadcrumbList presente ${qtdBreadcrumb} vez(es), esperado 1` });
+    }
+
+    const qtdH1 = js(/<h1\b/g).length;
+    if (qtdH1 !== 1) {
+      problemas.h1Unico++;
+      if (exemplos.length < 12) exemplos.push({ url, problema: `H1 presente ${qtdH1} vez(es), esperado 1` });
+    }
+
+    const qtdAssinatura = (html.match(/Por Willian Scariott/g) || []).length;
+    if (qtdAssinatura !== 1) {
+      problemas.assinaturaVisivel++;
+      if (exemplos.length < 12) exemplos.push({ url, problema: `assinatura visível "Por Willian Scariott" presente ${qtdAssinatura} vez(es), esperado 1` });
+    }
+
+    const qtdFaqPage = js(/"@type":\s*"FAQPage"/g).length;
+    const qtdQuestoesJson = js(/"@type":\s*"Question"/g).length;
+    const qtdQuestoesVisiveis = (html.match(/<h3 class="text-lg/g) || []).length;
+    const faqAlinhado =
+      qtdFaqPage === 0
+        ? qtdQuestoesJson === 0 && qtdQuestoesVisiveis === 0
+        : qtdFaqPage === 1 && qtdQuestoesJson > 0 && qtdQuestoesJson === qtdQuestoesVisiveis;
+    if (!faqAlinhado) {
+      problemas.faqDesalinhado++;
+      if (exemplos.length < 12) exemplos.push({ url, problema: `FAQPage=${qtdFaqPage}, perguntas JSON-LD=${qtdQuestoesJson}, perguntas visíveis=${qtdQuestoesVisiveis} — FAQ não alinhado` });
+    }
   }
 }
 
@@ -468,9 +513,10 @@ if (!fs.existsSync(blogIndexFile)) {
   }
   for (const p of publicosIndexaveis) {
     const rota = `/blog/${p.slug}`;
-    if (!blogHtml.includes(`href="${rota}"`)) {
+    const ocorrencias = (blogHtml.match(new RegExp(`href="${rota.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`, 'g')) || []).length;
+    if (ocorrencias !== 1) {
       problemas.blogPostAusenteListagem++;
-      if (exemplos.length < 12) exemplos.push({ url: rota, problema: `artigo público ausente da listagem em /blog (${p.file})` });
+      if (exemplos.length < 12) exemplos.push({ url: rota, problema: `artigo público aparece ${ocorrencias} vez(es) na listagem em /blog, esperado 1 (${p.file})` });
     }
   }
 }

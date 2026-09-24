@@ -34,7 +34,7 @@
 ## Comandos de validação
 
 - `npm run build` — apenas build Astro (sem sitemap).
-- `npm run sitemap` — `node scripts/generate-sitemap.mjs`: gera `sitemap-index.xml`/`sitemap-0.xml` em `dist/client` com as rotas estáticas + rotas SSR canônicas `/cadastro`, `/contato`, `/privacidade`, `/termos` (total esperado 310 URLs).
+- `npm run sitemap` — `node scripts/generate-sitemap.mjs`: gera `sitemap-index.xml`/`sitemap-0.xml` em `dist/client` com as rotas estáticas + rotas SSR canônicas `/cadastro`, `/contato`, `/privacidade`, `/termos` (total esperado 311 URLs).
 - `npm run validate` — `node scripts/validate-build.mjs`: confere canonical (sem `/undefined`), título/descrição/h1, JSON-LD, contagem de rotas vs `scripts/baseline-routes.json`, presença das rotas SSR canônicas no sitemap, HTML público indevido em `dist/client` (exceto `index.html` da home estática e verificação `google<16hex>.html`), links internos da home existirem no sitemap, placeholders literais `{cidade}`/`{estado}`, consistência do sitemap e ausência de scripts da Indexing API.
 - `npm run verify` — `npm run build && npm run sitemap && npm run validate` (porta de entrada antes de merge/deploy).
 - Vercel: `vercel.json` define `buildCommand: "npm run verify"` — build, geração de sitemap e validação rodam em todo deploy; qualquer falha de sitemap/validate aborta o deploy.
@@ -46,7 +46,7 @@
 - `src/lib/montadores.js` centraliza leitura do Supabase (`buscarMontadores` é paginado e lança erro para ABORTAR o build se o Supabase falhar — nunca retornar `[]` vazio que publicaria site sem páginas de cidade).
 - `parseCidadeEstado` valida `cidade_estado` (formato `Cidade - UF`, UF real, rejeita `null/undefined/nao informado` etc.) e os helpers `montadoresValidosPorCidade`, `montadoresValidosPorZona`, `listarCidades`, `listarCidadesComEstado`, `listarZonas` filtram dados inválidos na publicação (não no banco).
 - A home (`src/pages/index.astro`) é **estática (`prerender = true`)** e usa `buscarMontadores` + `listarCidades`, a mesma fonte validada das páginas de cidade — sem consulta própria ao Supabase e sem fallback para `src/data/cities.js` (removido).
-- Contagem atual das rotas: **126** rotas `city`, **126** rotas `ufCity`, **53** rotas `zona`, **1** home estática, **4** rotas SSR (`/cadastro`, `/contato`, `/privacidade`, `/termos`) — total do sitemap: **310 URLs**.
+- Contagem atual das rotas: **126** rotas `city`, **126** rotas `ufCity`, **54** rotas `zona`, **1** home estática, **4** rotas SSR (`/cadastro`, `/contato`, `/privacidade`, `/termos`) — total do sitemap: **311 URLs**.
 - Canonical: sempre derivado de `Astro.url.pathname` via `src/lib/canonical.js` (nunca de `Astro.props.cidade`). Params de rota ficam em `Astro.params`.
 
 ## Pendências conhecidas

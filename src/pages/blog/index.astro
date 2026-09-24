@@ -2,6 +2,8 @@
 export const prerender = true;
 
 import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import BottomNavBar from '../../components/BottomNavBar.astro';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('blog', ({ data }) => {
@@ -16,6 +18,8 @@ const description = "Dicas, guias e informações úteis sobre montagem de móve
 ---
 
 <Layout title={title} description={description} noindex={isEmpty}>
+  <Header />
+
   <main class="max-w-4xl mx-auto px-4 py-8">
     <header class="mb-12 text-center">
       <h1 class="text-4xl font-headline font-bold text-primary mb-4">Blog do Montador</h1>
@@ -54,4 +58,6 @@ const description = "Dicas, guias e informações úteis sobre montagem de móve
       </div>
     )}
   </main>
+
+  <BottomNavBar />
 </Layout>

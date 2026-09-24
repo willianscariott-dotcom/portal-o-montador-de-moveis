@@ -17,6 +17,13 @@ tags:
   - "rack"
   - "fixação"
   - "drywall"
+sources:
+  - title: "Fixação de cargas em paredes de drywall"
+    url: https://knauf.com/pt-BR/performance/resistencia-e-seguranca
+    accessedAt: 2026-09-24
+  - title: "Instalação de TV"
+    url: https://www.lg.com/br/suporte/instalacao-tv/
+    accessedAt: 2026-09-24
 draft: false
 noindex: false
 faq:
@@ -44,9 +51,11 @@ Também é necessário considerar:
 - orientação do manual;
 - condição da própria parede.
 
+Quando houver dúvida sobre o tipo de parede ou o peso do conjunto, procure um profissional qualificado para avaliar a fixação.
+
 ### Instalar o painel não é o mesmo que instalar a TV
 
-Confirme se o serviço inclui suporte, fixação da televisão, passagem aparente de cabos e conexão dos aparelhos. Embutir fios ou alterar a instalação elétrica exige outro planejamento e pode envolver profissional especializado.
+Confirme se o serviço inclui suporte, fixação da televisão, passagem aparente de cabos e conexão dos aparelhos. O suporte precisa ser compatível com o modelo e o peso da televisão, e a instalação deve seguir a orientação do fabricante. Embutir fios ou alterar a instalação elétrica exige outro planejamento e pode envolver profissional especializado.
 
 Um rack apoiado pode precisar de uma proteção que evite que ele tombe, principalmente quando isso for indicado pelo fabricante ou quando seu formato apresentar risco. Não retire peças de segurança apenas porque parecem opcionais.
 

@@ -2,6 +2,8 @@
 export const prerender = true;
 
 import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import BottomNavBar from '../../components/BottomNavBar.astro';
 import { getCollection, render } from 'astro:content';
 import { getAuthorName } from '../../lib/authors';
 
@@ -121,6 +123,7 @@ const jsonLd = {
 ---
 
 <Layout title={title} description={description} noindex={noindex} image={imagemAbsoluta}>
+  <Header />
   {!noindex && (
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
   )}
@@ -195,6 +198,8 @@ const jsonLd = {
       </section>
     )}
   </article>
+
+  <BottomNavBar />
 </Layout>
 
 <style is:global>

@@ -17,6 +17,16 @@ tags:
   - "berço"
   - "segurança"
   - "montagem"
+sources:
+  - title: "Berços infantis — perguntas frequentes"
+    url: https://www.gov.br/inmetro/pt-br/acesso-a-informacao/perguntas-frequentes/avaliacao-da-conformidade/bercos-infantis
+    accessedAt: 2026-09-24
+  - title: "Requisitos gerais exigidos para os berços infantis"
+    url: https://www.gov.br/inmetro/pt-br/acesso-a-informacao/perguntas-frequentes/avaliacao-da-conformidade/bercos-infantis/quais-sao-os-requisitos-gerais-exigidos-para-os-bercos-infantis
+    accessedAt: 2026-09-24
+  - title: "Legislação aplicável aos berços infantis"
+    url: https://www.gov.br/inmetro/pt-br/acesso-a-informacao/perguntas-frequentes/avaliacao-da-conformidade/bercos-infantis/qual-legislacao-estabelece-o-regulamento-para-bercos-infantis
+    accessedAt: 2026-09-24
 draft: false
 noindex: false
 faq:

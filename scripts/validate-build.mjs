@@ -67,6 +67,8 @@ function walk(dir) {
 }
 
 function nivel(url) {
+  const rota = url === '' ? '/' : `/${url}`;
+  if (ROTAS_INSTITUCIONAIS.includes(rota)) return 'institucional';
   const partes = url.split('/').filter(Boolean);
   if (partes[0] === 'blog') return 'blog';
   if (partes.length === 1) return 'city';
@@ -78,6 +80,10 @@ function nivel(url) {
 const SITE_URL = 'https://portal.omontadordemoveis.com';
 
 const ROTAS_SSR_CANONICAS = ['/cadastro', '/contato', '/privacidade', '/termos'];
+
+// Paginas institucionais (P2B): estaticas, indexaveis e fixas.
+const ROTAS_INSTITUCIONAIS = ['/sobre', '/politica-editorial', '/autor/willian-scariott'];
+const ROTA_AUTOR = '/autor/willian-scariott';
 
 function checarIndexingApiRemovida() {
   const erros = [];
@@ -180,14 +186,18 @@ if (!fs.existsSync(DIST_CLIENT)) {
 }
 
 const files = walk(DIST_CLIENT);
-const contadores = { city: 0, ufCity: 0, zona: 0, blog: 0, outro: 0 };
+const contadores = { city: 0, ufCity: 0, zona: 0, blog: 0, institucional: 0, outro: 0 };
 const problemas = {
   canonicalUndefined: 0, canonicalInvalida: 0, semCanonical: 0, semTitle: 0, semDescription: 0,
   semH1: 0, jsonldInvalido: 0, textoUndefined: 0, htmlPublicoIndevido: 0, placeholderLiteral: 0,
   precoFixo: 0, depoimentoNaoLocal: 0, rotasBlogDraft: 0, slugDuplicado: 0, canonicalDuplicada: 0,
   blogPostAusenteListagem: 0, relatedPageForaSitemap: 0, blogSemBlogPosting: 0,
   htmlNoindexNoSitemap: 0, htmlIndexavelForaDoSitemap: 0, blogIndexSemNoindex: 0, blogIndexNoindexComConteudo: 0,
-  blogPostingUnico: 0, breadcrumbUnico: 0, h1Unico: 0, assinaturaVisivel: 0, faqDesalinhado: 0, blogNavAusente: 0
+  blogPostingUnico: 0, breadcrumbUnico: 0, h1Unico: 0, assinaturaVisivel: 0, faqDesalinhado: 0, blogNavAusente: 0,
+  institucionalAusente: 0, pageNoindexInstitucional: 0, h1InstitucionalMultiplo: 0, breadcrumbInstitucional: 0,
+  faqPageInstitucional: 0, personInvalido: 0, personFicticioOuVazio: 0, authorBlogPostingIncorreto: 0,
+  assinaturaSemLinkAutor: 0, listaArtigosAutor: 0, fotoSemAlt: 0, contatoEditorialAusente: 0,
+  orgDuplicada: 0, linkInstitucionalHome: 0, institucionalForaSitemap: 0, textoUndefinedInstitucional: 0
 };
 const exemplos = [];
 
@@ -412,7 +422,8 @@ for (const srcFile of ROTAS_CIDADE_SRC) {
 const previstoTotais = {
   city: baseline.cityPages,
   ufCity: baseline.ufCity,
-  zona: baseline.zona
+  zona: baseline.zona,
+  institucional: ROTAS_INSTITUCIONAIS.length
 };
 const floors = { city: 50, ufCity: 50, zona: 10 };
 
@@ -420,11 +431,213 @@ const geramRota = postsBlog.filter((p) => p.published).length;
 const publicosIndexaveis = postsBlog.filter((p) => p.indexable);
 const esperadoBlogFiles = 1 + geramRota;
 
-console.log(`[validate-build] total index.html: ${totalGeral} (base ${baseline.totalIndexHtml}\t+ blog ${contadores.blog})`);
-for (const k of ['city', 'ufCity', 'zona', 'blog', 'outro']) {
+console.log(`[validate-build] total index.html: ${totalGeral} (base ${baseline.totalIndexHtml}\t+ blog ${contadores.blog}\t+ institucional ${contadores.institucional})`);
+for (const k of ['city', 'ufCity', 'zona', 'blog', 'institucional', 'outro']) {
   console.log(`[validate-build]   ${k}: ${contadores[k]} (baseline ${previstoTotais[k] ?? '-'})`);
 }
 console.log(`[validate-build] posts markdown em src/content/blog: ${postsBlog.length} (${geramRota} geram rota; ${postsBlog.length - geramRota} draft)`);
+
+// ===== P2B: entidade, autoria e confiança =====
+
+function lerHtmlPorRota(rota) {
+  const rel = rota === '/' ? 'index.html' : `${rota.replace(/^\//, '')}/index.html`;
+  const p = path.join(DIST_CLIENT, ...rel.split('/'));
+  return fs.existsSync(p) ? fs.readFileSync(p, 'utf-8') : '';
+}
+
+function extrairGraphs(html) {
+  const scripts = html.match(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g) || [];
+  const nodes = [];
+  for (const s of scripts) {
+    const content = s.replace(/^<script[^>]*>/, '').replace(/<\/script>$/, '');
+    try {
+      const obj = JSON.parse(content);
+      if (Array.isArray(obj && obj['@graph'])) nodes.push(...obj['@graph']);
+      else nodes.push(obj);
+    } catch {
+      // JSON-LD inválido já contabilizado no loop principal como jsonldInvalido
+    }
+  }
+  return nodes;
+}
+
+function nosDoTipo(nodes, tipo) {
+  return nodes.filter((n) => {
+    if (!n || !n['@type']) return false;
+    return Array.isArray(n['@type']) ? n['@type'].includes(tipo) : n['@type'] === tipo;
+  });
+}
+
+const RE_ALT_FOTO_AUTOR = /alt="Willian Scariott, criador e editor do Portal O Montador de Móveis"/;
+
+// 1) As três rotas institucionais existem, estão indexáveis e com H1 único.
+for (const rota of ROTAS_INSTITUCIONAIS) {
+  const html = lerHtmlPorRota(rota);
+  if (!html) {
+    problemas.institucionalAusente++;
+    if (exemplos.length < 12) exemplos.push({ url: rota, problema: 'página institucional não gerada' });
+    continue;
+  }
+  if (RE_ROBOTS_NOINDEX.test(html)) {
+    problemas.pageNoindexInstitucional++;
+    if (exemplos.length < 12) exemplos.push({ url: rota, problema: 'página institucional com robots noindex' });
+  }
+  if ((html.match(/<h1\b/g) || []).length !== 1) {
+    problemas.h1InstitucionalMultiplo++;
+    if (exemplos.length < 12) exemplos.push({ url: rota, problema: 'H1 institucional com quantidade diferente de 1' });
+  }
+  if (/\bnull\b|\bundefined\b/.test(html)) {
+    problemas.textoUndefinedInstitucional++;
+    if (exemplos.length < 12) exemplos.push({ url: rota, problema: 'texto null/undefined presente na página institucional' });
+  }
+  const nodes = extrairGraphs(html);
+  if (nosDoTipo(nodes, 'BreadcrumbList').length !== 1) {
+    problemas.breadcrumbInstitucional++;
+    if (exemplos.length < 12) exemplos.push({ url: rota, problema: 'BreadcrumbList ausente ou duplicado na página institucional' });
+  }
+  if (nosDoTipo(nodes, 'FAQPage').length !== 0) {
+    problemas.faqPageInstitucional++;
+    if (exemplos.length < 12) exemplos.push({ url: rota, problema: 'FAQPage em página institucional sem FAQ visível' });
+  }
+}
+
+// 2) Página do autor: Person válido, foto com alt, lista de artigos e contato editorial.
+const autorHtml = lerHtmlPorRota(ROTA_AUTOR);
+if (autorHtml) {
+  const nodes = extrairGraphs(autorHtml);
+  const persons = nosDoTipo(nodes, 'Person');
+  if (persons.length !== 1) {
+    problemas.personInvalido++;
+    if (exemplos.length < 12) exemplos.push({ url: ROTA_AUTOR, problema: `Person presente ${persons.length} vez(es), esperado 1` });
+  } else {
+    const p = persons[0];
+    const orgIdOk = String((p.worksFor && p.worksFor['@id']) || '').endsWith('#organization');
+    const ok =
+      p.name === 'Willian Scariott' &&
+      String(p['@id'] || '').endsWith(`/autor/willian-scariott#person`) &&
+      p.url === `${SITE_URL}/autor/willian-scariott` &&
+      typeof p.jobTitle === 'string' && p.jobTitle.trim().length > 0 &&
+      typeof p.image === 'string' && p.image.startsWith(`${SITE_URL}/`) &&
+      orgIdOk;
+    if (!ok) {
+      problemas.personInvalido++;
+      if (exemplos.length < 12) exemplos.push({ url: ROTA_AUTOR, problema: 'Person inválido (name/@id/url/image/jobTitle/worksFor) na página do autor' });
+    }
+  }
+  if (!RE_ALT_FOTO_AUTOR.test(autorHtml)) {
+    problemas.fotoSemAlt++;
+    if (exemplos.length < 12) exemplos.push({ url: ROTA_AUTOR, problema: 'foto do autor sem o alt correto' });
+  }
+  const linksArtigos = (autorHtml.match(/href="\/blog\/[^"?#"']+"/g) || []).filter((h) => h !== 'href="/blog"').length;
+  if (linksArtigos !== publicosIndexaveis.length) {
+    problemas.listaArtigosAutor++;
+    if (exemplos.length < 12) exemplos.push({ url: ROTA_AUTOR, problema: `lista de artigos com ${linksArtigos} links, esperado ${publicosIndexaveis.length}` });
+  }
+  if (!/contato@grupows\.com/.test(autorHtml)) {
+    problemas.contatoEditorialAusente++;
+    if (exemplos.length < 12) exemplos.push({ url: ROTA_AUTOR, problema: 'contato editorial ausente' });
+  }
+  if (!/href="\/politica-editorial"/.test(autorHtml)) {
+    problemas.contatoEditorialAusente++;
+    if (exemplos.length < 12) exemplos.push({ url: ROTA_AUTOR, problema: 'link para a política editorial ausente' });
+  }
+} else {
+  problemas.institucionalAusente++;
+  if (exemplos.length < 12) exemplos.push({ url: ROTA_AUTOR, problema: 'página do autor não gerada' });
+}
+
+// 3) Página /sobre: links internos para autor e política editorial.
+const sobreHtml = lerHtmlPorRota('/sobre');
+if (sobreHtml) {
+  if (!/href="\/autor\/willian-scariott"/.test(sobreHtml)) {
+    problemas.contatoEditorialAusente++;
+    if (exemplos.length < 12) exemplos.push({ url: '/sobre', problema: 'link para /autor/willian-scariott ausente' });
+  }
+  if (!/href="\/politica-editorial"/.test(sobreHtml)) {
+    problemas.contatoEditorialAusente++;
+    if (exemplos.length < 12) exemplos.push({ url: '/sobre', problema: 'link para /politica-editorial ausente' });
+  }
+}
+
+// 4) Página /politica-editorial: contato editorial presente.
+const politicaHtml = lerHtmlPorRota('/politica-editorial');
+if (politicaHtml) {
+  if (!/contato@grupows\.com/.test(politicaHtml)) {
+    problemas.contatoEditorialAusente++;
+    if (exemplos.length < 12) exemplos.push({ url: '/politica-editorial', problema: 'contato editorial ausente' });
+  }
+}
+
+// 5) Autoria em todo o HTML indexável: Person sem invenção, BlogPosting.author correto,
+//    Organization nunca duplicada e assinatura com link para a página do autor.
+const homeHtmlP2b = lerHtmlPorRota('/');
+for (const rota of ROTAS_INSTITUCIONAIS) {
+  const rx = new RegExp(`href="${rota.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`);
+  if (!rx.test(homeHtmlP2b)) {
+    problemas.linkInstitucionalHome++;
+    if (exemplos.length < 12) exemplos.push({ url: '/', problema: `link interno da home para ${rota} ausente` });
+  }
+}
+
+for (const file of files) {
+  const rel = path.relative(DIST_CLIENT, file).replace(/\\/g, '/');
+  const url = rel === 'index.html' ? '' : rel.replace(/\/index\.html$/, '');
+  const rota = url === '' ? '/' : `/${url}`;
+  const html = fs.readFileSync(file, 'utf-8');
+  if (RE_ROBOTS_NOINDEX.test(html)) continue;
+
+  const nodes = extrairGraphs(html);
+  const orgs = nosDoTipo(nodes, 'Organization');
+  const orgIds = new Set(orgs.map((o) => String(o && o['@id'] || '')));
+  if (orgIds.size > 1 || (orgIds.size === 1 && ![...orgIds][0].endsWith('#organization'))) {
+    problemas.orgDuplicada++;
+    if (exemplos.length < 12) exemplos.push({ url: rota, problema: `Organization duplicada ou @id divergente: ${[...orgIds].join(', ')}` });
+  }
+
+  if (rota === ROTA_AUTOR) continue;
+
+  const isArtigoBlog = nivel(url) === 'blog' && url !== 'blog';
+  const posters = isArtigoBlog ? nosDoTipo(nodes, 'BlogPosting') : [];
+  const persons = isArtigoBlog
+    ? [...new Map(posters.filter((bp) => bp.author).map((bp) => [String(bp.author['@id'] || bp.author.name), bp.author])).values()]
+    : nosDoTipo(nodes, 'Person');
+  const esperadoPerson = isArtigoBlog ? 1 : 0;
+  if (persons.length !== esperadoPerson) {
+    problemas.personFicticioOuVazio++;
+    if (exemplos.length < 12) exemplos.push({ url: rota, problema: `Person presente ${persons.length} vez(es), esperado ${esperadoPerson}` });
+  } else {
+    for (const p of persons) {
+      if (!p.name || String(p.name).trim() === '') {
+        problemas.personFicticioOuVazio++;
+        if (exemplos.length < 12) exemplos.push({ url: rota, problema: 'Person sem nome (vazia) presente' });
+      }
+    }
+  }
+
+  if (isArtigoBlog) {
+    for (const bp of posters) {
+      const a = bp.author;
+      const authorOk =
+        a && a['@type'] === 'Person' &&
+        String(a['@id'] || '').endsWith('/autor/willian-scariott#person') &&
+        a.url === `${SITE_URL}/autor/willian-scariott` &&
+        a.name === 'Willian Scariott';
+      if (!authorOk) {
+        problemas.authorBlogPostingIncorreto++;
+        if (exemplos.length < 12) exemplos.push({ url: rota, problema: 'BlogPosting.author não aponta para o @id correto' });
+      }
+      if (!bp.publisher || !String(bp.publisher['@id'] || '').endsWith('#organization')) {
+        problemas.orgDuplicada++;
+        if (exemplos.length < 12) exemplos.push({ url: rota, problema: 'BlogPosting.publisher não aponta para a Organization do portal' });
+      }
+    }
+    const reAssinaturaLink = /href="\/autor\/willian-scariott"[^>]*>\s*Por Willian Scariott/i;
+    if (!reAssinaturaLink.test(html)) {
+      problemas.assinaturaSemLinkAutor++;
+      if (exemplos.length < 12) exemplos.push({ url: rota, problema: 'assinatura "Por Willian Scariott" sem link para a página do autor' });
+    }
+  }
+}
 
 const objetoProblemas = Object.entries(problemas).filter(([, v]) => v > 0);
 
@@ -459,9 +672,9 @@ if (contadores.blog !== esperadoBlogFiles) {
   fail = true;
 }
 
-const esperadoTotalIndex = baseline.totalIndexHtml + esperadoBlogFiles;
+const esperadoTotalIndex = baseline.totalIndexHtml + esperadoBlogFiles + ROTAS_INSTITUCIONAIS.length;
 if (totalGeral !== esperadoTotalIndex) {
-  console.error(`[validate-build] FALHA: total de páginas ${totalGeral}, esperado ${esperadoTotalIndex} (${baseline.totalIndexHtml} base + ${esperadoBlogFiles} blog).`);
+  console.error(`[validate-build] FALHA: total de páginas ${totalGeral}, esperado ${esperadoTotalIndex} (${baseline.totalIndexHtml} base + ${esperadoBlogFiles} blog + ${ROTAS_INSTITUCIONAIS.length} institucional).`);
   fail = true;
 }
 
@@ -600,6 +813,14 @@ if (!temIndex || sitemaps.length === 0) {
   if (ssrFaltando.length) {
     console.error(`[validate-build] FALHA: rotas SSR canônicas ausentes no sitemap: ${ssrFaltando.join(', ')}`);
     fail = true;
+  }
+  for (const rota of ROTAS_INSTITUCIONAIS) {
+    const esperada = `${SITE_URL}${rota}`;
+    const ocorrencias = locs.filter((l) => l === esperada).length;
+    if (ocorrencias !== 1) {
+      problemas.institucionalForaSitemap++;
+      if (exemplos.length < 12) exemplos.push({ url: rota, problema: `página institucional aparece ${ocorrencias} vez(es) no sitemap, esperado 1` });
+    }
   }
   if (unicos.size !== locs.length) {
     console.error(`[validate-build] FALHA: sitemap com URLs duplicadas (${locs.length} total, ${unicos.size} únicas).`);

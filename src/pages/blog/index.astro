@@ -3,6 +3,7 @@ export const prerender = true;
 
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
+import FooterInstitucional from '../../components/FooterInstitucional.astro';
 import BottomNavBar from '../../components/BottomNavBar.astro';
 import { getCollection } from 'astro:content';
 
@@ -59,5 +60,6 @@ const description = "Dicas, guias e informações úteis sobre montagem de móve
     )}
   </main>
 
+  <FooterInstitucional />
   <BottomNavBar />
 </Layout>

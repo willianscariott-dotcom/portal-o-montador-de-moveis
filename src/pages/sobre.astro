@@ -1,0 +1,109 @@
+---
+export const prerender = true;
+
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import FooterInstitucional from '../components/FooterInstitucional.astro';
+import BottomNavBar from '../components/BottomNavBar.astro';
+import { canonicalUrl } from '../lib/canonical';
+
+const origin = 'https://portal.omontadordemoveis.com';
+const canonical = canonicalUrl('/sobre', origin);
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "BreadcrumbList",
+			"itemListElement": [
+				{
+					"@type": "ListItem",
+					"position": 1,
+					"name": "Início",
+					"item": origin
+				},
+				{
+					"@type": "ListItem",
+					"position": 2,
+					"name": "Sobre o Portal",
+					"item": canonical
+				}
+			]
+		}
+	]
+};
+---
+
+<Layout title="Sobre o Portal | O Montador de Móveis" description="Conheça o Portal O Montador de Móveis: um portal gratuito que conecta clientes que precisam de montagem a montadores de móveis disponíveis em sua região.">
+	<Header />
+
+	<script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+
+	<nav aria-label="Breadcrumb" class="max-w-prose mx-auto px-4 pt-8 pb-4">
+		<ol class="flex items-center space-x-2 text-sm text-on-surface-variant">
+			<li><a href="/" class="hover:text-primary transition-colors">Início</a></li>
+			<li><span class="material-symbols-outlined text-sm">chevron_right</span></li>
+			<li class="font-medium text-on-surface" aria-current="page">Sobre o Portal</li>
+		</ol>
+	</nav>
+
+	<main class="max-w-prose mx-auto px-4 py-8">
+		<article>
+			<header class="mb-10">
+				<h1 class="text-4xl md:text-5xl font-headline font-bold text-on-surface mb-4 leading-tight">Sobre o Portal O Montador de Móveis</h1>
+				<p class="text-lg text-on-surface-variant leading-relaxed">
+					Um portal gratuito para conectar montadores de móveis a clientes que precisam de serviços de montagem.
+				</p>
+			</header>
+
+			<div class="space-y-8 text-on-surface-variant text-lg leading-relaxed">
+				<section aria-labelledby="historia-heading">
+					<h2 id="historia-heading" class="text-2xl md:text-3xl font-headline font-bold text-on-surface mb-4">Nossa história</h2>
+					<p class="mb-4">
+						“O Portal O Montador de Móveis foi criado por Willian Scariott em fevereiro de 2026 para ampliar as oportunidades de trabalho dos montadores e facilitar o encontro entre clientes que precisam de montagem e profissionais disponíveis em sua região.”
+					</p>
+					<p>
+						A ideia nasceu da observação diária do mercado de montagem de móveis: muitos visitantes, muitos chamados e poucos lugares organizando essa oferta. O Portal reúne, em um único lugar, os profissionais que se cadastram voluntariamente.
+					</p>
+				</section>
+
+				<section aria-labelledby="proposito-heading">
+					<h2 id="proposito-heading" class="text-2xl md:text-3xl font-headline font-bold text-on-surface mb-4">Nosso propósito</h2>
+					<p class="mb-4">
+						Oferecer oportunidades para montadores de móveis e conectar clientes que precisam de serviços de montagem a profissionais disponíveis. O Portal funciona como um catálogo regional: ele aproxima as duas pontas e deixa a combinação do serviço entre as partes.
+					</p>
+				</section>
+
+				<section aria-labelledby="gratuito-heading">
+					<h2 id="gratuito-heading" class="text-2xl md:text-3xl font-headline font-bold text-on-surface mb-4">O uso do Portal é gratuito</h2>
+					<p>
+						Tanto o cliente que busca um montador quanto o profissional que se cadastra podem usar o Portal sem pagar nada. Não há taxa por busca, por cadastro ou por aproximação.
+					</p>
+				</section>
+
+				<section aria-labelledby="como-profissionais-aparecem-heading">
+					<h2 id="como-profissionais-aparecem-heading" class="text-2xl md:text-3xl font-headline font-bold text-on-surface mb-4">Como os profissionais aparecem no Portal</h2>
+					<p class="mb-4">
+						Os montadores informam seus próprios dados para aparecer no Portal. Não realizamos análise ou verificação prévia desses profissionais, e o Portal não afirma que eles são verificados, aprovados, certificados ou recomendados.
+					</p>
+					<p>
+						Por isso, antes de contratar, o cliente deve confirmar diretamente com o profissional a experiência, a disponibilidade, o preço, a forma de pagamento e as condições do serviço. A contratação e a execução são combinadas diretamente entre cliente e profissional.
+					</p>
+				</section>
+
+				<section aria-labelledby="autoria-heading" class="border-t border-surface-container-highest pt-8">
+					<h2 id="autoria-heading" class="text-2xl md:text-3xl font-headline font-bold text-on-surface mb-4">Quem cria o conteúdo do Portal</h2>
+					<p class="mb-4">
+						O Portal é criado e editado por <a href="/autor/willian-scariott" class="font-medium text-primary underline underline-offset-2 hover:text-secondary transition-colors">Willian Scariott</a>, que define as pautas, revisa e aprova todo o conteúdo publicado.
+					</p>
+					<p>
+						Os critérios de produção, uso de fontes, correções e atualizações estão descritos na nossa <a href="/politica-editorial" class="font-medium text-primary underline underline-offset-2 hover:text-secondary transition-colors">política editorial</a>.
+					</p>
+				</section>
+			</div>
+		</article>
+	</main>
+
+	<FooterInstitucional />
+	<BottomNavBar />
+</Layout>

@@ -3,6 +3,7 @@ export const prerender = true;
 
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
+import FooterInstitucional from '../components/FooterInstitucional.astro';
 import BottomNavBar from '../components/BottomNavBar.astro';
 import MontadorCard from '../components/MontadorCard.astro';
 import { slugify } from '../lib/canonical';
@@ -237,6 +238,7 @@ const countText = filtrados.length === 1
 		]
 	})} />
 
+	<FooterInstitucional />
 	<BottomNavBar />
 
 	<script>
